@@ -3,6 +3,12 @@ Background job script for Price-Drop Watcher.
 Runs periodically to scan wishlist items and trigger alerts.
 """
 
+import os
+import sys
+
+# Ensure root directory is on Python path
+sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), "../..")))
+
 from backend.db import SessionLocal
 from backend.services.price_watch_service import check_price_drops
 

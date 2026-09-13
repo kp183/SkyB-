@@ -14,22 +14,49 @@ At the repo root (not in /docs):
 8. `.env.example` — required environment variables
 
 ## Local Setup
-### Backend
-```bash
-cd backend
-python -m venv venv && source venv/bin/activate
-pip install -r requirements.txt
-cp ../.env.example .env   # fill in real values
-uvicorn main:app --reload
-```
 
-### Frontend
+### 1. Environment Configuration
+Copy the template `.env.example` at the repository root:
+```bash
+cp .env.example .env
+```
+*(On Windows PowerShell: `Copy-Item .env.example .env`)*
+
+### 2. Backend Setup
+> **Important:** Always execute backend commands from the **repository root** so Python resolves the `backend` package cleanly without `ModuleNotFoundError`.
+
+```bash
+# 1. Create and activate virtual environment
+python -m venv venv
+
+# Activate (Windows PowerShell):
+.\venv\Scripts\Activate.ps1
+# Or Activate (Windows Command Prompt):
+.\venv\Scripts\activate.bat
+# Or Activate (macOS/Linux):
+source venv/bin/activate
+
+# 2. Install backend dependencies
+pip install -r backend/requirements.txt
+
+# 3. Seed the database (creates SQLite/Postgres tables & loads demo records)
+python -m backend.seed
+
+# 4. Start the FastAPI development server
+python -m uvicorn backend.main:app --reload
+```
+- API root: http://localhost:8000
+- Interactive Swagger UI: http://localhost:8000/docs
+- Health Check: http://localhost:8000/health
+
+### 3. Frontend Setup
+From the repository root:
 ```bash
 cd frontend
 npm install
-cp ../.env.example .env.local   # fill in real values
 npm run dev
 ```
+- Web Application: http://localhost:3000
 
 ## Deployment
 - Frontend → Vercel (connect GitHub repo, auto-deploys on push)
