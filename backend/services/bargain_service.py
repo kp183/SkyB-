@@ -11,7 +11,7 @@ from sqlalchemy.orm import Session
 from backend.models.bargain import BargainSession, BargainOffer
 from backend.models.product import Product
 
-LLM_API_KEY = os.getenv("LLM_API_KEY")
+GEMINI_API_KEY = os.getenv("GEMINI_API_KEY", os.getenv("LLM_API_KEY"))
 
 
 def generate_bargain_message(
@@ -36,10 +36,10 @@ def generate_bargain_message(
         )
 
     # Try Gemini API if key is present
-    if LLM_API_KEY and LLM_API_KEY != "your_gemini_or_llm_api_key":
+    if GEMINI_API_KEY and GEMINI_API_KEY not in ["your_gemini_api_key", "your_gemini_or_llm_api_key"]:
         try:
             import google.generativeai as genai
-            genai.configure(api_key=LLM_API_KEY)
+            genai.configure(api_key=GEMINI_API_KEY)
             model = genai.GenerativeModel("gemini-1.5-flash")
             prompt = (
                 f"You are a friendly shop assistant for 'SkyB', an e-commerce store for kids' products. "

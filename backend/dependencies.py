@@ -12,9 +12,9 @@ from backend.models.user import User
 
 load_dotenv()
 
-SECRET_KEY = os.getenv("JWT_SECRET", "skyb_secret_academic_key_2026_super_secure")
-ALGORITHM = "HS256"
-ACCESS_TOKEN_EXPIRE_MINUTES = 60 * 24  # 24 hours
+SECRET_KEY = os.getenv("SECRET_KEY", os.getenv("JWT_SECRET", "skyb_secret_academic_key_2026_super_secure"))
+ALGORITHM = os.getenv("ALGORITHM", "HS256")
+ACCESS_TOKEN_EXPIRE_MINUTES = int(os.getenv("ACCESS_TOKEN_EXPIRE_MINUTES", "60"))
 
 try:
     from passlib.context import CryptContext

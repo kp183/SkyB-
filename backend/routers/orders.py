@@ -7,19 +7,17 @@ from backend.db import get_db
 from backend.models.order import Order, OrderItem
 from backend.models.cart import CartItem
 from backend.models.user import User
+from backend.schemas.order import (
+    CheckoutRequest,
+    MockPayRequest,
+    OrderResponse,
+    OrderItemResponse,
+    MockPayResponse,
+)
 from backend.dependencies import get_current_user, success_response
 from backend.services.savings_service import calculate_best_savings
 
 router = APIRouter(tags=["Checkout & Orders"])
-
-
-class CheckoutRequest(BaseModel):
-    delivery_address: str
-
-
-class MockPayRequest(BaseModel):
-    order_id: int
-    simulate_failure: bool = False
 
 
 def serialize_order(order: Order) -> dict:

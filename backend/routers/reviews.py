@@ -7,14 +7,10 @@ from backend.db import get_db
 from backend.models.review import Review
 from backend.models.product import Product
 from backend.models.user import User
+from backend.schemas.review import ReviewCreate, ReviewResponse
 from backend.dependencies import get_current_user, success_response
 
 router = APIRouter(tags=["Reviews"])
-
-
-class ReviewCreate(BaseModel):
-    rating: int = Field(..., ge=1, le=5)
-    comment: str
 
 
 @router.get("/products/{id}/reviews")

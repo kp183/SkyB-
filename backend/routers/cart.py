@@ -6,18 +6,10 @@ from backend.db import get_db
 from backend.models.cart import CartItem
 from backend.models.product import Product
 from backend.models.user import User
+from backend.schemas.cart import CartAddRequest, CartUpdateRequest, CartItemResponse, CartSummaryResponse
 from backend.dependencies import get_current_user, success_response
 
 router = APIRouter(prefix="/cart", tags=["Cart"])
-
-
-class CartAddRequest(BaseModel):
-    product_id: int
-    quantity: int = Field(1, ge=1)
-
-
-class CartUpdateRequest(BaseModel):
-    quantity: int = Field(..., ge=1)
 
 
 def serialize_cart_item(item: CartItem) -> dict:

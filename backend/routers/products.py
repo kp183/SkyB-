@@ -5,37 +5,10 @@ from sqlalchemy.orm import Session
 
 from backend.db import get_db
 from backend.models.product import Product
+from backend.schemas.product import ProductCreate, ProductUpdate, ProductResponse
 from backend.dependencies import require_admin_user, success_response, error_response
 
 router = APIRouter(prefix="/products", tags=["Products"])
-
-
-class ProductCreate(BaseModel):
-    name: str
-    description: str
-    category_id: int
-    age_group: str
-    size: Optional[str] = None
-    price: float
-    min_price: float
-    max_price: float
-    stock_qty: int = 0
-    image_url: Optional[str] = None
-    safety_tags: Optional[List[str]] = None
-
-
-class ProductUpdate(BaseModel):
-    name: Optional[str] = None
-    description: Optional[str] = None
-    category_id: Optional[int] = None
-    age_group: Optional[str] = None
-    size: Optional[str] = None
-    price: Optional[float] = None
-    min_price: Optional[float] = None
-    max_price: Optional[float] = None
-    stock_qty: Optional[int] = None
-    image_url: Optional[str] = None
-    safety_tags: Optional[List[str]] = None
 
 
 def serialize_product(p: Product) -> dict:

@@ -7,23 +7,18 @@ from backend.models.bargain import BargainSession, BargainOffer
 from backend.models.product import Product
 from backend.models.cart import CartItem
 from backend.models.user import User
+from backend.schemas.bargain import (
+    BargainStartRequest,
+    BargainOfferRequest,
+    BargainAcceptRequest,
+    BargainStartResponse,
+    BargainOfferResponse,
+    BargainAcceptResponse,
+)
 from backend.dependencies import get_current_user, success_response
 from backend.services.bargain_service import process_offer
 
 router = APIRouter(prefix="/bargain", tags=["Bargain Assistant"])
-
-
-class BargainStartRequest(BaseModel):
-    product_id: int
-
-
-class BargainOfferRequest(BaseModel):
-    session_id: int
-    offer_price: float = Field(..., gt=0)
-
-
-class BargainAcceptRequest(BaseModel):
-    session_id: int
 
 
 @router.post("/start")

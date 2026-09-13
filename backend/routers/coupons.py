@@ -5,25 +5,10 @@ from sqlalchemy.orm import Session
 
 from backend.db import get_db
 from backend.models.coupon import Coupon
+from backend.schemas.coupon import CouponCreate, CouponUpdate, CouponResponse
 from backend.dependencies import require_admin_user, success_response
 
 router = APIRouter(prefix="/coupons", tags=["Coupons"])
-
-
-class CouponCreate(BaseModel):
-    code: str
-    discount_type: Literal["flat", "percent"]
-    discount_value: float = Field(..., gt=0)
-    min_order_value: Optional[float] = None
-    active: bool = True
-
-
-class CouponUpdate(BaseModel):
-    code: Optional[str] = None
-    discount_type: Optional[Literal["flat", "percent"]] = None
-    discount_value: Optional[float] = Field(None, gt=0)
-    min_order_value: Optional[float] = None
-    active: Optional[bool] = None
 
 
 def serialize_coupon(c: Coupon) -> dict:

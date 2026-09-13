@@ -4,13 +4,10 @@ from sqlalchemy.orm import Session
 
 from backend.db import get_db
 from backend.models.category import Category
+from backend.schemas.category import CategoryCreate, CategoryResponse
 from backend.dependencies import require_admin_user, success_response
 
 router = APIRouter(prefix="/categories", tags=["Categories"])
-
-
-class CategoryCreate(BaseModel):
-    name: str
 
 
 @router.get("")

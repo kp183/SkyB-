@@ -7,14 +7,10 @@ from backend.db import get_db
 from backend.models.wishlist import WishlistItem
 from backend.models.product import Product
 from backend.models.user import User
+from backend.schemas.wishlist import WishlistAddRequest, WishlistItemResponse
 from backend.dependencies import get_current_user, success_response
 
 router = APIRouter(prefix="/wishlist", tags=["Wishlist"])
-
-
-class WishlistAddRequest(BaseModel):
-    product_id: int
-    watch_price: Optional[float] = None
 
 
 def serialize_wishlist_item(item: WishlistItem) -> dict:

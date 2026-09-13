@@ -9,7 +9,7 @@ from typing import Dict, Any, List
 from sqlalchemy.orm import Session
 from backend.models.product import Product
 
-LLM_API_KEY = os.getenv("LLM_API_KEY")
+GEMINI_API_KEY = os.getenv("GEMINI_API_KEY", os.getenv("LLM_API_KEY"))
 
 SAFETY_KEYWORDS = {
     "choking": ("Low", "Warning: Contains small parts that may pose a choking hazard for children under 3 years."),
@@ -57,10 +57,10 @@ def get_or_generate_safety_badge(db: Session, product: Product) -> Dict[str, Any
                     detected_tags.append(kw.title())
 
     # Optional LLM enrichment
-    if LLM_API_KEY and LLM_API_KEY != "your_gemini_or_llm_api_key":
+    if GEMINI_API_KEY and GEMINI_API_KEY not in ["your_gemini_api_key", "your_gemini_or_llm_api_key"]:
         try:
             import google.generativeai as genai
-            genai.configure(api_key=LLM_API_KEY)
+            genai.configure(api_key=GEMINI_API_KEY)
             model = genai.GenerativeModel("gemini-1.5-flash")
             prompt = (
                 f"Analyze this kids' product for safety: Name: '{product.name}', Category: {product.category_id}, "

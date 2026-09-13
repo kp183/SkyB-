@@ -7,23 +7,10 @@ from sqlalchemy.orm import Session
 from backend.db import get_db
 from backend.models.child import Child
 from backend.models.user import User
+from backend.schemas.child import ChildCreate, ChildUpdate, ChildResponse
 from backend.dependencies import get_current_user, success_response
 
 router = APIRouter(prefix="/children", tags=["Children Profiles"])
-
-
-class ChildCreate(BaseModel):
-    name: Optional[str] = None
-    birth_date: date
-    height_cm: Optional[int] = None
-    weight_kg: Optional[int] = None
-
-
-class ChildUpdate(BaseModel):
-    name: Optional[str] = None
-    birth_date: Optional[date] = None
-    height_cm: Optional[int] = None
-    weight_kg: Optional[int] = None
 
 
 def serialize_child(c: Child) -> dict:
