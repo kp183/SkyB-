@@ -6,6 +6,9 @@ Keep it updated as decisions change.
 ## Project
 SkyB — an e-commerce website for kids' products with AI-assisted shopping features.
 Academic Field Project (T.Y. B.Sc. CS). See /docs/PRD.md for full requirements.
+Security/robustness scope is defined in /docs/PRODUCTION_CHECKLIST.md — build
+only the "Must-build" section as part of normal feature work; do not build the
+"Namecheck only" section under any circumstances.
 
 ## Tech Stack (do not deviate without updating this file)
 - Frontend: Next.js (App Router) + Tailwind CSS

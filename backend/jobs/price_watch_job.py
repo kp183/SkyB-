@@ -1,0 +1,20 @@
+"""
+Background job script for Price-Drop Watcher.
+Runs periodically to scan wishlist items and trigger alerts.
+"""
+
+from backend.db import SessionLocal
+from backend.services.price_watch_service import check_price_drops
+
+
+def run_price_watch_job():
+    db = SessionLocal()
+    try:
+        updated = check_price_drops(db)
+        print(f"[PriceWatchJob] Check completed. {updated} items triggered price-drop alerts.")
+    finally:
+        db.close()
+
+
+if __name__ == "__main__":
+    run_price_watch_job()

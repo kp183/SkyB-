@@ -20,6 +20,9 @@ skyb/
 ├── backend/                   # FastAPI app
 │   ├── main.py
 │   ├── models/                # SQLAlchemy models (see DATABASE_SCHEMA.md)
+│   ├── schemas/               # Pydantic request/response models — one file per
+│   │                           # resource; SQLAlchemy models are never returned
+│   │                           # directly from routes (e.g. must exclude password_hash)
 │   ├── routers/                # one file per resource: products.py, cart.py, orders.py,
 │   │                           # auth.py, admin.py, bargain.py, ai_features.py
 │   ├── services/               # business logic per feature (see FEATURES_SPEC.md)
