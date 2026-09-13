@@ -9,47 +9,18 @@ from dotenv import load_dotenv
 
 from backend.db import get_db
 from backend.models.user import User
+from backend.security import (
+    SECRET_KEY,
+    ALGORITHM,
+    ACCESS_TOKEN_EXPIRE_MINUTES,
+    hash_password,
+    verify_password,
+    create_access_token,
+)
 
 load_dotenv()
 
-SECRET_KEY = os.getenv("SECRET_KEY", os.getenv("JWT_SECRET", "skyb_secret_academic_key_2026_super_secure"))
-ALGORITHM = os.getenv("ALGORITHM", "HS256")
-ACCESS_TOKEN_EXPIRE_MINUTES = int(os.getenv("ACCESS_TOKEN_EXPIRE_MINUTES", "60"))
-
-try:
-    from passlib.context import CryptContext
-    pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
-
-    def hash_password(password: str) -> str:
-        return pwd_context.hash(password)
-
-    def verify_password(plain_password: str, hashed_password: str) -> bool:
-        return pwd_context.verify(plain_password, hashed_password)
-except ImportError:
-    import hashlib
-    import secrets
-
-    def hash_password(password: str) -> str:
-        salt = secrets.token_hex(16)
-        key = hashlib.pbkdf2_hmac("sha256", password.encode("utf-8"), salt.encode("utf-8"), 100000)
-        return f"pbkdf2:{salt}:{key.hex()}"
-
-    def verify_password(plain_password: str, hashed_password: str) -> bool:
-        if not hashed_password.startswith("pbkdf2:"):
-            return False
-        parts = hashed_password.split(":")
-        if len(parts) != 3:
-            return False
-        salt, key_hex = parts[1], parts[2]
-        check_key = hashlib.pbkdf2_hmac("sha256", plain_password.encode("utf-8"), salt.encode("utf-8"), 100000)
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl="/auth/login", auto_error=False)
-
-
-def create_access_token(data: dict, expires_delta: Optional[timedelta] = None) -> str:
-    to_encode = data.copy()
-    expire = datetime.utcnow() + (expires_delta or timedelta(minutes=ACCESS_TOKEN_EXPIRE_MINUTES))
-    to_encode.update({"exp": expire})
-    return jwt.encode(to_encode, SECRET_KEY, algorithm=ALGORITHM)
 
 
 def success_response(data: Any = None) -> Dict[str, Any]:

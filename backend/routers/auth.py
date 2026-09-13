@@ -7,10 +7,12 @@ from sqlalchemy.orm import Session
 from backend.db import get_db
 from backend.models.user import User
 from backend.schemas.user import UserRegister, UserLogin, UserResponse, AuthResponse
-from backend.dependencies import (
+from backend.security import (
     hash_password,
     verify_password,
     create_access_token,
+)
+from backend.dependencies import (
     get_current_user,
     success_response,
 )

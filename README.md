@@ -15,48 +15,48 @@ At the repo root (not in /docs):
 
 ## Local Setup
 
-### 1. Environment Configuration
-Copy the template `.env.example` at the repository root:
-```bash
-cp .env.example .env
-```
-*(On Windows PowerShell: `Copy-Item .env.example .env`)*
-
-### 2. Backend Setup
-> **Important:** Always execute backend commands from the **repository root** so Python resolves the `backend` package cleanly without `ModuleNotFoundError`.
-
+### 1. Backend (FastAPI + SQLite / PostgreSQL)
+From the repository root:
 ```bash
 # 1. Create and activate virtual environment
+# Windows:
 python -m venv venv
+.\venv\Scripts\activate
 
-# Activate (Windows PowerShell):
-.\venv\Scripts\Activate.ps1
-# Or Activate (Windows Command Prompt):
-.\venv\Scripts\activate.bat
-# Or Activate (macOS/Linux):
+# macOS/Linux:
+python3 -m venv venv
 source venv/bin/activate
 
-# 2. Install backend dependencies
+# 2. Install dependencies
 pip install -r backend/requirements.txt
 
-# 3. Seed the database (creates SQLite/Postgres tables & loads demo records)
+# 3. Configure environment variables
+# Copy .env.example to .env in the repo root (or backend/.env)
+cp .env.example .env
+
+# 4. Seed database with demo catalog, admin & customer accounts
+# ALWAYS run seed as a module from repo root:
 python -m backend.seed
 
-# 4. Start the FastAPI development server
+# 5. Start the FastAPI backend server
 python -m uvicorn backend.main:app --reload
 ```
-- API root: http://localhost:8000
-- Interactive Swagger UI: http://localhost:8000/docs
-- Health Check: http://localhost:8000/health
+- **API Swagger Docs**: [http://localhost:8000/docs](http://localhost:8000/docs)
+- **Health Check**: [http://localhost:8000/health](http://localhost:8000/health)
+- **Default Seeded Accounts**:
+  - Admin: `admin@skyb.com` / `Admin@123`
+  - Customer: `parent@skyb.com` / `Parent@123`
 
-### 3. Frontend Setup
-From the repository root:
+### 2. Frontend (Next.js 16 + Tailwind CSS)
+In a separate terminal:
 ```bash
 cd frontend
 npm install
+cp ../.env.example .env.local
 npm run dev
 ```
-- Web Application: http://localhost:3000
+- **Storefront**: [http://localhost:3000](http://localhost:3000)
+- **Admin Dashboard**: [http://localhost:3000/admin/dashboard](http://localhost:3000/admin/dashboard)
 
 ## Deployment
 - Frontend → Vercel (connect GitHub repo, auto-deploys on push)

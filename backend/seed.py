@@ -26,7 +26,7 @@ from backend.models import (
     Coupon,
     BundleAssociation,
 )
-from backend.dependencies import hash_password
+from backend.security import hash_password
 
 load_dotenv()
 
