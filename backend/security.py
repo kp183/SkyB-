@@ -17,26 +17,30 @@ SECRET_KEY = os.getenv("SECRET_KEY", os.getenv("JWT_SECRET", "skyb_secret_academ
 ALGORITHM = os.getenv("ALGORITHM", "HS256")
 ACCESS_TOKEN_EXPIRE_MINUTES = int(os.getenv("ACCESS_TOKEN_EXPIRE_MINUTES", "60"))
 
-# Password Hashing Setup
+# Password Hashing Setup: Direct bcrypt for reliable $2b$ hashes
 try:
-    from passlib.context import CryptContext
-    pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
+    import bcrypt
 
     def hash_password(password: str) -> str:
-        """Hashes a plaintext password using bcrypt."""
-        return pwd_context.hash(password)
+        """Hashes a plaintext password using bcrypt ($2b$ prefix)."""
+        pwd_bytes = password.encode("utf-8")[:72]
+        return bcrypt.hashpw(pwd_bytes, bcrypt.gensalt()).decode("utf-8")
 
     def verify_password(plain_password: str, hashed_password: str) -> bool:
         """Verifies a plaintext password against a bcrypt or fallback hash."""
         if hashed_password.startswith("pbkdf2:"):
-            # Support PBKDF2 fallback hashes created before bcrypt install
+            # Support PBKDF2 fallback hashes
             parts = hashed_password.split(":")
             if len(parts) == 3:
                 import hashlib
                 salt, key_hex = parts[1], parts[2]
                 check_key = hashlib.pbkdf2_hmac("sha256", plain_password.encode("utf-8"), salt.encode("utf-8"), 100000)
                 return check_key.hex() == key_hex
-        return pwd_context.verify(plain_password, hashed_password)
+            return False
+        try:
+            return bcrypt.checkpw(plain_password.encode("utf-8")[:72], hashed_password.encode("utf-8"))
+        except Exception:
+            return False
 
 except ImportError:
     # Standard library fallback (zero third-party dependencies)
