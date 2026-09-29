@@ -82,6 +82,7 @@ def process_offer(
         .all()
     )
     round_number = len(existing_offers) + 1
+    last_counter = float(existing_offers[-1].counter_price) if existing_offers else float(product.price)
 
     min_price = float(product.min_price)
     listed_price = float(product.price)
@@ -89,23 +90,44 @@ def process_offer(
     is_final_round = round_number >= 3
     is_accepted = False
 
-    # Rule-based pricing logic
+    # Rule-based pricing logic with realistic multi-round progression
     if offer_price >= listed_price:
         counter_price = listed_price
         is_accepted = True
-    elif offer_price >= min_price and not is_final_round:
-        # If customer offer is reasonable, accept or meet closely
-        if round_number == 1 and offer_price < (min_price + listed_price) / 2:
-            counter_price = round(offer_price + (listed_price - offer_price) * 0.4, 2)
+    elif offer_price >= min_price:
+        if is_final_round:
+            # Round 3 (Final): Customer offered at/above floor -> accept customer offer!
+            counter_price = offer_price
+            is_accepted = True
+        elif round_number == 1:
+            # Round 1: Counter slightly above offer (concede ~15% of the gap above offer)
+            gap = listed_price - offer_price
+            if gap <= 10.0:
+                counter_price = offer_price
+                is_accepted = True
+            else:
+                counter_price = round(offer_price + gap * 0.15, 2)
         else:
-            counter_price = offer_price
-            is_accepted = True
+            # Round 2: Step down closer to offer (~40% of the remaining gap from last counter)
+            gap = last_counter - offer_price
+            if gap <= 10.0:
+                counter_price = offer_price
+                is_accepted = True
+            else:
+                counter_price = round(offer_price + gap * 0.40, 2)
     else:
-        # Offer is below min_price OR final round reached: hold firm at min_price
-        counter_price = min_price
-        if offer_price >= min_price:
-            counter_price = offer_price
-            is_accepted = True
+        # Customer offer is strictly below min_price:
+        # Step down store counter gracefully toward min_price across rounds
+        margin = listed_price - min_price
+        if is_final_round:
+            # Final round: Hold firm at absolute min_price floor
+            counter_price = min_price
+        elif round_number == 1:
+            # Round 1: 30% concession from listed toward min_price
+            counter_price = round(listed_price - margin * 0.30, 2)
+        else:
+            # Round 2: 65% concession from listed toward min_price
+            counter_price = round(listed_price - margin * 0.65, 2)
 
     # Absolute safety assertion: counter_price must NEVER fall below min_price
     counter_price = max(counter_price, min_price)
