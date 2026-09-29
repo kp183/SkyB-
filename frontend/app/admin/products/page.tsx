@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react";
 import Link from "next/link";
+import Image from "next/image";
 import { Plus, Trash2, ArrowLeft, ShieldCheck, Tag } from "lucide-react";
 import { api } from "@/lib/api";
 
@@ -38,15 +39,39 @@ export default function AdminProductsPage() {
     loadProducts();
   }, []);
 
+  const [formError, setFormError] = useState<string | null>(null);
+
   const handleCreateProduct = async (e: React.FormEvent) => {
     e.preventDefault();
+    if (!name.trim() || name.trim().length < 3) {
+      setFormError("Product name must be at least 3 characters.");
+      return;
+    }
+    if (price <= 0) {
+      setFormError("Price must be greater than 0.");
+      return;
+    }
+    if (minPrice <= 0) {
+      setFormError("Minimum bargain floor price must be greater than 0.");
+      return;
+    }
+    if (minPrice > price) {
+      setFormError("Minimum bargain price cannot exceed the original price.");
+      return;
+    }
+    if (stockQty < 0) {
+      setFormError("Stock quantity cannot be negative.");
+      return;
+    }
+
+    setFormError(null);
     try {
       await api.createProduct({
-        name,
-        description,
+        name: name.trim(),
+        description: description.trim(),
         category_id: categoryId,
-        age_group: ageGroup,
-        size,
+        age_group: ageGroup.trim(),
+        size: size ? size.trim() : null,
         price,
         min_price: minPrice,
         max_price: maxPrice,
@@ -55,9 +80,11 @@ export default function AdminProductsPage() {
         safety_tags: ["Child Safe", "Non-Toxic"],
       });
       setShowAddModal(false);
+      setName("");
+      setDescription("");
       loadProducts();
     } catch (err: any) {
-      alert(err.message || "Failed to create product");
+      setFormError(err.message || "Failed to create product");
     }
   };
 
@@ -110,7 +137,13 @@ export default function AdminProductsPage() {
               {products.map((p) => (
                 <tr key={p.id} className="hover:bg-slate-50/50">
                   <td className="p-4 flex items-center gap-3">
-                    <img src={p.image_url} alt="" className="h-10 w-10 rounded-lg object-cover" />
+                    <Image
+                      src={p.image_url || "https://images.unsplash.com/photo-1522771930-78848d9293e8?w=200"}
+                      alt={p.name || "Product image"}
+                      width={40}
+                      height={40}
+                      className="h-10 w-10 rounded-lg object-cover"
+                    />
                     <div>
                       <p className="font-bold text-slate-800">{p.name}</p>
                       <p className="text-[10px] text-slate-400 truncate max-w-xs">{p.description}</p>
@@ -147,6 +180,11 @@ export default function AdminProductsPage() {
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-slate-900/50 backdrop-blur-sm p-4">
           <div className="w-full max-w-md rounded-3xl bg-white p-6 shadow-2xl space-y-4">
             <h2 className="text-base font-black text-slate-900">Add New Product</h2>
+            {formError && (
+              <div className="rounded-xl border border-rose-200 bg-rose-50 p-2.5 text-xs font-semibold text-rose-700">
+                {formError}
+              </div>
+            )}
             <form onSubmit={handleCreateProduct} className="space-y-3 text-xs">
               <div>
                 <label className="font-bold text-slate-700">Product Name</label>

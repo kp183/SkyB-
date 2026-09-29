@@ -8,6 +8,7 @@ import { api } from "@/lib/api";
 export default function CheckoutPage() {
   const [cart, setCart] = useState<any>(null);
   const [address, setAddress] = useState("Flat 402, Green Valley Apartments, Andheri West, Mumbai, MH - 400053");
+  const [addressError, setAddressError] = useState<string | null>(null);
   const [loading, setLoading] = useState(true);
   const [isProcessing, setIsProcessing] = useState(false);
 
@@ -33,12 +34,16 @@ export default function CheckoutPage() {
 
   const handleCreateOrder = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!address) return;
+    if (!address.trim() || address.trim().length < 10) {
+      setAddressError("Please enter a complete delivery address (building, street, city, pincode — min 10 characters).");
+      return;
+    }
+    setAddressError(null);
     setIsProcessing(true);
     setError(null);
 
     try {
-      const order = await api.checkout(address);
+      const order = await api.checkout(address.trim());
       setCreatedOrder(order);
     } catch (err: any) {
       setError(err.message || "Failed to process checkout");
@@ -145,11 +150,19 @@ export default function CheckoutPage() {
                 <textarea
                   rows={3}
                   value={address}
-                  onChange={(e) => setAddress(e.target.value)}
-                  placeholder="Enter full shipping address..."
+                  onChange={(e) => {
+                    setAddress(e.target.value);
+                    if (addressError) setAddressError(null);
+                  }}
+                  placeholder="Enter full shipping address (flat/house, street, locality, city, pincode)..."
                   required
-                  className="w-full rounded-2xl border border-slate-300 p-3 text-xs focus:border-sky-500 focus:outline-none"
+                  className={`w-full rounded-2xl border p-3 text-xs focus:outline-none ${
+                    addressError ? "border-rose-400 focus:border-rose-500 bg-rose-50/20" : "border-slate-300 focus:border-sky-500"
+                  }`}
                 />
+                {addressError && (
+                  <p className="mt-1 text-[11px] font-semibold text-rose-600">{addressError}</p>
+                )}
               </div>
 
               <button

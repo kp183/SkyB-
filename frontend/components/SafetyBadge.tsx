@@ -12,22 +12,22 @@ export default function SafetyBadge({ score = "Good", summary, tags = [], compac
     switch (score) {
       case "Low":
         return {
-          bg: "bg-rose-50 border-rose-200 text-rose-700",
-          badge: "bg-rose-500 text-white",
+          bg: "bg-rose-50 border-rose-200 text-rose-800",
+          badge: "bg-rose-700 text-white",
           icon: <ShieldAlert className="h-3.5 w-3.5" />,
           label: "Caution Advised",
         };
       case "Medium":
         return {
-          bg: "bg-amber-50 border-amber-200 text-amber-700",
-          badge: "bg-amber-500 text-white",
+          bg: "bg-amber-50 border-amber-200 text-amber-900",
+          badge: "bg-amber-700 text-white",
           icon: <AlertTriangle className="h-3.5 w-3.5" />,
           label: "Parental Guidance",
         };
       default:
         return {
-          bg: "bg-emerald-50 border-emerald-200 text-emerald-700",
-          badge: "bg-emerald-500 text-white",
+          bg: "bg-emerald-50 border-emerald-200 text-emerald-800",
+          badge: "bg-emerald-700 text-white",
           icon: <ShieldCheck className="h-3.5 w-3.5" />,
           label: "Child Safe Verified",
         };

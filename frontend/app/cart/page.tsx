@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react";
 import Link from "next/link";
+import Image from "next/image";
 import { Trash2, ShoppingBag, Sparkles, ArrowRight, ShieldCheck } from "lucide-react";
 import { api } from "@/lib/api";
 
@@ -84,9 +85,11 @@ export default function CartPage() {
                 key={item.id}
                 className="flex items-center gap-4 rounded-2xl border border-slate-200 bg-white p-4 shadow-sm"
               >
-                <img
+                <Image
                   src={item.product_image || "https://images.unsplash.com/photo-1522771930-78848d9293e8?w=200"}
-                  alt={item.product_name}
+                  alt={item.product_name || "Cart item"}
+                  width={80}
+                  height={80}
                   className="h-20 w-20 rounded-xl object-cover"
                 />
                 <div className="flex-1 min-w-0">

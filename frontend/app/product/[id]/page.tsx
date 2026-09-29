@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 import { useParams } from "next/navigation";
 import Link from "next/link";
+import Image from "next/image";
 import { Sparkles, ShoppingBag, ArrowLeft, Star, Package, Check, ShieldCheck } from "lucide-react";
 import SafetyBadge from "@/components/SafetyBadge";
 import BargainChatModal from "@/components/BargainChatModal";
@@ -89,11 +90,14 @@ export default function ProductDetailPage() {
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-8 items-start">
         {/* Product Image */}
-        <div className="overflow-hidden rounded-3xl border border-slate-200 bg-white p-2 shadow-sm">
-          <img
+        <div className="relative overflow-hidden rounded-3xl border border-slate-200 bg-white p-2 shadow-sm aspect-square">
+          <Image
             src={product.image_url || "https://images.unsplash.com/photo-1522771930-78848d9293e8?w=800"}
-            alt={product.name}
-            className="w-full aspect-square object-cover rounded-2xl"
+            alt={product.name || "SkyB kids product detail"}
+            fill
+            sizes="(max-width: 768px) 100vw, 50vw"
+            className="object-cover rounded-2xl p-2"
+            priority
           />
         </div>
 

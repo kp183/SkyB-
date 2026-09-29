@@ -47,8 +47,16 @@ export default function Footer() {
           </div>
         </div>
 
-        <div className="mt-8 border-t border-slate-200 pt-6 text-center text-xs text-slate-400">
-          © 2026 SkyB Project. Built for Academic Demonstration.
+        <div className="mt-8 border-t border-slate-200 pt-6 flex flex-col sm:flex-row items-center justify-between gap-4 text-xs text-slate-400">
+          <p>© 2026 SkyB Project. Built for Academic Demonstration.</p>
+          <div className="flex items-center gap-6 text-slate-500">
+            <Link href="/privacy" className="hover:text-sky-600 transition-colors">
+              Privacy Policy
+            </Link>
+            <Link href="/terms" className="hover:text-sky-600 transition-colors">
+              Terms & Conditions
+            </Link>
+          </div>
         </div>
       </div>
     </footer>

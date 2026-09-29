@@ -2,6 +2,7 @@
 
 import { useEffect, useState, useRef } from "react";
 import { X, Sparkles, Send, CheckCircle2, AlertCircle } from "lucide-react";
+import Image from "next/image";
 import { api } from "@/lib/api";
 
 interface Message {
@@ -138,9 +139,11 @@ export default function BargainChatModal({ product, onClose, onAccepted }: Barga
 
         {/* Product mini-preview */}
         <div className="flex items-center gap-3 px-4 py-2 border-b border-slate-100 bg-slate-50">
-          <img
+          <Image
             src={product.image_url || "https://images.unsplash.com/photo-1522771930-78848d9293e8?w=200"}
-            alt={product.name}
+            alt={product.name || "Product bargain preview"}
+            width={40}
+            height={40}
             className="h-10 w-10 rounded-lg object-cover"
           />
           <div className="flex-1 min-w-0">

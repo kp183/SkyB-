@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { useState } from "react";
 import { Sparkles, ShoppingBag, ArrowRight } from "lucide-react";
+import Image from "next/image";
 import SafetyBadge from "./SafetyBadge";
 import BargainChatModal from "./BargainChatModal";
 import { api } from "@/lib/api";
@@ -55,9 +56,11 @@ export default function ProductCard({ product, onCartUpdated }: ProductCardProps
       <div className="group relative flex flex-col overflow-hidden rounded-2xl border border-slate-200/80 bg-white shadow-sm hover:shadow-md hover:border-sky-300 transition-all">
         {/* Product Image & Badges */}
         <Link href={`/product/${product.id}`} className="relative aspect-square w-full overflow-hidden bg-slate-100">
-          <img
+          <Image
             src={product.image_url || "https://images.unsplash.com/photo-1522771930-78848d9293e8?w=500&auto=format&fit=crop&q=60"}
-            alt={product.name}
+            alt={product.name || "SkyB kids product"}
+            fill
+            sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 25vw"
             className="h-full w-full object-cover object-center group-hover:scale-105 transition-transform duration-300"
           />
           <div className="absolute top-2.5 left-2.5 flex flex-col gap-1">

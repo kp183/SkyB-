@@ -11,13 +11,31 @@ export default function RegisterPage() {
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [fieldErrors, setFieldErrors] = useState<{ [key: string]: string }>({});
+
+  const validate = () => {
+    const errs: { [key: string]: string } = {};
+    if (!name.trim() || name.trim().length < 2) {
+      errs.name = "Please enter your full name (at least 2 characters).";
+    }
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!email.trim() || !emailRegex.test(email.trim())) {
+      errs.email = "Please enter a valid email address.";
+    }
+    if (!password || password.length < 6) {
+      errs.password = "Password must be at least 6 characters long.";
+    }
+    setFieldErrors(errs);
+    return Object.keys(errs).length === 0;
+  };
 
   const handleRegister = async (e: React.FormEvent) => {
     e.preventDefault();
+    if (!validate()) return;
     setLoading(true);
     setError(null);
     try {
-      await api.register(name, email, password);
+      await api.register(name.trim(), email.trim(), password);
       window.location.href = "/";
     } catch (err: any) {
       setError(err.message || "Registration failed");
@@ -50,13 +68,21 @@ export default function RegisterPage() {
               <input
                 type="text"
                 value={name}
-                onChange={(e) => setName(e.target.value)}
+                onChange={(e) => {
+                  setName(e.target.value);
+                  if (fieldErrors.name) setFieldErrors({ ...fieldErrors, name: "" });
+                }}
                 required
                 placeholder="e.g. Priya Sharma"
-                className="w-full rounded-2xl border border-slate-300 py-2.5 pl-10 pr-4 text-xs focus:border-sky-500 focus:outline-none"
+                className={`w-full rounded-2xl border py-2.5 pl-10 pr-4 text-xs focus:outline-none ${
+                  fieldErrors.name ? "border-rose-400 focus:border-rose-500 bg-rose-50/20" : "border-slate-300 focus:border-sky-500"
+                }`}
               />
               <User className="absolute left-3.5 top-3 h-4 w-4 text-slate-400" />
             </div>
+            {fieldErrors.name && (
+              <p className="mt-1 text-[11px] font-semibold text-rose-600">{fieldErrors.name}</p>
+            )}
           </div>
 
           <div>
@@ -65,13 +91,21 @@ export default function RegisterPage() {
               <input
                 type="email"
                 value={email}
-                onChange={(e) => setEmail(e.target.value)}
+                onChange={(e) => {
+                  setEmail(e.target.value);
+                  if (fieldErrors.email) setFieldErrors({ ...fieldErrors, email: "" });
+                }}
                 required
                 placeholder="you@example.com"
-                className="w-full rounded-2xl border border-slate-300 py-2.5 pl-10 pr-4 text-xs focus:border-sky-500 focus:outline-none"
+                className={`w-full rounded-2xl border py-2.5 pl-10 pr-4 text-xs focus:outline-none ${
+                  fieldErrors.email ? "border-rose-400 focus:border-rose-500 bg-rose-50/20" : "border-slate-300 focus:border-sky-500"
+                }`}
               />
               <Mail className="absolute left-3.5 top-3 h-4 w-4 text-slate-400" />
             </div>
+            {fieldErrors.email && (
+              <p className="mt-1 text-[11px] font-semibold text-rose-600">{fieldErrors.email}</p>
+            )}
           </div>
 
           <div>
@@ -80,13 +114,21 @@ export default function RegisterPage() {
               <input
                 type="password"
                 value={password}
-                onChange={(e) => setPassword(e.target.value)}
+                onChange={(e) => {
+                  setPassword(e.target.value);
+                  if (fieldErrors.password) setFieldErrors({ ...fieldErrors, password: "" });
+                }}
                 required
                 placeholder="••••••••"
-                className="w-full rounded-2xl border border-slate-300 py-2.5 pl-10 pr-4 text-xs focus:border-sky-500 focus:outline-none"
+                className={`w-full rounded-2xl border py-2.5 pl-10 pr-4 text-xs focus:outline-none ${
+                  fieldErrors.password ? "border-rose-400 focus:border-rose-500 bg-rose-50/20" : "border-slate-300 focus:border-sky-500"
+                }`}
               />
               <Lock className="absolute left-3.5 top-3 h-4 w-4 text-slate-400" />
             </div>
+            {fieldErrors.password && (
+              <p className="mt-1 text-[11px] font-semibold text-rose-600">{fieldErrors.password}</p>
+            )}
           </div>
 
           <button

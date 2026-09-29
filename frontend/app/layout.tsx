@@ -4,8 +4,37 @@ import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 
 export const metadata: Metadata = {
-  title: "SkyB — AI-Powered Kids' E-Commerce",
-  description: "E-commerce platform for kids' and baby products with AI Bargain Assistant, Safety-First Badges, and smart sizing.",
+  metadataBase: new URL(process.env.NEXT_PUBLIC_SITE_URL || "https://skyb-ecommerce.vercel.app"),
+  title: {
+    default: "SkyB — AI-Powered Kids' E-Commerce",
+    template: "%s | SkyB",
+  },
+  description: "AI-assisted shopping for kids and babies. Safe materials, smart developmental sizing, and real-time interactive bargaining.",
+  openGraph: {
+    title: "SkyB — Smart Kids Store",
+    description: "AI-assisted shopping for kids and babies with Safety-First Badges and real-time bargaining.",
+    url: "https://skyb-ecommerce.vercel.app",
+    siteName: "SkyB",
+    images: [
+      {
+        url: "/og-image.jpg",
+        width: 1200,
+        height: 630,
+        alt: "SkyB Smart Kids Store Banner",
+      },
+    ],
+    locale: "en_US",
+    type: "website",
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "SkyB — Smart Kids Store",
+    description: "AI-assisted shopping for kids and babies with Safety-First Badges and real-time bargaining.",
+    images: ["/og-image.jpg"],
+  },
+  icons: {
+    icon: "/favicon.ico",
+  },
 };
 
 export default function RootLayout({
