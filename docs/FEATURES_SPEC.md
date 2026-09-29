@@ -9,16 +9,22 @@ Each feature below: what it does, the algorithm, inputs/outputs, and where it li
 **What counts as a round:** every call to `POST /bargain/offer` is one round,
 including the very first offer. A round ends when the system responds with a
 counter (or acceptance). The session ends immediately if the customer accepts,
-or after round 3 with the system holding firm at min_price.
+or after round 3 with the system accepting the customer's offer (if >= min_price)
+or holding firm at min_price (if < min_price).
 **Algorithm:**
 1. Fetch product.min_price and product.max_price.
 2. Each offer is stored as a new row in `bargain_offers` with an incrementing
    round_number, linked to the parent `bargain_sessions` row. The LLM-phrased
    response for that round is stored in the same row's `message` column.
-3. If offer_price >= min_price: accept, or counter slightly above offer (never below min_price).
-4. If offer_price < min_price: counter at min_price, explain politely (via LLM phrasing).
-5. On round_number 3: hold firm at min_price regardless of offer, and mark the
-   session as needing a final accept/reject decision from the customer.
+3. If offer_price >= min_price:
+   - Round 1: Counter slightly above offer (concede ~15% of gap from listed price).
+   - Round 2: Step down closer to offer (concede ~40% of remaining gap from last counter).
+   - Round 3: Accept customer's offer (is_accepted = True, counter_price = offer_price).
+4. If offer_price < min_price:
+   - Round 1: Concede 30% from listed price toward min_price floor.
+   - Round 2: Concede 65% from listed price toward min_price floor.
+   - Round 3: Hold firm at min_price floor (counter_price = min_price).
+5. On round_number 3: mark the session as needing a final accept/reject decision from the customer.
 **Cart handoff:** Bargaining can start on a product NOT yet in the cart. On
 `POST /bargain/accept`: if the product has no existing cart_items row for this
 user, insert one with agreed_price = final_price and is_bargained = true; if it
