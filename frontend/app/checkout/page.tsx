@@ -2,12 +2,13 @@
 
 import { useEffect, useState } from "react";
 import Link from "next/link";
-import { CheckCircle2, XCircle, CreditCard, ShieldCheck, Tag, Sparkles, ArrowLeft } from "lucide-react";
 import { api } from "@/lib/api";
 
 export default function CheckoutPage() {
   const [cart, setCart] = useState<any>(null);
-  const [address, setAddress] = useState("Flat 402, Green Valley Apartments, Andheri West, Mumbai, MH - 400053");
+  const [address, setAddress] = useState(
+    "Flat 402, Green Valley Apartments, Andheri West, Mumbai, MH - 400053"
+  );
   const [addressError, setAddressError] = useState<string | null>(null);
   const [loading, setLoading] = useState(true);
   const [isProcessing, setIsProcessing] = useState(false);
@@ -35,7 +36,9 @@ export default function CheckoutPage() {
   const handleCreateOrder = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!address.trim() || address.trim().length < 10) {
-      setAddressError("Please enter a complete delivery address (building, street, city, pincode — min 10 characters).");
+      setAddressError(
+        "Please enter a complete delivery address (building, street, city, pincode, minimum 10 characters)."
+      );
       return;
     }
     setAddressError(null);
@@ -66,56 +69,77 @@ export default function CheckoutPage() {
   };
 
   if (loading) {
-    return <div className="mx-auto max-w-3xl px-4 py-12 text-center text-slate-400">Preparing checkout...</div>;
+    return (
+      <div className="mx-auto max-w-3xl px-4 py-16 text-center font-body-md text-body-md text-on-surface-variant animate-pulse">
+        Preparing your playground checkout...
+      </div>
+    );
   }
 
   // Final confirmation screen on payment result
   if (paymentResult) {
     return (
-      <div className="mx-auto max-w-md px-4 py-16 text-center space-y-4">
+      <div className="mx-auto max-w-md px-4 py-12 text-center space-y-4">
         {paymentResult.payment_successful ? (
-          <div className="rounded-3xl border border-emerald-200 bg-white p-8 shadow-xl space-y-4">
-            <div className="mx-auto flex h-16 w-16 items-center justify-center rounded-2xl bg-emerald-100 text-emerald-600">
-              <CheckCircle2 className="h-8 w-8" />
+          <div className="rounded-2xl bg-surface-container-lowest p-8 shadow-[0_8px_0_#7bd0ff] space-y-4 border-2 border-primary-container">
+            <div className="mx-auto flex h-16 w-16 items-center justify-center rounded-full bg-primary-fixed text-primary shadow-[0_2px_0_#7bd0ff]">
+              <span className="material-symbols-outlined text-[36px]">check_circle</span>
             </div>
-            <h2 className="text-xl font-black text-slate-900">Order Placed Successfully!</h2>
-            <p className="text-xs text-slate-500 leading-relaxed">
-              Order #{createdOrder.id} has been placed. Status: <span className="font-bold text-emerald-600">{paymentResult.status}</span>.
+            <h2 className="font-headline-xl text-headline-xl text-on-surface">
+              Order Placed Successfully!
+            </h2>
+            <p className="font-body-sm text-body-sm text-on-surface-variant leading-relaxed">
+              Order #{createdOrder.id} is locked with status:{" "}
+              <strong className="text-primary">{paymentResult.status}</strong>.
             </p>
-            <div className="rounded-2xl bg-slate-50 p-4 text-left text-xs space-y-1 text-slate-600 border border-slate-100">
-              <p><span className="font-bold">Total Paid:</span> ₹{createdOrder.total_amount.toFixed(2)}</p>
+            <div className="rounded-xl bg-surface-container-low p-4 text-left font-body-sm text-body-sm space-y-1.5 text-on-surface border border-surface-container-high">
+              <p>
+                <span className="font-bold">Total Paid:</span> ₹
+                {createdOrder.total_amount.toFixed(2)}
+              </p>
               {createdOrder.discount_applied > 0 && (
-                <p className="text-emerald-600 font-semibold">
-                  Smart Savings Saved: ₹{createdOrder.discount_applied.toFixed(2)} ({createdOrder.applied_coupon_code})
+                <p className="text-primary font-bold">
+                  Coupon Applied: ₹{createdOrder.discount_applied.toFixed(2)} savings (
+                  {createdOrder.applied_coupon_code})
                 </p>
               )}
-              <p><span className="font-bold">Shipping to:</span> {createdOrder.delivery_address}</p>
+              <p>
+                <span className="font-bold">Delivery Address:</span>{" "}
+                {createdOrder.delivery_address}
+              </p>
             </div>
             <Link
               href="/orders"
-              className="block w-full rounded-2xl bg-sky-500 py-3 text-xs font-bold text-white shadow-md shadow-sky-200 hover:bg-sky-600"
+              className="inline-flex w-full items-center justify-center gap-2 rounded-full bg-secondary-container text-on-secondary py-3.5 font-headline-md text-headline-md shadow-[0_4px_0_#730425] hover:brightness-105 transition-all"
             >
-              View My Orders
+              <span>View Order History</span>
+              <span className="material-symbols-outlined text-[18px]">history</span>
             </Link>
           </div>
         ) : (
-          <div className="rounded-3xl border border-rose-200 bg-white p-8 shadow-xl space-y-4">
-            <div className="mx-auto flex h-16 w-16 items-center justify-center rounded-2xl bg-rose-100 text-rose-600">
-              <XCircle className="h-8 w-8" />
+          <div className="rounded-2xl bg-surface-container-lowest p-8 shadow-[0_8px_0_#fe7488] space-y-4 border-2 border-secondary-container">
+            <div className="mx-auto flex h-16 w-16 items-center justify-center rounded-full bg-secondary-fixed text-secondary shadow-[0_2px_0_#fe7488]">
+              <span className="material-symbols-outlined text-[36px]">cancel</span>
             </div>
-            <h2 className="text-xl font-black text-slate-900">Payment Simulation Failed</h2>
-            <p className="text-xs text-slate-500 leading-relaxed">{paymentResult.message}</p>
-            <p className="text-[11px] text-slate-400">Order status is now 'payment_failed'. Your cart items have been preserved.</p>
-            <div className="flex gap-2">
+            <h2 className="font-headline-xl text-headline-xl text-on-surface">
+              Payment Simulation Failed
+            </h2>
+            <p className="font-body-sm text-body-sm text-on-surface-variant leading-relaxed">
+              {paymentResult.message}
+            </p>
+            <p className="font-label-sm text-[11px] text-on-surface-variant">
+              Status recorded as 'payment_failed'. Your cart items remain intact for another attempt.
+            </p>
+            <div className="flex gap-3 pt-2">
               <button
                 onClick={() => setPaymentResult(null)}
-                className="flex-1 rounded-2xl bg-slate-900 py-2.5 text-xs font-bold text-white hover:bg-slate-800"
+                className="flex-1 rounded-full bg-primary text-on-primary py-3 font-headline-md text-headline-md shadow-[0_3px_0_#004965] hover:bg-on-primary-container cursor-pointer"
               >
-                Retry Payment
+                Retry Simulation
               </button>
               <Link
                 href="/cart"
-                className="flex-1 rounded-2xl bg-slate-100 py-2.5 text-xs font-bold text-slate-700 hover:bg-slate-200"
+                className="flex-1 rounded-full bg-surface-container text-on-surface py-3 font-headline-md text-headline-md shadow-[0_2px_0_#bdc8d1] hover:bg-surface-container-high text-center"
               >
                 Return to Cart
               </Link>
@@ -127,16 +151,26 @@ export default function CheckoutPage() {
   }
 
   return (
-    <div className="mx-auto max-w-4xl px-4 py-8 sm:px-6 lg:px-8 space-y-6">
-      <Link href="/cart" className="inline-flex items-center gap-1.5 text-xs font-semibold text-slate-500 hover:text-sky-600">
-        <ArrowLeft className="h-3.5 w-3.5" /> Back to Cart
+    <div className="mx-auto max-w-4xl px-4 py-6 sm:px-6 lg:px-8 space-y-6">
+      <Link
+        href="/cart"
+        className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-surface-container-low text-on-surface hover:bg-surface-container font-label-md text-label-md shadow-[0_2px_0_#bdc8d1] transition-all"
+      >
+        <span className="material-symbols-outlined text-[18px]">arrow_back</span>
+        <span>Back to Cart</span>
       </Link>
 
-      <h1 className="text-2xl font-black text-slate-900">Checkout & Mock Payment</h1>
+      <h1 className="font-headline-xl text-headline-xl text-on-surface flex items-center gap-2">
+        <span className="material-symbols-outlined text-primary text-[32px]">
+          shopping_cart_checkout
+        </span>
+        <span>Checkout &amp; Payment Sandbox</span>
+      </h1>
 
       {error && (
-        <div className="rounded-2xl border border-rose-200 bg-rose-50 p-4 text-xs font-semibold text-rose-700">
-          {error}
+        <div className="rounded-xl bg-error-container p-3.5 text-on-error-container font-body-sm text-body-sm shadow-[0_2px_0_#ffdad6] flex items-center gap-2">
+          <span className="material-symbols-outlined text-[18px]">error</span>
+          <span>{error}</span>
         </div>
       )}
 
@@ -144,8 +178,18 @@ export default function CheckoutPage() {
         {/* Delivery Form */}
         <div className="lg:col-span-2 space-y-6">
           {!createdOrder ? (
-            <form onSubmit={handleCreateOrder} className="rounded-3xl border border-slate-200 bg-white p-6 shadow-sm space-y-4">
-              <h2 className="text-sm font-bold text-slate-800">1. Delivery Address</h2>
+            <form
+              onSubmit={handleCreateOrder}
+              className="rounded-2xl bg-surface-container-lowest p-4 sm:p-6 shadow-[0_8px_0_#bdc8d1] space-y-4"
+            >
+              <div className="flex items-center gap-2">
+                <div className="w-8 h-8 rounded-full bg-primary-container flex items-center justify-center text-on-primary">
+                  <span className="material-symbols-outlined text-[18px]">location_on</span>
+                </div>
+                <h2 className="font-headline-lg text-lg sm:text-headline-lg text-on-surface">
+                  1. Delivery Address
+                </h2>
+              </div>
               <div>
                 <textarea
                   rows={3}
@@ -156,117 +200,148 @@ export default function CheckoutPage() {
                   }}
                   placeholder="Enter full shipping address (flat/house, street, locality, city, pincode)..."
                   required
-                  className={`w-full rounded-2xl border p-3 text-xs focus:outline-none ${
-                    addressError ? "border-rose-400 focus:border-rose-500 bg-rose-50/20" : "border-slate-300 focus:border-sky-500"
+                  className={`w-full rounded-xl border p-3 font-body-md text-body-md text-on-surface focus:outline-none ${
+                    addressError
+                      ? "border-secondary bg-secondary-fixed/20"
+                      : "border-surface-container-high focus:border-primary shadow-[0_2px_0_#bdc8d1]"
                   }`}
                 />
                 {addressError && (
-                  <p className="mt-1 text-[11px] font-semibold text-rose-600">{addressError}</p>
+                  <p className="mt-1 font-label-sm text-[11px] text-secondary font-bold">
+                    {addressError}
+                  </p>
                 )}
               </div>
 
               <button
                 type="submit"
                 disabled={isProcessing}
-                className="w-full rounded-2xl bg-sky-500 hover:bg-sky-600 text-white py-3 text-xs font-bold shadow-md shadow-sky-200 transition-colors"
+                className="w-full rounded-full bg-primary text-on-primary py-3.5 font-headline-md text-sm sm:text-headline-md shadow-[0_4px_0_#004965] hover:bg-on-primary-container active:translate-y-[2px] active:shadow-[0_1px_0_#004965] transition-all cursor-pointer flex items-center justify-center gap-2"
               >
-                {isProcessing ? "Reviewing Deals..." : "Proceed to Payment Gateway"}
+                <span>{isProcessing ? "Processing..." : "Proceed to Payment Simulation"}</span>
+                <span className="material-symbols-outlined text-[18px]">arrow_forward</span>
               </button>
             </form>
           ) : (
             /* Mock Payment Gateway Component */
-            <div className="rounded-3xl border-2 border-sky-300 bg-white p-6 shadow-md space-y-5">
-              <div className="flex items-center justify-between border-b border-slate-100 pb-3">
+            <div className="rounded-2xl bg-surface-container-lowest p-4 sm:p-6 shadow-[0_8px_0_#c4e7ff] space-y-5 border-2 border-primary-container">
+              <div className="flex items-center justify-between border-b border-surface-container-high pb-3">
                 <div className="flex items-center gap-2">
-                  <CreditCard className="h-5 w-5 text-sky-500" />
-                  <h2 className="text-sm font-bold text-slate-800">2. SkyB Mock Payment Gateway</h2>
+                  <div className="w-8 h-8 rounded-full bg-primary-container flex items-center justify-center text-on-primary">
+                    <span className="material-symbols-outlined text-[18px]">credit_card</span>
+                  </div>
+                  <h2 className="font-headline-lg text-headline-lg text-on-surface">
+                    2. Mock Payment Simulator
+                  </h2>
                 </div>
-                <span className="text-[10px] font-bold rounded-md bg-amber-100 text-amber-800 px-2 py-0.5">
-                  Academic Demo Mode
+                <span className="font-label-sm text-[11px] font-bold rounded-full bg-primary-fixed text-on-primary-fixed px-3 py-1 shadow-[0_1px_0_#7bd0ff]">
+                  Academic Sandbox
                 </span>
               </div>
 
-              <p className="text-xs text-slate-500">
-                Order #{createdOrder.id} is initialized with status <span className="font-semibold text-amber-600">{createdOrder.status}</span>.
+              <p className="font-body-md text-body-md text-on-surface-variant">
+                Order #{createdOrder.id} is initialized with status:{" "}
+                <strong className="text-secondary font-bold">{createdOrder.status}</strong>.
               </p>
 
               {/* Simulation Toggle */}
-              <div className="rounded-2xl border border-amber-200 bg-amber-50/70 p-3.5 space-y-2">
-                <label className="flex items-center gap-2 text-xs font-bold text-slate-800 cursor-pointer">
+              <div className="rounded-xl border border-surface-container-high bg-surface-container-low p-4 space-y-2">
+                <label className="flex items-center gap-2.5 font-headline-md text-headline-md text-on-surface cursor-pointer">
                   <input
                     type="checkbox"
                     checked={simulateFailure}
                     onChange={(e) => setSimulateFailure(e.target.checked)}
-                    className="h-4 w-4 rounded border-amber-300 text-amber-600 focus:ring-amber-500"
+                    className="h-5 w-5 rounded-md text-secondary focus:ring-secondary accent-secondary cursor-pointer"
                   />
-                  <span>Simulate Payment Failure (Faculty Demo Control)</span>
+                  <span>Simulate Payment Failure (Evaluation Demo Control)</span>
                 </label>
-                <p className="text-[11px] text-slate-500 pl-6 leading-relaxed">
-                  Check this box to demonstrate the failure path: the order flips to <code className="font-mono bg-white px-1 rounded">payment_failed</code> and cart items are preserved.
+                <p className="font-body-sm text-body-sm text-on-surface-variant pl-7 leading-relaxed">
+                  Check this box to test the payment rejection branch: the order transitions to{" "}
+                  <code className="bg-surface-container-lowest px-1.5 py-0.5 rounded-full border border-surface-container-high font-bold">
+                    payment_failed
+                  </code>{" "}
+                  and your cart remains untouched.
                 </p>
               </div>
 
               <button
                 onClick={handleExecuteMockPay}
                 disabled={isProcessing}
-                className={`w-full rounded-2xl py-3 text-xs font-bold text-white shadow-md transition-colors ${
+                className={`w-full rounded-full py-3.5 font-headline-md text-headline-md text-white transition-all cursor-pointer flex items-center justify-center gap-2 ${
                   simulateFailure
-                    ? "bg-rose-500 hover:bg-rose-600 shadow-rose-200"
-                    : "bg-emerald-600 hover:bg-emerald-700 shadow-emerald-200"
+                    ? "bg-secondary shadow-[0_4px_0_#730425] hover:brightness-105"
+                    : "bg-secondary-container text-on-secondary shadow-[0_4px_0_#730425] hover:brightness-105"
                 }`}
               >
-                {isProcessing
-                  ? "Processing Simulation..."
-                  : simulateFailure
-                  ? "Simulate Payment Failure"
-                  : `Complete Mock Payment (₹${createdOrder.total_amount.toFixed(2)})`}
+                <span className="material-symbols-outlined text-[20px]">
+                  {simulateFailure ? "error" : "check_circle"}
+                </span>
+                <span>
+                  {isProcessing
+                    ? "Simulating Transaction..."
+                    : simulateFailure
+                    ? "Simulate Payment Failure"
+                    : `Confirm Mock Payment (₹${createdOrder.total_amount.toFixed(2)})`}
+                </span>
               </button>
             </div>
           )}
         </div>
 
         {/* Order Summary Sidebar */}
-        <div className="rounded-3xl border border-slate-200 bg-white p-6 shadow-sm h-fit space-y-4">
-          <h3 className="text-sm font-bold text-slate-800">Checkout Breakdown</h3>
+        <div className="rounded-2xl bg-surface-container-lowest p-6 shadow-[0_8px_0_#ffdadc] h-fit space-y-4">
+          <h3 className="font-headline-lg text-headline-lg text-on-surface">
+            Payment Breakdown
+          </h3>
 
           {createdOrder ? (
-            <div className="space-y-2 text-xs">
-              <div className="flex justify-between text-slate-600">
+            <div className="space-y-2.5 font-body-sm text-body-sm">
+              <div className="flex justify-between text-on-surface-variant">
                 <span>Items Subtotal:</span>
-                <span>₹{(createdOrder.total_amount + createdOrder.discount_applied).toFixed(2)}</span>
+                <span className="font-bold text-on-surface">
+                  ₹{(createdOrder.total_amount + createdOrder.discount_applied).toFixed(2)}
+                </span>
               </div>
               {createdOrder.discount_applied > 0 && (
-                <div className="flex justify-between text-emerald-600 font-bold">
-                  <span className="flex items-center gap-1"><Tag className="h-3.5 w-3.5" /> Coupon Discount:</span>
+                <div className="flex justify-between text-primary font-bold">
+                  <span className="flex items-center gap-1">
+                    <span className="material-symbols-outlined text-[16px]">sell</span>
+                    Coupon Discount:
+                  </span>
                   <span>-₹{createdOrder.discount_applied.toFixed(2)}</span>
                 </div>
               )}
-              <div className="border-t border-slate-100 pt-2 flex justify-between text-sm font-black text-slate-900">
+              <div className="border-t border-surface-container-high pt-2 flex justify-between font-headline-xl text-headline-xl font-bold text-on-surface">
                 <span>Final Payable:</span>
-                <span>₹{createdOrder.total_amount.toFixed(2)}</span>
+                <span className="text-primary">₹{createdOrder.total_amount.toFixed(2)}</span>
               </div>
             </div>
           ) : (
-            <div className="space-y-2 text-xs">
-              <div className="flex justify-between text-slate-600">
+            <div className="space-y-2.5 font-body-sm text-body-sm">
+              <div className="flex justify-between text-on-surface-variant">
                 <span>Cart Subtotal:</span>
-                <span>₹{cart?.total_amount?.toFixed(2)}</span>
+                <span className="font-bold text-on-surface">
+                  ₹{cart?.total_amount?.toFixed(2)}
+                </span>
               </div>
-              <div className="flex justify-between text-slate-400">
-                <span>Smart Savings:</span>
-                <span>Calculated on next step</span>
+              <div className="flex justify-between text-on-surface-variant">
+                <span>Coupon Savings:</span>
+                <span className="italic">Calculated on confirmation</span>
               </div>
-              <div className="border-t border-slate-100 pt-2 flex justify-between text-sm font-black text-slate-900">
+              <div className="border-t border-surface-container-high pt-2 flex justify-between font-headline-xl text-headline-xl font-bold text-on-surface">
                 <span>Estimated Total:</span>
-                <span>₹{cart?.total_amount?.toFixed(2)}</span>
+                <span className="text-primary">₹{cart?.total_amount?.toFixed(2)}</span>
               </div>
             </div>
           )}
 
-          <div className="rounded-2xl bg-sky-50 border border-sky-100 p-3 text-[11px] text-sky-800 space-y-1">
-            <p className="font-bold flex items-center gap-1"><ShieldCheck className="h-3.5 w-3.5 text-sky-600" /> Academic Sandbox</p>
-            <p className="text-[10px] text-sky-600 leading-relaxed">
-              No real credit card is required. Payment is processed through the SkyB mock simulator.
+          <div className="rounded-xl bg-surface-container-low border border-surface-container-high p-4 text-[12px] text-on-surface-variant space-y-1">
+            <p className="font-bold flex items-center gap-1.5 text-on-surface">
+              <span className="material-symbols-outlined text-primary text-[18px]">verified</span>
+              Academic Evaluation Sandbox
+            </p>
+            <p className="text-[11px] leading-relaxed">
+              No real credit card or bank credentials are required. Payments are handled via a simulated sandbox.
             </p>
           </div>
         </div>

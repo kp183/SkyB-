@@ -3,7 +3,6 @@
 import { useEffect, useState } from "react";
 import Link from "next/link";
 import Image from "next/image";
-import { Trash2, ShoppingBag, Sparkles, ArrowRight, ShieldCheck } from "lucide-react";
 import { api } from "@/lib/api";
 
 export default function CartPage() {
@@ -48,129 +47,173 @@ export default function CartPage() {
   };
 
   if (loading) {
-    return <div className="mx-auto max-w-4xl px-4 py-12 text-center text-slate-400">Loading your cart...</div>;
+    return (
+      <div className="mx-auto max-w-4xl px-4 py-16 text-center font-body-md text-body-md text-on-surface-variant animate-pulse">
+        Gathering your treasure loot cart...
+      </div>
+    );
   }
 
   const items = cart?.items || [];
 
   return (
-    <div className="mx-auto max-w-4xl px-4 py-8 sm:px-6 lg:px-8 space-y-6">
+    <div className="mx-auto max-w-5xl px-3 sm:px-6 lg:px-8 space-y-6">
       <div className="flex items-center justify-between">
-        <h1 className="text-2xl font-black text-slate-900 flex items-center gap-2">
-          <ShoppingBag className="h-6 w-6 text-sky-500" /> Shopping Cart
+        <h1 className="font-headline-xl text-xl sm:text-headline-xl text-on-surface flex items-center gap-2">
+          <span className="material-symbols-outlined text-[28px] sm:text-[32px] text-primary">
+            shopping_bag
+          </span>
+          <span>Shopping Cart ({items.length})</span>
         </h1>
-        <Link href="/" className="text-xs font-semibold text-sky-600 hover:underline">
-          Continue Shopping →
+        <Link
+          href="/"
+          className="font-label-md text-xs sm:text-label-md text-primary font-bold hover:underline flex items-center gap-1"
+        >
+          <span>Continue Shopping</span>
+          <span className="material-symbols-outlined text-[16px]">arrow_forward</span>
         </Link>
       </div>
 
       {items.length === 0 ? (
-        <div className="rounded-3xl border border-slate-200 bg-white p-12 text-center space-y-3 shadow-sm">
-          <ShoppingBag className="mx-auto h-12 w-12 text-slate-300" />
-          <p className="text-sm font-bold text-slate-700">Your cart is currently empty</p>
-          <p className="text-xs text-slate-400">Browse our safe kids' products and try bargaining with AI!</p>
+        <div className="rounded-2xl bg-surface-container-lowest p-8 sm:p-12 text-center space-y-4 shadow-[0_8px_0_#bdc8d1]">
+          <div className="w-16 h-16 rounded-full bg-surface-container-low flex items-center justify-center mx-auto text-primary">
+            <span className="material-symbols-outlined text-[36px]">production_quantity_limits</span>
+          </div>
+          <p className="font-headline-lg text-headline-lg text-on-surface">Your loot chest is empty!</p>
+          <p className="font-body-md text-body-md text-on-surface-variant max-w-md mx-auto">
+            Explore safe wooden toys, cozy swaddles, or haggle for secret discounts at the SkyBot Bargain Arcade.
+          </p>
           <Link
             href="/"
-            className="mt-2 inline-block rounded-2xl bg-sky-500 px-5 py-2.5 text-xs font-bold text-white shadow-sm shadow-sky-200 hover:bg-sky-600"
+            className="mt-2 inline-flex items-center gap-2 rounded-full bg-primary text-on-primary px-6 py-3 font-headline-md text-headline-md shadow-[0_4px_0_#004965] hover:bg-on-primary-container transition-all"
           >
-            Explore Catalog
+            <span>Explore Playground Catalog</span>
+            <span className="material-symbols-outlined text-[18px]">rocket_launch</span>
           </Link>
         </div>
       ) : (
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 sm:gap-8">
           {/* Cart Item List */}
           <div className="lg:col-span-2 space-y-4">
-            {items.map((item: any) => (
-              <div
-                key={item.id}
-                className="flex items-center gap-4 rounded-2xl border border-slate-200 bg-white p-4 shadow-sm"
-              >
-                <Image
-                  src={item.product_image || "https://images.unsplash.com/photo-1522771930-78848d9293e8?w=200"}
-                  alt={item.product_name || "Cart item"}
-                  width={80}
-                  height={80}
-                  className="h-20 w-20 rounded-xl object-cover"
-                />
-                <div className="flex-1 min-w-0">
-                  <h3 className="text-sm font-bold text-slate-800 truncate">{item.product_name}</h3>
-                  <div className="flex items-center gap-2 mt-1">
-                    <span className="text-sm font-black text-slate-900">₹{item.agreed_price.toFixed(2)}</span>
-                    {item.is_bargained && (
-                      <span className="inline-flex items-center gap-1 rounded-md bg-amber-50 px-2 py-0.5 text-[10px] font-bold text-amber-700 border border-amber-200">
-                        <Sparkles className="h-3 w-3 text-amber-500" /> AI Bargained Deal
+            {items.map((item: any, idx: number) => {
+              const shadowColor = idx % 2 === 0 ? "#c4e7ff" : "#ffdadc";
+              return (
+                <div
+                  key={item.id}
+                  className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 sm:gap-4 rounded-2xl bg-surface-container-lowest p-4 shadow-[0_6px_0_#bdc8d1] transition-all"
+                  style={{ boxShadow: `0 6px 0 ${shadowColor}` }}
+                >
+                  <div className="flex items-center gap-3 min-w-0">
+                    <div className="h-16 w-16 sm:h-20 sm:w-20 rounded-xl bg-surface-container-low p-2 flex items-center justify-center shrink-0">
+                      <Image
+                        src={item.product_image || "/stitch/rocket-shuttle.png"}
+                        alt={item.product_name || "Cart item"}
+                        width={70}
+                        height={70}
+                        className="h-full w-full object-contain"
+                      />
+                    </div>
+                    <div className="flex-1 min-w-0">
+                      <h3 className="font-headline-md text-base sm:text-headline-md text-on-surface truncate">
+                        {item.product_name}
+                      </h3>
+                      <div className="flex flex-wrap items-center gap-2 mt-1">
+                        <span className="font-headline-lg text-lg sm:text-headline-lg font-bold text-primary">
+                          ₹{item.agreed_price.toFixed(2)}
+                        </span>
+                        {item.is_bargained && (
+                          <span className="inline-flex items-center gap-1 rounded-full bg-tertiary-fixed text-on-tertiary-fixed px-2 py-0.5 font-label-sm text-[10px] sm:text-xs font-bold shadow-[0_1px_0_#f9bd22]">
+                            <span className="material-symbols-outlined text-[12px] sm:text-[14px]">smart_toy</span>
+                            <span>Bargained</span>
+                          </span>
+                        )}
+                      </div>
+                      {item.is_bargained && (
+                        <p className="font-label-sm text-[10px] sm:text-[11px] text-on-surface-variant mt-0.5">
+                          Original ₹{item.original_price.toFixed(2)} · Excluded from coupons to lock bottom floor price
+                        </p>
+                      )}
+                    </div>
+                  </div>
+
+                  {/* Quantity & Delete Controls - responsive wrap for 390px mobile */}
+                  <div className="flex items-center justify-between sm:justify-end gap-3 pt-2 sm:pt-0 border-t sm:border-t-0 border-surface-container-high/60">
+                    <div className="flex items-center rounded-full bg-surface-container px-2 py-1 shadow-[0_2px_0_#bdc8d1]">
+                      <button
+                        onClick={() => handleUpdateQuantity(item.id, item.quantity - 1)}
+                        className="w-7 h-7 rounded-full flex items-center justify-center text-on-surface font-bold hover:bg-surface-container-high transition-colors cursor-pointer text-sm"
+                      >
+                        -
+                      </button>
+                      <span className="px-3 font-headline-md text-sm sm:text-headline-md text-on-surface">
+                        {item.quantity}
                       </span>
-                    )}
-                  </div>
-                  {item.is_bargained && (
-                    <p className="text-[10px] text-slate-400 mt-0.5">
-                      (Original ₹{item.original_price.toFixed(2)} · Excluded from checkout coupons to protect minimum floor)
-                    </p>
-                  )}
-                </div>
+                      <button
+                        onClick={() => handleUpdateQuantity(item.id, item.quantity + 1)}
+                        className="w-7 h-7 rounded-full flex items-center justify-center text-on-surface font-bold hover:bg-surface-container-high transition-colors cursor-pointer text-sm"
+                      >
+                        +
+                      </button>
+                    </div>
 
-                {/* Quantity & Delete */}
-                <div className="flex items-center gap-3">
-                  <div className="flex items-center rounded-xl border border-slate-200 bg-slate-50">
-                    <button
-                      onClick={() => handleUpdateQuantity(item.id, item.quantity - 1)}
-                      className="px-2.5 py-1 text-xs font-bold text-slate-600 hover:bg-slate-200 rounded-l-xl"
-                    >
-                      -
-                    </button>
-                    <span className="px-2 text-xs font-semibold text-slate-800">{item.quantity}</span>
-                    <button
-                      onClick={() => handleUpdateQuantity(item.id, item.quantity + 1)}
-                      className="px-2.5 py-1 text-xs font-bold text-slate-600 hover:bg-slate-200 rounded-r-xl"
-                    >
-                      +
-                    </button>
+                    <div className="flex items-center gap-3">
+                      <span className="font-headline-md text-sm font-bold text-on-surface sm:hidden">
+                        ₹{(item.agreed_price * item.quantity).toFixed(2)}
+                      </span>
+                      <button
+                        onClick={() => handleRemove(item.id)}
+                        className="w-8 h-8 rounded-full bg-surface-container-low text-secondary hover:bg-secondary-container hover:text-on-secondary flex items-center justify-center transition-colors cursor-pointer shrink-0"
+                        title="Remove item"
+                      >
+                        <span className="material-symbols-outlined text-[18px]">delete</span>
+                      </button>
+                    </div>
                   </div>
-
-                  <button
-                    onClick={() => handleRemove(item.id)}
-                    className="p-1.5 text-slate-400 hover:text-rose-500 rounded-lg hover:bg-rose-50 transition-colors"
-                  >
-                    <Trash2 className="h-4 w-4" />
-                  </button>
                 </div>
-              </div>
-            ))}
+              );
+            })}
           </div>
 
           {/* Cart Summary */}
-          <div className="rounded-3xl border border-slate-200 bg-white p-6 shadow-sm h-fit space-y-4">
-            <h2 className="text-base font-bold text-slate-900">Order Summary</h2>
+          <div className="rounded-2xl bg-surface-container-lowest p-6 shadow-[0_8px_0_#c4e7ff] h-fit space-y-4">
+            <h2 className="font-headline-lg text-lg sm:text-headline-lg text-on-surface">
+              Order Summary
+            </h2>
 
-            <div className="space-y-2 text-xs border-b border-slate-100 pb-4">
-              <div className="flex justify-between text-slate-600">
+            <div className="space-y-2.5 font-body-sm text-xs sm:text-body-sm border-b border-surface-container-high pb-4">
+              <div className="flex justify-between text-on-surface-variant">
                 <span>Non-Bargained Subtotal:</span>
-                <span className="font-semibold text-slate-800">₹{cart.non_bargained_subtotal?.toFixed(2)}</span>
+                <span className="font-bold text-on-surface">
+                  ₹{cart.non_bargained_subtotal?.toFixed(2)}
+                </span>
               </div>
-              <div className="flex justify-between text-slate-600">
+              <div className="flex justify-between text-on-surface-variant">
                 <span>Bargained Subtotal:</span>
-                <span className="font-semibold text-slate-800">₹{cart.bargained_subtotal?.toFixed(2)}</span>
+                <span className="font-bold text-on-surface">
+                  ₹{cart.bargained_subtotal?.toFixed(2)}
+                </span>
               </div>
-              <div className="flex justify-between text-slate-600">
-                <span>Estimated Delivery:</span>
-                <span className="font-semibold text-emerald-600">FREE</span>
+              <div className="flex justify-between text-on-surface-variant">
+                <span>Express Delivery:</span>
+                <span className="font-bold text-primary">FREE</span>
               </div>
             </div>
 
-            <div className="flex justify-between text-base font-black text-slate-900">
-              <span>Total Amount:</span>
-              <span>₹{cart.total_amount?.toFixed(2)}</span>
+            <div className="flex justify-between font-headline-xl text-xl sm:text-headline-xl font-bold text-on-surface">
+              <span>Total:</span>
+              <span className="text-primary">₹{cart.total_amount?.toFixed(2)}</span>
             </div>
 
             <Link
               href="/checkout"
-              className="w-full flex items-center justify-center gap-2 rounded-2xl bg-sky-500 hover:bg-sky-600 text-white py-3 text-xs font-bold shadow-md shadow-sky-200 transition-colors"
+              className="w-full flex items-center justify-center gap-2 rounded-full bg-secondary-container text-on-secondary py-3.5 font-headline-md text-sm sm:text-headline-md shadow-[0_4px_0_#730425] hover:brightness-105 active:translate-y-[2px] active:shadow-[0_1px_0_#730425] transition-all"
             >
-              Proceed to Checkout <ArrowRight className="h-4 w-4" />
+              <span>Proceed to Checkout</span>
+              <span className="material-symbols-outlined text-[18px]">arrow_forward</span>
             </Link>
 
-            <p className="text-center text-[10px] text-slate-400">
-              Coupons from Smart Savings Agent are applied at checkout to non-bargained items.
+            <p className="text-center font-label-sm text-[11px] text-on-surface-variant leading-relaxed">
+              Available store coupons automatically apply at checkout to non-bargained items only.
             </p>
           </div>
         </div>

@@ -1,61 +1,134 @@
+"use client";
+
+import React from "react";
 import Link from "next/link";
-import { Sparkles, ShieldCheck, HeartHandshake, Zap } from "lucide-react";
+import Icon from "@/components/Icon";
 
 export default function Footer() {
-  return (
-    <footer className="border-t border-slate-200 bg-slate-50 text-slate-600">
-      <div className="mx-auto max-w-7xl px-4 py-12 sm:px-6 lg:px-8">
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
-          {/* Col 1: About */}
-          <div className="space-y-3">
-            <div className="flex items-center gap-2">
-              <div className="flex h-8 w-8 items-center justify-center rounded-xl bg-sky-500 text-white">
-                <Sparkles className="h-4 w-4" />
-              </div>
-              <span className="text-xl font-bold text-slate-800">SkyB</span>
-            </div>
-            <p className="text-xs leading-relaxed text-slate-500">
-              AI-assisted shopping for kids and babies. Safe materials, smart developmental sizing, and real-time bargaining.
-            </p>
-          </div>
+  const scrollToTop = () => {
+    if (typeof window !== "undefined") {
+      window.scrollTo({ top: 0, behavior: "smooth" });
+    }
+  };
 
-          {/* Col 2: Features */}
-          <div>
-            <h4 className="text-xs font-bold uppercase tracking-wider text-slate-900 mb-3">AI Features</h4>
-            <ul className="space-y-2 text-xs">
-              <li className="flex items-center gap-1.5"><ShieldCheck className="h-3.5 w-3.5 text-emerald-500" /> Safety-First Badges</li>
-              <li className="flex items-center gap-1.5"><Zap className="h-3.5 w-3.5 text-amber-500" /> Bargain Assistant</li>
-              <li className="flex items-center gap-1.5"><HeartHandshake className="h-3.5 w-3.5 text-sky-500" /> Smart Savings Agent</li>
+  return (
+    <footer className="w-full bg-surface-container-low mt-16 border-t border-surface-container pb-20 md:pb-0">
+      {/* Back to top row */}
+      <div className="w-full bg-surface-container py-3 text-center">
+        <button
+          type="button"
+          onClick={scrollToTop}
+          className="font-label-md text-label-md text-primary hover:underline inline-flex items-center justify-center gap-1 cursor-pointer"
+        >
+          <Icon name="arrow_upward" className="w-4 h-4" />
+          <span>Back to Top</span>
+        </button>
+      </div>
+
+      <div className="w-full max-w-7xl mx-auto px-4 lg:px-8 py-12">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+          {/* Shop */}
+          <div className="space-y-3">
+            <h3 className="font-headline-sm text-headline-sm font-bold text-primary">
+              Shop
+            </h3>
+            <ul className="space-y-2">
+              <li className="font-body-sm text-body-sm text-on-surface-variant hover:text-on-surface">
+                <Link href="/category/boys-fashion">Boys Fashion</Link>
+              </li>
+              <li className="font-body-sm text-body-sm text-on-surface-variant hover:text-on-surface">
+                <Link href="/category/girls-fashion">Girls Fashion</Link>
+              </li>
+              <li className="font-body-sm text-body-sm text-on-surface-variant hover:text-on-surface">
+                <Link href="/category/toys">Educational Toys &amp; Puzzles</Link>
+              </li>
+              <li className="font-body-sm text-body-sm text-on-surface-variant hover:text-on-surface">
+                <Link href="/category/diapering">Diapering &amp; Wipes</Link>
+              </li>
+              <li className="font-body-sm text-body-sm text-on-surface-variant hover:text-on-surface">
+                <Link href="/category/feeding">Feeding Bottles &amp; Nursing</Link>
+              </li>
+              <li className="font-body-sm text-body-sm text-on-surface-variant hover:text-on-surface">
+                <Link href="/deals">Top Daily Deals (₹)</Link>
+              </li>
             </ul>
           </div>
 
-          {/* Col 3: Academic Project */}
-          <div>
-            <h4 className="text-xs font-bold uppercase tracking-wider text-slate-900 mb-3">Field Project</h4>
-            <p className="text-xs text-slate-500">
-              T.Y. B.Sc. Computer Science Field Project.<br />
-              Academic demo version with mock payment gateway.
-            </p>
+          {/* Help & Support */}
+          <div className="space-y-3">
+            <h3 className="font-headline-sm text-headline-sm font-bold text-primary">
+              Help &amp; Support
+            </h3>
+            <ul className="space-y-2">
+              <li className="font-body-sm text-body-sm text-on-surface-variant hover:text-on-surface">
+                <Link href="/orders">Track Order</Link>
+              </li>
+              <li className="font-body-sm text-body-sm text-on-surface-variant hover:text-on-surface">
+                <Link href="/terms">Returns &amp; Exchanges</Link>
+              </li>
+              <li className="font-body-sm text-body-sm text-on-surface-variant hover:text-on-surface">
+                <Link href="/terms">Shipping Rates &amp; Delivery</Link>
+              </li>
+              <li className="font-body-sm text-body-sm text-on-surface-variant hover:text-on-surface">
+                <Link href="/terms">Help Center &amp; FAQs</Link>
+              </li>
+            </ul>
           </div>
 
-          {/* Col 4: Team */}
-          <div>
-            <h4 className="text-xs font-bold uppercase tracking-wider text-slate-900 mb-3">Team</h4>
-            <p className="text-xs text-slate-500 leading-relaxed">
-              Bhavika Mandora · Yadnesh Channa · Kunal Ghanchi · Goswami Sheetalgiri
-            </p>
+          {/* My Account */}
+          <div className="space-y-3">
+            <h3 className="font-headline-sm text-headline-sm font-bold text-primary">
+              My Account
+            </h3>
+            <ul className="space-y-2">
+              <li className="font-body-sm text-body-sm text-on-surface-variant hover:text-on-surface">
+                <Link href="/orders">My Orders &amp; Invoices</Link>
+              </li>
+              <li className="font-body-sm text-body-sm text-on-surface-variant hover:text-on-surface">
+                <Link href="/wishlist">Saved Wishlist</Link>
+              </li>
+              <li className="font-body-sm text-body-sm text-on-surface-variant hover:text-on-surface">
+                <Link href="/reorder">Quick Re-Order Pantry</Link>
+              </li>
+              <li className="font-body-sm text-body-sm text-on-surface-variant hover:text-on-surface">
+                <Link href="/account/child">Child Profile &amp; Size Reminder</Link>
+              </li>
+            </ul>
+          </div>
+
+          {/* About skyB */}
+          <div className="space-y-3">
+            <h3 className="font-headline-sm text-headline-sm font-bold text-primary">
+              About skyB
+            </h3>
+            <ul className="space-y-2">
+              <li className="font-body-sm text-body-sm text-on-surface-variant hover:text-on-surface">
+                <Link href="/privacy">Safety Standards &amp; Promise</Link>
+              </li>
+              <li className="font-body-sm text-body-sm text-on-surface-variant hover:text-on-surface">
+                <Link href="/terms">Academic Project Info</Link>
+              </li>
+              <li className="font-body-sm text-body-sm text-on-surface-variant hover:text-on-surface">
+                <Link href="/privacy">Privacy Policy</Link>
+              </li>
+              <li className="font-body-sm text-body-sm text-on-surface-variant hover:text-on-surface">
+                <Link href="/terms">Terms of Service</Link>
+              </li>
+            </ul>
           </div>
         </div>
 
-        <div className="mt-8 border-t border-slate-200 pt-6 flex flex-col sm:flex-row items-center justify-between gap-4 text-xs text-slate-400">
-          <p>© 2026 SkyB Project. Built for Academic Demonstration.</p>
-          <div className="flex items-center gap-6 text-slate-500">
-            <Link href="/privacy" className="hover:text-sky-600 transition-colors">
-              Privacy Policy
-            </Link>
-            <Link href="/terms" className="hover:text-sky-600 transition-colors">
-              Terms & Conditions
-            </Link>
+        <div className="mt-12 pt-6 border-t border-surface-container flex flex-col md:flex-row items-center justify-between gap-4 text-center md:text-left">
+          <p className="font-body-sm text-body-sm text-on-surface-variant">
+            © 2025 skyB, academic project (T.Y. B.Sc. CS). All prices listed in Indian Rupees (₹).
+          </p>
+          <div className="flex items-center gap-2">
+            <span className="px-2.5 py-1 rounded-full bg-surface-container font-label-sm text-label-sm text-primary font-bold">
+              Safety Info On Every Product
+            </span>
+            <span className="px-2.5 py-1 rounded-full bg-surface-container font-label-sm text-label-sm text-primary font-bold">
+              ₹ INR Currency
+            </span>
           </div>
         </div>
       </div>

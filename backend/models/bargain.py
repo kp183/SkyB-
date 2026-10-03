@@ -8,7 +8,7 @@ class BargainSession(Base):
     __tablename__ = "bargain_sessions"
 
     id = Column(Integer, primary_key=True, index=True, autoincrement=True)
-    user_id = Column(Integer, ForeignKey("users.id", ondelete="CASCADE"), nullable=False)
+    user_id = Column(Integer, ForeignKey("users.id", ondelete="CASCADE"), nullable=False, index=True)
     product_id = Column(Integer, ForeignKey("products.id", ondelete="CASCADE"), nullable=False)
     status = Column(Enum("ongoing", "accepted", "rejected", name="bargain_status_enum"), default="ongoing", nullable=False)
     final_price = Column(Numeric(10, 2), nullable=True)
@@ -24,7 +24,7 @@ class BargainOffer(Base):
     __tablename__ = "bargain_offers"
 
     id = Column(Integer, primary_key=True, index=True, autoincrement=True)
-    session_id = Column(Integer, ForeignKey("bargain_sessions.id", ondelete="CASCADE"), nullable=False)
+    session_id = Column(Integer, ForeignKey("bargain_sessions.id", ondelete="CASCADE"), nullable=False, index=True)
     round_number = Column(Integer, nullable=False)  # 1, 2, 3 (capped at 3)
     offer_price = Column(Numeric(10, 2), nullable=False)
     counter_price = Column(Numeric(10, 2), nullable=False)

@@ -1,8 +1,11 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { Sparkles, ShieldCheck, Tag, Search, Filter } from "lucide-react";
+import Hero from "@/components/Hero";
+import PerksBar from "@/components/PerksBar";
 import ProductCard from "@/components/ProductCard";
+import Testimonials from "@/components/Testimonials";
+import Icon from "@/components/Icon";
 import { api } from "@/lib/api";
 
 export default function HomePage() {
@@ -12,8 +15,6 @@ export default function HomePage() {
   const [selectedAge, setSelectedAge] = useState<string>("");
   const [searchTerm, setSearchTerm] = useState<string>("");
   const [loading, setLoading] = useState<boolean>(true);
-
-  const ageGroups = ["0-3m", "3-6m", "6-12m", "1-2y", "2-3y", "3-5y", "6-8y", "9-12y"];
 
   async function loadData() {
     setLoading(true);
@@ -44,135 +45,137 @@ export default function HomePage() {
     loadData();
   };
 
+  const handleStageSelect = (stage: string) => {
+    if (stage === "0-1") setSelectedAge("0-12m");
+    else if (stage === "1-3") setSelectedAge("1-3y");
+    else if (stage === "4-7") setSelectedAge("4-7y");
+    else if (stage === "8-12") setSelectedAge("8-12y");
+    else setSelectedAge("");
+  };
+
   return (
-    <div className="mx-auto max-w-7xl px-4 py-8 sm:px-6 lg:px-8 space-y-8">
-      {/* Hero Banner */}
-      <section className="relative overflow-hidden rounded-3xl bg-gradient-to-r from-sky-400 via-sky-500 to-indigo-600 p-8 sm:p-12 text-white shadow-xl shadow-sky-100">
-        <div className="relative z-10 max-w-2xl space-y-4">
-          <div className="inline-flex items-center gap-1.5 rounded-full bg-white/20 px-3 py-1 text-xs font-semibold backdrop-blur-md">
-            <Sparkles className="h-3.5 w-3.5 text-amber-300" /> AI-Assisted Kids' Shopping
-          </div>
-          <h1 className="text-3xl sm:text-4xl font-black tracking-tight leading-tight">
-            Safe, Verified & Negotiable Kids' Products
-          </h1>
-          <p className="text-sm sm:text-base text-sky-100 leading-relaxed">
-            Every product is verified with Safety Badges, fitted with Auto-Sizing recommendations, and eligible for live AI bargaining within admin floors.
-          </p>
+    <div className="flex flex-col gap-12 sm:gap-16">
+      {/* Hero Section */}
+      <Hero />
 
-          <div className="pt-2 flex flex-wrap gap-4 text-xs font-medium text-sky-100">
-            <span className="flex items-center gap-1.5"><ShieldCheck className="h-4 w-4 text-emerald-300" /> 100% Non-Toxic & BPA-Free checks</span>
-            <span className="flex items-center gap-1.5"><Sparkles className="h-4 w-4 text-amber-300" /> Live AI Bargain Assistant</span>
-            <span className="flex items-center gap-1.5"><Tag className="h-4 w-4 text-white" /> Smart Savings Auto-Coupons</span>
-          </div>
-        </div>
-      </section>
+      {/* Perks Bar */}
+      <PerksBar />
 
-      {/* Search & Filters */}
-      <div className="space-y-4">
-        <div className="flex flex-col sm:flex-row gap-3 items-center justify-between">
-          {/* Search Bar */}
-          <form onSubmit={handleSearch} className="relative w-full sm:w-80">
+      {/* Curated Drops & Product Catalog Section */}
+      <section id="catalog" className="flex flex-col gap-6">
+        <div className="flex flex-col md:flex-row md:items-end justify-between gap-4">
+          <div>
+            <div className="font-label-sm text-label-sm text-primary font-bold uppercase tracking-wider">
+              Curated Drops &amp; Loot Chests
+            </div>
+            <h2 className="font-headline-xl text-headline-xl text-on-surface">
+              Featured Play Gear
+            </h2>
+            <p className="font-body-md text-body-md text-on-surface-variant">
+              Handcrafted wooden toys, certified soft fabrics, and milestone essentials.
+            </p>
+          </div>
+
+          {/* Search Input */}
+          <form onSubmit={handleSearch} className="relative w-full sm:w-72">
             <input
               type="text"
-              placeholder="Search toys, rompers, shoes..."
+              placeholder="Search gear, toys, rompers..."
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
-              className="w-full rounded-2xl border border-slate-200 bg-white py-2.5 pl-10 pr-4 text-xs focus:border-sky-500 focus:outline-none shadow-sm"
+              className="w-full h-11 pl-10 pr-4 rounded-full bg-surface-container-lowest border border-surface-container-high font-body-sm text-body-sm text-on-surface placeholder:text-on-surface-variant focus:outline-none focus:border-primary shadow-[0_2px_0_#bdc8d1]"
             />
-            <Search className="absolute left-3.5 top-3 h-4 w-4 text-slate-400" />
+            <Icon name="search" className="absolute left-3 top-3 w-5 h-5 text-on-surface-variant pointer-events-none" />
           </form>
-
-          {/* Age Filters */}
-          <div className="flex items-center gap-1.5 overflow-x-auto w-full sm:w-auto pb-1 sm:pb-0">
-            <span className="text-xs font-semibold text-slate-400 mr-1 shrink-0 flex items-center gap-1">
-              <Filter className="h-3 w-3" /> Age:
-            </span>
-            <button
-              onClick={() => setSelectedAge("")}
-              className={`rounded-xl px-3 py-1.5 text-xs font-semibold shrink-0 transition-colors ${
-                selectedAge === "" ? "bg-slate-900 text-white" : "bg-white text-slate-600 hover:bg-slate-100 border border-slate-200"
-              }`}
-            >
-              All
-            </button>
-            {ageGroups.map((age) => (
-              <button
-                key={age}
-                onClick={() => setSelectedAge(age === selectedAge ? "" : age)}
-                className={`rounded-xl px-3 py-1.5 text-xs font-semibold shrink-0 transition-colors ${
-                  selectedAge === age ? "bg-sky-500 text-white" : "bg-white text-slate-600 hover:bg-slate-100 border border-slate-200"
-                }`}
-              >
-                {age}
-              </button>
-            ))}
-          </div>
         </div>
 
-        {/* Category Pills */}
-        <div className="flex items-center gap-2 overflow-x-auto pb-1">
+        {/* Filter Pills */}
+        <div className="flex items-center gap-2 overflow-x-auto pb-2 scrollbar-none">
           <button
             onClick={() => setSelectedCategory(null)}
-            className={`rounded-xl px-4 py-2 text-xs font-bold shrink-0 transition-all ${
+            className={`px-4 py-2 rounded-full font-label-md text-label-md shrink-0 transition-all cursor-pointer ${
               selectedCategory === null
-                ? "bg-sky-500 text-white shadow-sm shadow-sky-200"
-                : "bg-white text-slate-700 hover:bg-slate-100 border border-slate-200"
+                ? "bg-primary text-on-primary shadow-[0_3px_0_#004965]"
+                : "bg-surface-container-low text-on-surface hover:bg-surface-container shadow-[0_2px_0_#bdc8d1]"
             }`}
           >
-            All Categories
+            All Play Loot
           </button>
+
           {categories.map((cat) => (
             <button
               key={cat.id}
               onClick={() => setSelectedCategory(cat.id === selectedCategory ? null : cat.id)}
-              className={`rounded-xl px-4 py-2 text-xs font-bold shrink-0 transition-all ${
+              className={`px-4 py-2 rounded-full font-label-md text-label-md shrink-0 transition-all cursor-pointer ${
                 selectedCategory === cat.id
-                  ? "bg-sky-500 text-white shadow-sm shadow-sky-200"
-                  : "bg-white text-slate-700 hover:bg-slate-100 border border-slate-200"
+                  ? "bg-primary text-on-primary shadow-[0_3px_0_#004965]"
+                  : "bg-surface-container-low text-on-surface hover:bg-surface-container shadow-[0_2px_0_#bdc8d1]"
               }`}
             >
               {cat.name}
             </button>
           ))}
-        </div>
-      </div>
 
-      {/* Catalog Grid */}
-      <div>
-        <div className="flex items-center justify-between mb-4">
-          <h2 className="text-lg font-bold text-slate-900">
-            Featured Products {products.length > 0 && `(${products.length})`}
-          </h2>
+          {selectedAge && (
+            <button
+              onClick={() => setSelectedAge("")}
+              className="px-3 py-1.5 rounded-full bg-secondary-fixed text-on-secondary-fixed font-label-sm text-label-sm shadow-[0_2px_0_#fe7488] flex items-center gap-1 shrink-0 ml-auto cursor-pointer"
+            >
+              <span>Age: {selectedAge}</span>
+              <Icon name="close" className="w-4 h-4" />
+            </button>
+          )}
         </div>
 
+        {/* Product Cards Grid */}
         {loading ? (
           <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
-            {[1, 2, 3, 4].map((i) => (
-              <div key={i} className="h-72 rounded-2xl bg-slate-200/60 animate-pulse" />
+            {[1, 2, 3, 4, 5, 6, 7, 8].map((i) => (
+              <div
+                key={i}
+                className="h-80 rounded-xl bg-surface-container-low animate-pulse shadow-[0_6px_0_#bdc8d1] p-4 flex flex-col justify-between"
+              >
+                <div className="w-full aspect-square rounded-lg bg-surface-container-high/60" />
+                <div className="space-y-2 pt-3">
+                  <div className="h-4 bg-surface-container-high/70 rounded-full w-3/4" />
+                  <div className="h-4 bg-surface-container-high/50 rounded-full w-1/2" />
+                </div>
+              </div>
             ))}
           </div>
         ) : products.length > 0 ? (
           <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
-            {products.map((p) => (
-              <ProductCard key={p.id} product={p} />
+            {products.map((p, idx) => (
+              <ProductCard
+                key={p.id}
+                product={p}
+                index={idx}
+                onCartUpdated={loadData}
+              />
             ))}
           </div>
         ) : (
-          <div className="text-center py-16 bg-white rounded-3xl border border-slate-200/80 p-8">
-            <p className="text-sm font-semibold text-slate-600">No products found matching your filters.</p>
+          <div className="text-center py-16 bg-surface-container-lowest rounded-xl shadow-[0_6px_0_#bdc8d1] p-8 flex flex-col items-center gap-3">
+            <Icon name="sentiment_dissatisfied" className="w-12 h-12 text-primary" />
+            <p className="font-headline-md text-headline-md text-on-surface">
+              No products found matching your quest.
+            </p>
             <button
               onClick={() => {
                 setSelectedCategory(null);
                 setSelectedAge("");
                 setSearchTerm("");
               }}
-              className="mt-3 rounded-xl bg-sky-50 px-4 py-2 text-xs font-bold text-sky-600 hover:bg-sky-100"
+              className="mt-2 px-5 py-2.5 rounded-full bg-primary text-on-primary font-headline-md text-headline-md shadow-[0_3px_0_#004965] hover:bg-on-primary-container transition-all cursor-pointer"
             >
               Reset Filters
             </button>
           </div>
         )}
-      </div>
+      </section>
+
+      {/* Community Testimonials Wall */}
+      <Testimonials />
     </div>
   );
 }

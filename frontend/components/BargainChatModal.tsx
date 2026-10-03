@@ -1,7 +1,6 @@
 "use client";
 
 import { useEffect, useState, useRef } from "react";
-import { X, Sparkles, Send, CheckCircle2, AlertCircle } from "lucide-react";
 import Image from "next/image";
 import { api } from "@/lib/api";
 
@@ -44,12 +43,12 @@ export default function BargainChatModal({ product, onClose, onAccepted }: Barga
         setMessages([
           {
             sender: "ai",
-            text: `Hi there! I'm SkyB's Bargain Assistant. The listed price for '${product.name}' is ₹${product.price.toFixed(2)}. What price would you like to offer? (Max 3 rounds!)`,
+            text: `Beep boop! 🌈 I'm SkyBot, your playful bargaining buddy! Listed price for '${product.name}' is ₹${product.price.toFixed(2)}. Make your pitch or offer below (max 3 rounds)!`,
           },
         ]);
       } catch (err: any) {
         if (err.status === 401) {
-          setError("Please login to bargain and save agreed prices to your cart.");
+          setError("Please login to bargain and save agreed loot prices to your cart.");
         } else {
           setError(err.message || "Failed to start bargain session.");
         }
@@ -73,7 +72,7 @@ export default function BargainChatModal({ product, onClose, onAccepted }: Barga
     // Add customer offer to chat
     setMessages((prev) => [
       ...prev,
-      { sender: "user", text: `I offer ₹${offerNum.toFixed(2)}`, price: offerNum },
+      { sender: "user", text: `I offer ₹${offerNum.toFixed(2)}!`, price: offerNum },
     ]);
     setOfferInput("");
     setLoading(true);
@@ -114,68 +113,80 @@ export default function BargainChatModal({ product, onClose, onAccepted }: Barga
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-slate-900/50 backdrop-blur-sm p-4">
-      <div className="flex flex-col w-full max-w-md h-[550px] rounded-2xl bg-white shadow-2xl border border-slate-200 overflow-hidden">
+    <div className="fixed inset-0 z-50 flex items-center justify-center bg-slate-900/40 backdrop-blur-sm p-4">
+      <div className="flex flex-col w-full max-w-md h-[560px] rounded-2xl bg-surface-container-lowest shadow-[0_12px_32px_rgba(0,102,138,0.2)] border-2 border-primary-container overflow-hidden">
         {/* Modal Header */}
-        <div className="flex items-center justify-between px-4 py-3 bg-gradient-to-r from-sky-500 to-indigo-600 text-white">
-          <div className="flex items-center gap-2">
-            <div className="flex h-8 w-8 items-center justify-center rounded-xl bg-white/20 backdrop-blur">
-              <Sparkles className="h-4 w-4" />
+        <div className="flex items-center justify-between px-5 py-3.5 bg-primary-container text-on-primary-container shadow-[0_2px_0_#00668a]">
+          <div className="flex items-center gap-2.5">
+            <div className="flex h-9 w-9 items-center justify-center rounded-full bg-surface-container-lowest text-primary shadow-[0_2px_0_#00668a]">
+              <span className="material-symbols-outlined text-[20px]">smart_toy</span>
             </div>
             <div>
-              <h3 className="text-sm font-bold">Bargain Assistant</h3>
-              <p className="text-[10px] text-sky-100">
-                {currentRound > 0 ? `Round ${currentRound} of 3` : "Ready to negotiate"}
+              <h3 className="font-headline-md text-headline-md font-bold text-on-primary-container">
+                SkyBot Bargain Counter
+              </h3>
+              <p className="font-label-sm text-label-sm text-on-primary-container/80 font-medium">
+                {currentRound > 0
+                  ? `Round ${currentRound} of 3 (Max 3 rounds)`
+                  : "Pitch an offer below the listed price"}
               </p>
             </div>
           </div>
           <button
             onClick={onClose}
-            className="rounded-lg p-1 text-white/80 hover:bg-white/20 hover:text-white transition-colors"
+            className="w-8 h-8 rounded-full bg-surface-container-lowest/40 hover:bg-surface-container-lowest/80 text-on-primary-container flex items-center justify-center transition-colors"
           >
-            <X className="h-5 w-5" />
+            <span className="material-symbols-outlined text-[20px]">close</span>
           </button>
         </div>
 
         {/* Product mini-preview */}
-        <div className="flex items-center gap-3 px-4 py-2 border-b border-slate-100 bg-slate-50">
-          <Image
-            src={product.image_url || "https://images.unsplash.com/photo-1522771930-78848d9293e8?w=200"}
-            alt={product.name || "Product bargain preview"}
-            width={40}
-            height={40}
-            className="h-10 w-10 rounded-lg object-cover"
-          />
+        <div className="flex items-center gap-3 px-4 py-3 border-b border-surface-container-high bg-surface-container-low">
+          <div className="relative h-12 w-12 rounded-lg bg-surface-container-lowest p-1 flex items-center justify-center overflow-hidden shrink-0 shadow-[0_2px_0_#bdc8d1]">
+            <Image
+              src={product.image_url || "/stitch/rocket-shuttle.png"}
+              alt={product.name || "Product bargain preview"}
+              width={48}
+              height={48}
+              className="h-full w-full object-contain"
+            />
+          </div>
           <div className="flex-1 min-w-0">
-            <p className="text-xs font-bold text-slate-800 truncate">{product.name}</p>
-            <p className="text-xs text-slate-500">Original Price: <span className="font-semibold text-slate-700">₹{product.price.toFixed(2)}</span></p>
+            <p className="font-headline-md text-headline-md text-on-surface truncate">{product.name}</p>
+            <p className="font-body-sm text-body-sm text-on-surface-variant">
+              Listed Price: <span className="font-bold text-primary">₹{product.price.toFixed(2)}</span>
+            </p>
           </div>
           {latestCounter !== null && (
             <div className="text-right">
-              <span className="text-[10px] font-semibold uppercase text-emerald-600">Current Counter</span>
-              <p className="text-sm font-black text-emerald-700">₹{latestCounter.toFixed(2)}</p>
+              <span className="font-label-sm text-[10px] font-bold uppercase tracking-wider text-secondary">
+                Bot Counter
+              </span>
+              <p className="font-headline-lg text-headline-lg font-bold text-secondary">
+                ₹{latestCounter.toFixed(2)}
+              </p>
             </div>
           )}
         </div>
 
         {/* Chat Message Thread */}
-        <div className="flex-1 overflow-y-auto p-4 space-y-3 bg-slate-50/50">
+        <div className="flex-1 overflow-y-auto p-4 space-y-3 bg-surface-container-lowest/50">
           {messages.map((m, idx) => (
             <div
               key={idx}
               className={`flex flex-col ${m.sender === "user" ? "items-end" : "items-start"}`}
             >
               <div
-                className={`max-w-[85%] rounded-2xl px-3.5 py-2 text-xs leading-relaxed ${
+                className={`max-w-[85%] rounded-2xl px-4 py-2.5 font-body-md text-body-md leading-relaxed ${
                   m.sender === "user"
-                    ? "bg-sky-500 text-white rounded-br-none shadow-sm"
-                    : "bg-white text-slate-800 border border-slate-200 rounded-bl-none shadow-sm"
+                    ? "bg-secondary-fixed text-on-secondary-fixed shadow-[0_2px_0_#fe7488] rounded-tr-none"
+                    : "bg-primary-fixed text-on-primary-fixed shadow-[0_2px_0_#7bd0ff] rounded-tl-none"
                 }`}
               >
                 {m.text}
                 {m.round && (
-                  <span className="block mt-1 text-[9px] text-slate-400 font-semibold">
-                    Round {m.round} / 3
+                  <span className="block mt-1 font-label-sm text-[10px] opacity-80 font-bold uppercase">
+                    Round {m.round} of 3
                   </span>
                 )}
               </div>
@@ -183,14 +194,19 @@ export default function BargainChatModal({ product, onClose, onAccepted }: Barga
           ))}
 
           {loading && (
-            <div className="flex items-center gap-2 text-xs text-slate-400 italic">
-              <Sparkles className="h-3 w-3 animate-spin text-amber-500" /> Assistant is thinking...
+            <div className="flex items-center gap-2 font-body-sm text-body-sm text-on-surface-variant italic">
+              <span className="material-symbols-outlined animate-spin text-[18px] text-primary">
+                progress_activity
+              </span>
+              SkyBot is crunching your playful pitch...
             </div>
           )}
 
           {error && (
-            <div className="flex items-center gap-2 rounded-xl bg-rose-50 border border-rose-200 p-2 text-xs text-rose-700">
-              <AlertCircle className="h-4 w-4 shrink-0" />
+            <div className="flex items-center gap-2 rounded-xl bg-error-container p-3 text-on-error-container text-body-sm shadow-[0_2px_0_#ffdad6]">
+              <span className="material-symbols-outlined text-[18px] text-error shrink-0">
+                error
+              </span>
               <span>{error}</span>
             </div>
           )}
@@ -199,39 +215,41 @@ export default function BargainChatModal({ product, onClose, onAccepted }: Barga
         </div>
 
         {/* Modal Action Bar */}
-        <div className="p-3 border-t border-slate-200 bg-white">
+        <div className="p-4 border-t border-surface-container-high bg-surface-container-lowest">
           {latestCounter !== null && (
             <button
               onClick={handleAcceptDeal}
               disabled={loading}
-              className="mb-2.5 w-full flex items-center justify-center gap-2 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white py-2 text-xs font-bold shadow-md shadow-emerald-200 transition-colors"
+              className="mb-3 w-full flex items-center justify-center gap-2 rounded-full bg-secondary-container text-on-secondary py-3 font-headline-md text-headline-md shadow-[0_4px_0_#730425] hover:brightness-105 active:translate-y-[2px] active:shadow-[0_1px_0_#730425] transition-all"
             >
-              <CheckCircle2 className="h-4 w-4" /> Accept Deal at ₹{latestCounter.toFixed(2)} & Add to Cart
+              <span className="material-symbols-outlined text-[20px]">check_circle</span>
+              <span>Accept Deal at ₹{latestCounter.toFixed(2)} &amp; Add to Cart</span>
             </button>
           )}
 
           {currentRound < 3 ? (
-            <form onSubmit={handleSendOffer} className="flex gap-2">
+            <form onSubmit={handleSendOffer} className="relative flex items-center gap-2">
               <input
                 type="number"
                 step="0.01"
-                placeholder="Enter counter offer (e.g. 550)..."
+                placeholder="Enter counter offer (e.g. 520)..."
                 value={offerInput}
                 onChange={(e) => setOfferInput(e.target.value)}
                 disabled={loading || !!error}
-                className="flex-1 rounded-xl border border-slate-300 px-3 py-2 text-xs focus:border-sky-500 focus:outline-none"
+                className="w-full h-12 pl-4 pr-16 rounded-full bg-surface-container-low border border-surface-container-high text-on-surface font-body-md text-body-md focus:outline-none focus:border-primary shadow-[0_2px_0_#bdc8d1]"
               />
               <button
                 type="submit"
                 disabled={loading || !offerInput || !!error}
-                className="flex items-center justify-center rounded-xl bg-sky-500 hover:bg-sky-600 disabled:opacity-50 text-white px-3.5 py-2 transition-colors"
+                className="absolute right-1 px-4 py-2 rounded-full bg-primary text-on-primary font-headline-md text-headline-md shadow-[0_3px_0_#004965] hover:bg-on-primary-container disabled:opacity-50 active:translate-y-[2px] active:shadow-[0_1px_0_#004965] transition-all flex items-center gap-1"
               >
-                <Send className="h-4 w-4" />
+                <span>Send</span>
+                <span className="material-symbols-outlined text-[16px]">send</span>
               </button>
             </form>
           ) : (
-            <p className="text-center text-xs font-semibold text-slate-500">
-              Maximum 3 negotiation rounds reached. Please accept the final offer or close.
+            <p className="text-center font-body-sm text-body-sm text-on-surface-variant py-1 font-medium">
+              Final round completed. Accept the current deal above to claim this discount!
             </p>
           )}
         </div>

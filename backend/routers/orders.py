@@ -72,28 +72,33 @@ def checkout(
 
     total_amount = max(0.0, (non_bargained_subtotal - discount) + bargained_subtotal)
 
-    order = Order(
-        user_id=current_user.id,
-        total_amount=total_amount,
-        discount_applied=discount,
-        applied_coupon_code=coupon_code,
-        status="pending_payment",
-        delivery_address=req.delivery_address,
-    )
-    db.add(order)
-    db.flush()  # Flush to get order.id
-
-    for item in cart_items:
-        order_item = OrderItem(
-            order_id=order.id,
-            product_id=item.product_id,
-            quantity=item.quantity,
-            price_at_purchase=item.agreed_price,
-            size_at_purchase=item.product.size if item.product else None,
+    try:
+        order = Order(
+            user_id=current_user.id,
+            total_amount=total_amount,
+            discount_applied=discount,
+            applied_coupon_code=coupon_code,
+            status="pending_payment",
+            delivery_address=req.delivery_address,
         )
-        db.add(order_item)
+        db.add(order)
+        db.flush()  # Flush to get order.id
 
-    db.commit()
+        for item in cart_items:
+            order_item = OrderItem(
+                order_id=order.id,
+                product_id=item.product_id,
+                quantity=item.quantity,
+                price_at_purchase=item.agreed_price,
+                size_at_purchase=item.product.size if item.product else None,
+            )
+            db.add(order_item)
+
+        db.commit()
+    except Exception:
+        db.rollback()
+        raise
+
     db.refresh(order)
     return success_response(serialize_order(order))
 
@@ -107,7 +112,7 @@ def mock_pay(
     """
     Simulates payment gateway.
     Accepts optional simulate_failure: bool so faculty can be shown both success and failure paths.
-    On success: order status -> 'placed', cart cleared.
+    On success: order status -> 'placed', cart cleared (atomic transaction).
     On failure: order status -> 'payment_failed', cart preserved.
     """
     order = (
@@ -125,8 +130,13 @@ def mock_pay(
         )
 
     if req.simulate_failure:
-        order.status = "payment_failed"
-        db.commit()
+        try:
+            order.status = "payment_failed"
+            db.commit()
+        except Exception:
+            db.rollback()
+            raise
+
         db.refresh(order)
         return success_response({
             "order_id": order.id,
@@ -135,13 +145,16 @@ def mock_pay(
             "message": "Payment simulation failed as requested. Cart preserved for retry.",
         })
 
-    # Payment successful
-    order.status = "placed"
+    # Payment successful: atomic update of order status + cart clearing in single commit
+    try:
+        order.status = "placed"
+        # Clear user's cart on payment success
+        db.query(CartItem).filter(CartItem.user_id == current_user.id).delete()
+        db.commit()
+    except Exception:
+        db.rollback()
+        raise
 
-    # Clear user's cart on payment success
-    db.query(CartItem).filter(CartItem.user_id == current_user.id).delete()
-
-    db.commit()
     db.refresh(order)
     return success_response({
         "order_id": order.id,

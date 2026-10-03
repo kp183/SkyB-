@@ -3,7 +3,6 @@
 import { useEffect, useState } from "react";
 import Link from "next/link";
 import Image from "next/image";
-import { Plus, Trash2, ArrowLeft, ShieldCheck, Tag } from "lucide-react";
 import { api } from "@/lib/api";
 
 export default function AdminProductsPage() {
@@ -21,7 +20,7 @@ export default function AdminProductsPage() {
   const [minPrice, setMinPrice] = useState(550);
   const [maxPrice, setMaxPrice] = useState(799);
   const [stockQty, setStockQty] = useState(20);
-  const [imageUrl, setImageUrl] = useState("https://images.unsplash.com/photo-1522771930-78848d9293e8?w=500");
+  const [imageUrl, setImageUrl] = useState("/stitch/rocket-shuttle.png");
 
   async function loadProducts() {
     setLoading(true);
@@ -99,31 +98,42 @@ export default function AdminProductsPage() {
   };
 
   return (
-    <div className="mx-auto max-w-6xl px-4 py-8 sm:px-6 lg:px-8 space-y-6">
-      <Link href="/admin/dashboard" className="inline-flex items-center gap-1.5 text-xs font-semibold text-slate-500 hover:text-sky-600">
-        <ArrowLeft className="h-3.5 w-3.5" /> Back to Admin Dashboard
+    <div className="mx-auto max-w-6xl px-4 py-6 sm:px-6 lg:px-8 space-y-6">
+      <Link
+        href="/admin/dashboard"
+        className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-surface-container-low text-on-surface hover:bg-surface-container font-label-md text-label-md shadow-[0_2px_0_#bdc8d1] transition-all"
+      >
+        <span className="material-symbols-outlined text-[18px]">arrow_back</span>
+        <span>Back to Admin Dashboard</span>
       </Link>
 
-      <div className="flex items-center justify-between">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
-          <h1 className="text-2xl font-black text-slate-900">Manage Catalog & Bargain Floors</h1>
-          <p className="text-xs text-slate-500">Configure listed prices and strict min_price boundaries for AI Bargaining</p>
+          <h1 className="font-headline-xl text-headline-xl text-on-surface">
+            Catalog &amp; Bargain Floor Boundaries
+          </h1>
+          <p className="font-body-sm text-body-sm text-on-surface-variant">
+            Set catalog offerings and strict minimum price thresholds protected from bot negotiation
+          </p>
         </div>
 
         <button
           onClick={() => setShowAddModal(true)}
-          className="flex items-center gap-1.5 rounded-2xl bg-sky-500 hover:bg-sky-600 text-white px-4 py-2.5 text-xs font-bold shadow-md shadow-sky-200 transition-colors"
+          className="inline-flex items-center gap-2 rounded-full bg-primary text-on-primary px-5 py-2.5 font-headline-md text-headline-md shadow-[0_3px_0_#004965] hover:bg-on-primary-container transition-all cursor-pointer"
         >
-          <Plus className="h-4 w-4" /> Add Product
+          <span className="material-symbols-outlined text-[18px]">add</span>
+          <span>Add Product</span>
         </button>
       </div>
 
       {loading ? (
-        <div className="py-12 text-center text-slate-400">Loading catalog...</div>
+        <div className="py-16 text-center font-body-md text-body-md text-on-surface-variant animate-pulse">
+          Loading catalog...
+        </div>
       ) : (
-        <div className="overflow-hidden rounded-3xl border border-slate-200 bg-white shadow-sm">
-          <table className="w-full text-left text-xs">
-            <thead className="border-b border-slate-200 bg-slate-50 text-[11px] font-bold uppercase tracking-wider text-slate-500">
+        <div className="overflow-hidden rounded-2xl bg-surface-container-lowest shadow-[0_8px_0_#bdc8d1] border border-surface-container-high">
+          <table className="w-full text-left font-body-sm text-body-sm">
+            <thead className="border-b border-surface-container-high bg-surface-container-low font-label-sm text-label-sm font-bold uppercase tracking-wider text-on-surface-variant">
               <tr>
                 <th className="p-4">Product</th>
                 <th className="p-4">Age / Size</th>
@@ -133,39 +143,48 @@ export default function AdminProductsPage() {
                 <th className="p-4 text-right">Actions</th>
               </tr>
             </thead>
-            <tbody className="divide-y divide-slate-100">
+            <tbody className="divide-y divide-surface-container-high">
               {products.map((p) => (
-                <tr key={p.id} className="hover:bg-slate-50/50">
+                <tr key={p.id} className="hover:bg-surface-container-low/50 transition-colors">
                   <td className="p-4 flex items-center gap-3">
-                    <Image
-                      src={p.image_url || "https://images.unsplash.com/photo-1522771930-78848d9293e8?w=200"}
-                      alt={p.name || "Product image"}
-                      width={40}
-                      height={40}
-                      className="h-10 w-10 rounded-lg object-cover"
-                    />
+                    <div className="h-12 w-12 rounded-lg bg-surface-container-low p-1 flex items-center justify-center shrink-0">
+                      <Image
+                        src={p.image_url || "/stitch/rocket-shuttle.png"}
+                        alt={p.name || "Product image"}
+                        width={44}
+                        height={44}
+                        className="h-full w-full object-contain"
+                      />
+                    </div>
                     <div>
-                      <p className="font-bold text-slate-800">{p.name}</p>
-                      <p className="text-[10px] text-slate-400 truncate max-w-xs">{p.description}</p>
+                      <p className="font-headline-md text-headline-md text-on-surface">{p.name}</p>
+                      <p className="font-label-sm text-[11px] text-on-surface-variant truncate max-w-xs">
+                        {p.description}
+                      </p>
                     </div>
                   </td>
                   <td className="p-4">
-                    <span className="font-medium text-slate-700">{p.age_group}</span>
-                    {p.size && <span className="block text-[10px] text-slate-400">Size: {p.size}</span>}
+                    <span className="font-bold text-on-surface">{p.age_group}</span>
+                    {p.size && (
+                      <span className="block font-label-sm text-[11px] text-on-surface-variant">
+                        Size: {p.size}
+                      </span>
+                    )}
                   </td>
-                  <td className="p-4 font-black text-slate-900">₹{p.price.toFixed(2)}</td>
+                  <td className="p-4 font-bold text-primary text-base">₹{p.price.toFixed(2)}</td>
                   <td className="p-4">
-                    <span className="font-bold text-emerald-700 bg-emerald-50 px-2 py-0.5 rounded-md border border-emerald-200">
+                    <span className="font-bold text-secondary bg-secondary-fixed px-2.5 py-0.5 rounded-full text-xs shadow-[0_1px_0_#fe7488]">
                       ₹{p.min_price.toFixed(2)}
                     </span>
                   </td>
-                  <td className="p-4 font-semibold text-slate-700">{p.stock_qty}</td>
+                  <td className="p-4 font-bold text-on-surface">{p.stock_qty}</td>
                   <td className="p-4 text-right">
                     <button
                       onClick={() => handleDelete(p.id)}
-                      className="p-1.5 text-slate-400 hover:text-rose-600 hover:bg-rose-50 rounded-lg transition-colors"
+                      className="p-2 text-secondary hover:bg-secondary-fixed/50 rounded-full transition-colors cursor-pointer"
+                      title="Delete product"
                     >
-                      <Trash2 className="h-4 w-4" />
+                      <span className="material-symbols-outlined text-[20px]">delete</span>
                     </button>
                   </td>
                 </tr>
@@ -177,105 +196,108 @@ export default function AdminProductsPage() {
 
       {/* Add Product Modal */}
       {showAddModal && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-slate-900/50 backdrop-blur-sm p-4">
-          <div className="w-full max-w-md rounded-3xl bg-white p-6 shadow-2xl space-y-4">
-            <h2 className="text-base font-black text-slate-900">Add New Product</h2>
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-slate-900/40 backdrop-blur-sm p-4">
+          <div className="w-full max-w-md rounded-2xl bg-surface-container-lowest p-6 shadow-[0_12px_32px_rgba(0,102,138,0.2)] border-2 border-primary-container space-y-4">
+            <h2 className="font-headline-xl text-headline-xl text-on-surface">
+              Add New Play Product
+            </h2>
             {formError && (
-              <div className="rounded-xl border border-rose-200 bg-rose-50 p-2.5 text-xs font-semibold text-rose-700">
-                {formError}
+              <div className="rounded-xl bg-error-container p-2.5 text-on-error-container text-body-sm shadow-[0_2px_0_#ffdad6] flex items-center gap-2">
+                <span className="material-symbols-outlined text-[18px]">error</span>
+                <span>{formError}</span>
               </div>
             )}
-            <form onSubmit={handleCreateProduct} className="space-y-3 text-xs">
+            <form onSubmit={handleCreateProduct} className="space-y-3 font-body-sm text-body-sm">
               <div>
-                <label className="font-bold text-slate-700">Product Name</label>
+                <label className="font-bold text-on-surface">Product Name</label>
                 <input
                   type="text"
                   value={name}
                   onChange={(e) => setName(e.target.value)}
                   required
-                  className="mt-1 w-full rounded-xl border border-slate-300 p-2 text-xs focus:border-sky-500 focus:outline-none"
+                  className="mt-1 w-full rounded-full border border-surface-container-high px-4 py-2 focus:border-primary focus:outline-none bg-surface-container-low shadow-[0_2px_0_#bdc8d1]"
                 />
               </div>
 
               <div>
-                <label className="font-bold text-slate-700">Description</label>
+                <label className="font-bold text-on-surface">Description</label>
                 <textarea
                   rows={2}
                   value={description}
                   onChange={(e) => setDescription(e.target.value)}
                   required
-                  className="mt-1 w-full rounded-xl border border-slate-300 p-2 text-xs focus:border-sky-500 focus:outline-none"
+                  className="mt-1 w-full rounded-xl border border-surface-container-high p-3 focus:border-primary focus:outline-none bg-surface-container-low shadow-[0_2px_0_#bdc8d1]"
                 />
               </div>
 
               <div className="grid grid-cols-2 gap-3">
                 <div>
-                  <label className="font-bold text-slate-700">Age Group</label>
+                  <label className="font-bold text-on-surface">Age Group</label>
                   <input
                     type="text"
                     value={ageGroup}
                     onChange={(e) => setAgeGroup(e.target.value)}
                     required
                     placeholder="e.g. 0-3m, 1-2y"
-                    className="mt-1 w-full rounded-xl border border-slate-300 p-2 text-xs"
+                    className="mt-1 w-full rounded-full border border-surface-container-high px-4 py-2 focus:border-primary focus:outline-none bg-surface-container-low shadow-[0_2px_0_#bdc8d1]"
                   />
                 </div>
                 <div>
-                  <label className="font-bold text-slate-700">Size (Optional)</label>
+                  <label className="font-bold text-on-surface">Size (Optional)</label>
                   <input
                     type="text"
                     value={size}
                     onChange={(e) => setSize(e.target.value)}
                     placeholder="e.g. 0-3M, S, M"
-                    className="mt-1 w-full rounded-xl border border-slate-300 p-2 text-xs"
+                    className="mt-1 w-full rounded-full border border-surface-container-high px-4 py-2 focus:border-primary focus:outline-none bg-surface-container-low shadow-[0_2px_0_#bdc8d1]"
                   />
                 </div>
               </div>
 
               <div className="grid grid-cols-3 gap-3">
                 <div>
-                  <label className="font-bold text-slate-700">Price (₹)</label>
+                  <label className="font-bold text-on-surface">Price (₹)</label>
                   <input
                     type="number"
                     value={price}
                     onChange={(e) => setPrice(Number(e.target.value))}
                     required
-                    className="mt-1 w-full rounded-xl border border-slate-300 p-2 text-xs"
+                    className="mt-1 w-full rounded-full border border-surface-container-high px-3 py-2 focus:border-primary focus:outline-none bg-surface-container-low shadow-[0_2px_0_#bdc8d1]"
                   />
                 </div>
                 <div>
-                  <label className="font-bold text-slate-700">Min Floor (₹)</label>
+                  <label className="font-bold text-on-surface">Min Floor (₹)</label>
                   <input
                     type="number"
                     value={minPrice}
                     onChange={(e) => setMinPrice(Number(e.target.value))}
                     required
-                    className="mt-1 w-full rounded-xl border border-slate-300 p-2 text-xs"
+                    className="mt-1 w-full rounded-full border border-surface-container-high px-3 py-2 focus:border-primary focus:outline-none bg-surface-container-low shadow-[0_2px_0_#bdc8d1]"
                   />
                 </div>
                 <div>
-                  <label className="font-bold text-slate-700">Stock Qty</label>
+                  <label className="font-bold text-on-surface">Stock Qty</label>
                   <input
                     type="number"
                     value={stockQty}
                     onChange={(e) => setStockQty(Number(e.target.value))}
                     required
-                    className="mt-1 w-full rounded-xl border border-slate-300 p-2 text-xs"
+                    className="mt-1 w-full rounded-full border border-surface-container-high px-3 py-2 focus:border-primary focus:outline-none bg-surface-container-low shadow-[0_2px_0_#bdc8d1]"
                   />
                 </div>
               </div>
 
-              <div className="pt-3 flex gap-2">
+              <div className="pt-3 flex gap-3">
                 <button
                   type="button"
                   onClick={() => setShowAddModal(false)}
-                  className="flex-1 rounded-xl bg-slate-100 py-2 font-bold text-slate-600 hover:bg-slate-200"
+                  className="flex-1 rounded-full bg-surface-container py-2.5 font-headline-md text-headline-md text-on-surface hover:bg-surface-container-high transition-colors"
                 >
                   Cancel
                 </button>
                 <button
                   type="submit"
-                  className="flex-1 rounded-xl bg-sky-500 py-2 font-bold text-white hover:bg-sky-600"
+                  className="flex-1 rounded-full bg-primary text-on-primary py-2.5 font-headline-md text-headline-md shadow-[0_3px_0_#004965] hover:bg-on-primary-container transition-all"
                 >
                   Create Product
                 </button>

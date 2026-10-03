@@ -107,3 +107,35 @@ In `stitch_skyb_v2`, four `DESIGN.md` spec files were present:
   ```
 - **Historical Revenue Chart (`GET /admin/chart-data`):**
   Admin-only endpoint aggregating actual completed orders (`placed`, `confirmed`, `shipped`, `delivered`) into daily revenue and count totals over the requested date range (1 to 30 days, default 14), with zero-filled records for days without qualifying sales.
+
+---
+
+## 5. App Shell & Responsive Navigation (Decision 1.5)
+
+- **Pure SVG Icon System (`Icon.tsx`):**
+  Google Material Symbols webfonts can experience font ligature text flashes (FOUT) on slow 3G connections (displaying literal strings like `shopping_cart` or `search` before the webfont loads). Replaced all dynamic icon instances with inline SVG vectors containing locked geometric paths and CSS sizing (`w-5 h-5`, etc.).
+- **Global SkyBot Assistant (`SkyBotSheet.tsx` & `SkyBotContext.tsx`):**
+  SkyBot is rendered as a global provider:
+  - Desktop: Slide-over right panel with backdrop overlay, ESC key listener, and click-outside dismissal.
+  - Mobile (390px): Bottom drawer sheet with touch-friendly top handle bar.
+  - Server-Enforced Rules: Chat pricing strictly defers to backend bargaining engine (`/bargain/message`); no client-side price deduction or fake coupon code distribution.
+- **Unified Navigation Header (`Navbar.tsx`):**
+  - Desktop: Category navigation with mega-menu dropdown (150ms debounce hover, full ESC and Tab keyboard trap management).
+  - Search: Controlled input form with auto-suggestions submitting to `/category/all?q=...`.
+  - Pincode: Client-persisted 6-digit delivery pincode modal default `400001 (Mumbai)`.
+  - Real Cart/Wishlist Badges: Dynamically reads `cart.items.length` and `wishlist.length` without hardcoded dummy numbers.
+- **Mobile Navigation Drawer & Bottom Bar:**
+  - Drawer (`CategoryDrawer.tsx`): Full category & age taxonomy drawer with smooth slide animation.
+  - Bottom Navigation (`BottomNav.tsx`): Sticky mobile navigation with 5 key destinations (Home, Categories, SkyBot, Wishlist, Profile). Automatically hidden on sticky full-screen flows (`/product/*`, `/cart`, `/checkout`, `/reorder`, `/newborn-checklist`) and `/admin/*`.
+- **Footer Architecture (`Footer.tsx`):**
+  Complete link tree covering all store categories, customer care, legal/safety policies, with zero `href="#"` dead links.
+- **Playwright QA Verification Suite (`backend/scripts/run_design_qa.js`):**
+  7-part automated headless browser test suite running against Next.js production build:
+  1. Desktop 1440px rendering & ESC key modal closing.
+  2. Mobile 390px rendering and touch drawers.
+  3. Header consistency across routes (`/`, `/product/1`, `/cart`, `/login`, `/admin`).
+  4. Brand logo click return to `/`.
+  5. Guest click redirects (`Add to Cart`, `Wishlist`, `Cart`, `Orders`, `Bargain` -> `/login?next=...`).
+  6. Zero horizontal overflow at 390px viewport width (`document.documentElement.scrollWidth === clientWidth`).
+  7. Slow 3G network simulation verifying zero raw icon text leakage.
+

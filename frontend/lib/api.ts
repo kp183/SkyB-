@@ -111,22 +111,66 @@ export const api = {
   // Products
   async getProducts(params: {
     category?: number;
+    category_ids?: string;
+    gender?: string;
+    subcategory?: string;
     age_group?: string;
+    age_min_months?: number;
+    age_max_months?: number;
     search?: string;
+    q?: string;
     sort?: string;
     min_price?: number;
     max_price?: number;
+    min_rating?: number;
+    min_discount?: number;
+    safety?: string;
+    in_stock?: boolean;
+    skip?: number;
+    limit?: number;
   } = {}) {
     const query = new URLSearchParams();
-    if (params.category) query.append("category", params.category.toString());
+    if (params.category) query.append("category_ids", params.category.toString());
+    if (params.category_ids) query.append("category_ids", params.category_ids);
+    if (params.gender) query.append("gender", params.gender);
+    if (params.subcategory) query.append("subcategory", params.subcategory);
     if (params.age_group) query.append("age_group", params.age_group);
-    if (params.search) query.append("search", params.search);
+    if (params.age_min_months !== undefined) query.append("age_min_months", params.age_min_months.toString());
+    if (params.age_max_months !== undefined) query.append("age_max_months", params.age_max_months.toString());
+    if (params.search) query.append("q", params.search);
+    if (params.q) query.append("q", params.q);
     if (params.sort) query.append("sort", params.sort);
-    if (params.min_price) query.append("min_price", params.min_price.toString());
-    if (params.max_price) query.append("max_price", params.max_price.toString());
+    if (params.min_price !== undefined) query.append("min_price", params.min_price.toString());
+    if (params.max_price !== undefined) query.append("max_price", params.max_price.toString());
+    if (params.min_rating !== undefined) query.append("min_rating", params.min_rating.toString());
+    if (params.min_discount !== undefined) query.append("min_discount", params.min_discount.toString());
+    if (params.safety) query.append("safety", params.safety);
+    if (params.in_stock !== undefined) query.append("in_stock", params.in_stock.toString());
+    if (params.skip !== undefined) query.append("skip", params.skip.toString());
+    if (params.limit !== undefined) query.append("limit", params.limit.toString());
 
     const qs = query.toString() ? `?${query.toString()}` : "";
     return request<any[]>(`/products${qs}`);
+  },
+
+  async getProductsWithMeta(params: Record<string, any> = {}) {
+    const query = new URLSearchParams();
+    Object.entries(params).forEach(([key, val]) => {
+      if (val !== undefined && val !== null && val !== "") {
+        query.append(key, String(val));
+      }
+    });
+    const qs = query.toString() ? `?${query.toString()}` : "";
+    const url = `${API_BASE_URL}/products${qs}`;
+    const token = getToken();
+    const headers: HeadersInit = { "Content-Type": "application/json" };
+    if (token) (headers as any)["Authorization"] = `Bearer ${token}`;
+    const response = await fetch(url, { headers });
+    const json = await response.json();
+    return {
+      data: json.data || [],
+      meta: json.meta || { total: 0, skip: 0, limit: 24 },
+    };
   },
 
   async getProduct(id: number) {

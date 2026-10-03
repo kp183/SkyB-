@@ -1,26 +1,240 @@
 @import "tailwindcss";
 
-:root {
-  --background: #ffffff;
-  --foreground: #171717;
+@theme {
+  --color-primary: #00668a;
+  --color-on-primary: #ffffff;
+  --color-primary-container: #38bdf8;
+  --color-on-primary-container: #004965;
+  --color-primary-fixed: #c4e7ff;
+  --color-primary-fixed-dim: #7bd0ff;
+  --color-on-primary-fixed: #001e2c;
+  --color-on-primary-fixed-variant: #004c69;
+  --color-inverse-primary: #7bd0ff;
+
+  --color-secondary: #a93349;
+  --color-on-secondary: #ffffff;
+  --color-secondary-container: #fe7488;
+  --color-on-secondary-container: #730425;
+  --color-secondary-fixed: #ffdadc;
+  --color-secondary-fixed-dim: #ffb2b9;
+  --color-on-secondary-fixed: #400010;
+  --color-on-secondary-fixed-variant: #891933;
+
+  --color-tertiary: #5c4300;
+  --color-on-tertiary: #ffffff;
+  --color-tertiary-container: #e1a800;
+  --color-on-tertiary-container: #584000;
+  --color-tertiary-fixed: #ffdf9f;
+  --color-tertiary-fixed-dim: #f9bd22;
+  --color-on-tertiary-fixed: #261a00;
+  --color-on-tertiary-fixed-variant: #5c4300;
+
+  --color-surface: #f8f9ff;
+  --color-surface-dim: #ccdbf3;
+  --color-surface-bright: #f8f9ff;
+  --color-surface-variant: #d5e3fc;
+  --color-surface-container-lowest: #ffffff;
+  --color-surface-container-low: #eff4ff;
+  --color-surface-container: #e6eeff;
+  --color-surface-container-high: #dce9ff;
+  --color-surface-container-highest: #d5e3fc;
+  --color-on-surface: #0d1c2e;
+  --color-on-surface-variant: #3e484f;
+  --color-inverse-surface: #233144;
+  --color-inverse-on-surface: #eaf1ff;
+  --color-surface-tint: #00668a;
+
+  --color-background: #f8f9ff;
+  --color-on-background: #0d1c2e;
+
+  --color-outline: #6e7980;
+  --color-outline-variant: #bdc8d1;
+
+  --color-error: #ba1a1a;
+  --color-on-error: #ffffff;
+  --color-error-container: #ffdad6;
+  --color-on-error-container: #93000a;
 }
 
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+@layer base {
+  html, body {
+    margin: 0;
+    padding: 0;
+  }
+  body {
+    overscroll-behavior: none;
+    background-color: #f8f9ff;
+    color: #0d1c2e;
+    font-family: var(--font-nunito-sans), 'Nunito Sans', sans-serif;
+  }
+  main > :first-child { margin-top: 0 !important; }
+  main > :last-child { margin-bottom: 0 !important; }
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
+::-webkit-scrollbar {
+  display: none;
+}
+
+/* Typography Utility Classes from Stitch */
+.font-headline-xl { font-family: var(--font-quicksand), 'Quicksand', sans-serif; font-weight: 700; }
+.font-headline-lg { font-family: var(--font-quicksand), 'Quicksand', sans-serif; font-weight: 700; }
+.font-headline-md { font-family: var(--font-quicksand), 'Quicksand', sans-serif; font-weight: 600; }
+.font-headline-sm { font-family: var(--font-quicksand), 'Quicksand', sans-serif; font-weight: 600; }
+.font-display-lg { font-family: var(--font-quicksand), 'Quicksand', sans-serif; font-weight: 700; }
+.font-display-lg-mobile { font-family: var(--font-quicksand), 'Quicksand', sans-serif; font-weight: 700; }
+
+.font-body-lg { font-family: var(--font-nunito-sans), 'Nunito Sans', sans-serif; font-weight: 400; }
+.font-body-md { font-family: var(--font-nunito-sans), 'Nunito Sans', sans-serif; font-weight: 400; }
+.font-body-sm { font-family: var(--font-nunito-sans), 'Nunito Sans', sans-serif; font-weight: 400; }
+
+.font-label-lg { font-family: var(--font-nunito-sans), 'Nunito Sans', sans-serif; font-weight: 800; }
+.font-label-md { font-family: var(--font-nunito-sans), 'Nunito Sans', sans-serif; font-weight: 700; }
+.font-label-sm { font-family: var(--font-nunito-sans), 'Nunito Sans', sans-serif; font-weight: 700; }
+
+.text-display-lg { font-size: 48px; line-height: 56px; }
+.text-display-lg-mobile { font-size: 34px; line-height: 42px; }
+.text-headline-xl { font-size: 32px; line-height: 40px; }
+.text-headline-lg { font-size: 26px; line-height: 34px; }
+.text-headline-md { font-size: 24px; line-height: 32px; }
+.text-headline-sm { font-size: 20px; line-height: 28px; }
+.text-body-lg { font-size: 18px; line-height: 28px; }
+.text-body-md { font-size: 16px; line-height: 24px; }
+.text-body-sm { font-size: 14px; line-height: 20px; }
+.text-label-lg { font-size: 16px; line-height: 20px; }
+.text-label-md { font-size: 14px; line-height: 18px; }
+.text-label-sm { font-size: 12px; line-height: 16px; }
+
+/* -------------------------------------------------------------
+   LOCKED BUTTON RULES & SHADOWS (5px desktop, 3px mobile)
+   No page may hand-write button shadows.
+   ------------------------------------------------------------- */
+
+/* 1. Add / Checkout Button (#fe7488 with #730425 shadow) */
+.btn-add-action {
+  background-color: #fe7488 !important;
+  color: #ffffff !important;
+  box-shadow: 0 3px 0 #730425 !important;
+  border: none !important;
+  transition: transform 0.1s ease, box-shadow 0.1s ease;
+}
+@media (min-width: 640px) {
+  .btn-add-action {
+    box-shadow: 0 5px 0 #730425 !important;
+  }
+}
+.btn-add-action:active {
+  transform: translateY(2px) !important;
+  box-shadow: 0 1px 0 #730425 !important;
+}
+@media (min-width: 640px) {
+  .btn-add-action:active {
+    transform: translateY(3px) !important;
+    box-shadow: 0 2px 0 #730425 !important;
+  }
+}
+.btn-add-action * {
+  color: #ffffff !important;
+}
+
+/* 2. Bargain Action Button (#e1a800 with #795900 shadow) */
+.btn-bargain-action {
+  background-color: #e1a800 !important;
+  color: #ffffff !important;
+  box-shadow: 0 3px 0 #795900 !important;
+  border: none !important;
+  transition: transform 0.1s ease, box-shadow 0.1s ease;
+}
+@media (min-width: 640px) {
+  .btn-bargain-action {
+    box-shadow: 0 5px 0 #795900 !important;
+  }
+}
+.btn-bargain-action:active {
+  transform: translateY(2px) !important;
+  box-shadow: 0 1px 0 #795900 !important;
+}
+@media (min-width: 640px) {
+  .btn-bargain-action:active {
+    transform: translateY(3px) !important;
+    box-shadow: 0 2px 0 #795900 !important;
+  }
+}
+.btn-bargain-action * {
+  color: #ffffff !important;
+}
+
+/* 3. Primary Action Button (#00668a with #004965 shadow) */
+.btn-primary-action {
+  background-color: #00668a !important;
+  color: #ffffff !important;
+  box-shadow: 0 3px 0 #004965 !important;
+  border: none !important;
+  transition: transform 0.1s ease, box-shadow 0.1s ease;
+}
+@media (min-width: 640px) {
+  .btn-primary-action {
+    box-shadow: 0 5px 0 #004965 !important;
+  }
+}
+.btn-primary-action:active {
+  transform: translateY(2px) !important;
+  box-shadow: 0 1px 0 #004965 !important;
+}
+@media (min-width: 640px) {
+  .btn-primary-action:active {
+    transform: translateY(3px) !important;
+    box-shadow: 0 2px 0 #004965 !important;
+  }
+}
+.btn-primary-action * {
+  color: #ffffff !important;
+}
+
+/* -------------------------------------------------------------
+   ROTATING CHUNKY BOTTOM SHADOWS FOR CARDS
+   (#c4e7ff, #ffdadc, #ffdf9f)
+   ------------------------------------------------------------- */
+.card-shadow-blue {
+  box-shadow: 0 6px 0 #c4e7ff !important;
+}
+@media (min-width: 640px) {
+  .card-shadow-blue {
+    box-shadow: 0 8px 0 #c4e7ff !important;
   }
 }
 
-body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+.card-shadow-pink {
+  box-shadow: 0 6px 0 #ffdadc !important;
+}
+@media (min-width: 640px) {
+  .card-shadow-pink {
+    box-shadow: 0 8px 0 #ffdadc !important;
+  }
+}
+
+.card-shadow-yellow {
+  box-shadow: 0 6px 0 #ffdf9f !important;
+}
+@media (min-width: 640px) {
+  .card-shadow-yellow {
+    box-shadow: 0 8px 0 #ffdf9f !important;
+  }
+}
+
+/* Material Symbols font fallback class */
+.material-symbols-outlined {
+  font-family: 'Material Symbols Outlined';
+  font-weight: normal;
+  font-style: normal;
+  font-size: 24px;
+  line-height: 1;
+  letter-spacing: normal;
+  text-transform: none;
+  display: inline-block;
+  white-space: nowrap;
+  word-wrap: normal;
+  direction: ltr;
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+  -moz-osx-font-smoothing: grayscale;
 }

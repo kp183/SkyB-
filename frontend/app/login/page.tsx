@@ -2,7 +2,6 @@
 
 import { useState } from "react";
 import Link from "next/link";
-import { Sparkles, ArrowRight, Lock, Mail } from "lucide-react";
 import { api } from "@/lib/api";
 
 export default function LoginPage() {
@@ -41,25 +40,32 @@ export default function LoginPage() {
   };
 
   return (
-    <div className="mx-auto max-w-md px-4 py-16">
-      <div className="rounded-3xl border border-slate-200 bg-white p-8 shadow-xl space-y-6">
+    <div className="mx-auto max-w-md px-4 py-12">
+      <div className="rounded-2xl bg-surface-container-lowest p-8 shadow-[0_8px_0_#c4e7ff] space-y-6 border border-surface-container-high">
         <div className="text-center space-y-2">
-          <div className="mx-auto flex h-12 w-12 items-center justify-center rounded-2xl bg-gradient-to-tr from-sky-400 to-indigo-500 text-white shadow-md shadow-sky-200">
-            <Sparkles className="h-6 w-6" />
+          <div className="mx-auto flex h-14 w-14 items-center justify-center rounded-full bg-primary-container text-on-primary shadow-[0_3px_0_#00668a]">
+            <span className="material-symbols-outlined text-[28px]">lock</span>
           </div>
-          <h1 className="text-2xl font-black text-slate-900">Welcome Back</h1>
-          <p className="text-xs text-slate-500">Sign in to access your safe shopping cart and bargain history</p>
+          <h1 className="font-headline-xl text-headline-xl text-on-surface">
+            Sign In to skyB
+          </h1>
+          <p className="font-body-sm text-body-sm text-on-surface-variant">
+            Sign in to view your loot cart, orders, and bargained deals
+          </p>
         </div>
 
         {error && (
-          <div className="rounded-2xl border border-rose-200 bg-rose-50 p-3 text-xs font-semibold text-rose-700 text-center">
-            {error}
+          <div className="rounded-xl bg-error-container p-3 text-on-error-container font-body-sm text-body-sm text-center shadow-[0_2px_0_#ffdad6] flex items-center justify-center gap-2">
+            <span className="material-symbols-outlined text-[18px]">error</span>
+            <span>{error}</span>
           </div>
         )}
 
         <form onSubmit={handleLogin} className="space-y-4">
           <div>
-            <label className="block text-xs font-bold text-slate-700 mb-1">Email Address</label>
+            <label className="block font-label-md text-label-md text-on-surface mb-1 font-bold">
+              Email Address
+            </label>
             <div className="relative">
               <input
                 type="email"
@@ -69,19 +75,27 @@ export default function LoginPage() {
                   if (fieldErrors.email) setFieldErrors({ ...fieldErrors, email: "" });
                 }}
                 required
-                className={`w-full rounded-2xl border py-2.5 pl-10 pr-4 text-xs focus:outline-none ${
-                  fieldErrors.email ? "border-rose-400 focus:border-rose-500 bg-rose-50/20" : "border-slate-300 focus:border-sky-500"
+                className={`w-full h-12 rounded-full border pl-11 pr-4 font-body-md text-body-md text-on-surface focus:outline-none bg-surface-container-low ${
+                  fieldErrors.email
+                    ? "border-secondary bg-secondary-fixed/20"
+                    : "border-surface-container-high focus:border-primary shadow-[0_2px_0_#bdc8d1]"
                 }`}
               />
-              <Mail className="absolute left-3.5 top-3 h-4 w-4 text-slate-400" />
+              <span className="material-symbols-outlined absolute left-3.5 top-3 text-[20px] text-on-surface-variant pointer-events-none">
+                mail
+              </span>
             </div>
             {fieldErrors.email && (
-              <p className="mt-1 text-[11px] font-semibold text-rose-600">{fieldErrors.email}</p>
+              <p className="mt-1 font-label-sm text-[11px] font-bold text-secondary">
+                {fieldErrors.email}
+              </p>
             )}
           </div>
 
           <div>
-            <label className="block text-xs font-bold text-slate-700 mb-1">Password</label>
+            <label className="block font-label-md text-label-md text-on-surface mb-1 font-bold">
+              Password
+            </label>
             <div className="relative">
               <input
                 type="password"
@@ -91,36 +105,52 @@ export default function LoginPage() {
                   if (fieldErrors.password) setFieldErrors({ ...fieldErrors, password: "" });
                 }}
                 required
-                className={`w-full rounded-2xl border py-2.5 pl-10 pr-4 text-xs focus:outline-none ${
-                  fieldErrors.password ? "border-rose-400 focus:border-rose-500 bg-rose-50/20" : "border-slate-300 focus:border-sky-500"
+                className={`w-full h-12 rounded-full border pl-11 pr-4 font-body-md text-body-md text-on-surface focus:outline-none bg-surface-container-low ${
+                  fieldErrors.password
+                    ? "border-secondary bg-secondary-fixed/20"
+                    : "border-surface-container-high focus:border-primary shadow-[0_2px_0_#bdc8d1]"
                 }`}
               />
-              <Lock className="absolute left-3.5 top-3 h-4 w-4 text-slate-400" />
+              <span className="material-symbols-outlined absolute left-3.5 top-3 text-[20px] text-on-surface-variant pointer-events-none">
+                key
+              </span>
             </div>
             {fieldErrors.password && (
-              <p className="mt-1 text-[11px] font-semibold text-rose-600">{fieldErrors.password}</p>
+              <p className="mt-1 font-label-sm text-[11px] font-bold text-secondary">
+                {fieldErrors.password}
+              </p>
             )}
           </div>
 
           <button
             type="submit"
             disabled={loading}
-            className="w-full flex items-center justify-center gap-2 rounded-2xl bg-sky-500 hover:bg-sky-600 text-white py-3 text-xs font-bold shadow-md shadow-sky-200 transition-colors"
+            className="w-full flex items-center justify-center gap-2 rounded-full bg-primary text-on-primary py-3.5 font-headline-md text-headline-md shadow-[0_4px_0_#004965] hover:bg-on-primary-container active:translate-y-[2px] active:shadow-[0_1px_0_#004965] transition-all cursor-pointer"
           >
-            {loading ? "Signing in..." : "Sign In"} <ArrowRight className="h-4 w-4" />
+            <span>{loading ? "Signing in..." : "Sign In to Playground"}</span>
+            <span className="material-symbols-outlined text-[18px]">arrow_forward</span>
           </button>
         </form>
 
-        <div className="rounded-2xl bg-slate-50 p-3 text-[11px] text-slate-500 space-y-1 border border-slate-100">
-          <p className="font-bold text-slate-700">Demo Accounts Seeded:</p>
-          <p>Customer: <code className="text-sky-600">parent@skyb.com</code> / <code className="text-sky-600">Parent@123</code></p>
-          <p>Admin: <code className="text-amber-600">admin@skyb.com</code> / <code className="text-amber-600">Admin@123</code></p>
+        <div className="rounded-xl bg-surface-container-low p-4 font-body-sm text-[12px] text-on-surface-variant space-y-1.5 border border-surface-container-high shadow-[0_2px_0_#bdc8d1]">
+          <p className="font-bold text-on-surface flex items-center gap-1.5">
+            <span className="material-symbols-outlined text-primary text-[18px]">badge</span>
+            Demo Evaluation Credentials:
+          </p>
+          <p>
+            Customer: <code className="text-primary font-bold">parent@skyb.com</code> /{" "}
+            <code className="text-primary font-bold">Parent@123</code>
+          </p>
+          <p>
+            Admin: <code className="text-secondary font-bold">admin@skyb.com</code> /{" "}
+            <code className="text-secondary font-bold">Admin@123</code>
+          </p>
         </div>
 
-        <p className="text-center text-xs text-slate-500">
+        <p className="text-center font-body-sm text-body-sm text-on-surface-variant">
           Don't have an account?{" "}
-          <Link href="/register" className="font-bold text-sky-600 hover:underline">
-            Register now
+          <Link href="/register" className="font-bold text-primary hover:underline">
+            Register here
           </Link>
         </p>
       </div>

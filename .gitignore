@@ -12,6 +12,8 @@ __pycache__/
 *$py.class
 *.sqlite
 *.db
+*.db*
+*.bak*
 
 # Node.js
 node_modules/

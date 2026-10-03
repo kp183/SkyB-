@@ -4,9 +4,9 @@ import { useEffect, useState } from "react";
 import { useParams } from "next/navigation";
 import Link from "next/link";
 import Image from "next/image";
-import { Sparkles, ShoppingBag, ArrowLeft, Star, Package, Check, ShieldCheck } from "lucide-react";
 import SafetyBadge from "@/components/SafetyBadge";
 import BargainChatModal from "@/components/BargainChatModal";
+import { getProductFallbackImage } from "@/components/ProductCard";
 import { api } from "@/lib/api";
 
 export default function ProductDetailPage() {
@@ -20,6 +20,8 @@ export default function ProductDetailPage() {
   const [isBargainOpen, setIsBargainOpen] = useState(false);
   const [isAdding, setIsAdding] = useState(false);
   const [addMessage, setAddMessage] = useState<string | null>(null);
+  const [isWishlisted, setIsWishlisted] = useState(false);
+  const [wishlistMsg, setWishlistMsg] = useState<string | null>(null);
 
   useEffect(() => {
     if (!id) return;
@@ -63,72 +65,164 @@ export default function ProductDetailPage() {
     }
   };
 
+  const handleToggleWishlist = async () => {
+    try {
+      if (isWishlisted) {
+        setIsWishlisted(false);
+        setWishlistMsg("Removed from wishlist");
+      } else {
+        await api.addToWishlist(product.id);
+        setIsWishlisted(true);
+        setWishlistMsg("Saved to Wishlist!");
+      }
+      setTimeout(() => setWishlistMsg(null), 2000);
+    } catch (err: any) {
+      if (err.status === 401) {
+        window.location.href = "/login";
+      } else {
+        setWishlistMsg(err.message || "Could not save to wishlist");
+        setTimeout(() => setWishlistMsg(null), 2500);
+      }
+    }
+  };
+
+  // Resolve product image with category fallback
+  const fallbackImg = getProductFallbackImage(product?.category_id, 0);
+  const initialImg =
+    product?.image_url && product.image_url.trim().length > 0
+      ? product.image_url
+      : fallbackImg;
+  const [imageSrc, setImageSrc] = useState(initialImg);
+
+  useEffect(() => {
+    if (product) {
+      const fb = getProductFallbackImage(product.category_id, 0);
+      setImageSrc(
+        product.image_url && product.image_url.trim().length > 0
+          ? product.image_url
+          : fb
+      );
+    }
+  }, [product]);
+
   if (loading) {
     return (
-      <div className="mx-auto max-w-5xl px-4 py-12 text-center text-slate-400">
-        Loading product details...
+      <div className="mx-auto max-w-5xl px-4 py-8 sm:px-6 lg:px-8 space-y-8 animate-pulse min-h-[750px]">
+        <div className="h-6 w-32 bg-surface-container-high rounded-full" />
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-8 items-start">
+          <div className="aspect-square w-full rounded-2xl bg-surface-container-low" />
+          <div className="space-y-4">
+            <div className="h-10 w-3/4 bg-surface-container-low rounded-full" />
+            <div className="h-8 w-1/3 bg-surface-container-low rounded-full" />
+            <div className="h-28 w-full bg-surface-container-low rounded-xl" />
+            <div className="h-12 w-full bg-surface-container-low rounded-full" />
+          </div>
+        </div>
       </div>
     );
   }
 
   if (!product) {
     return (
-      <div className="mx-auto max-w-5xl px-4 py-12 text-center">
-        <p className="text-sm font-semibold text-slate-700">Product not found.</p>
-        <Link href="/" className="mt-4 inline-block text-xs font-bold text-sky-600 hover:underline">
-          ← Back to Catalog
+      <div className="mx-auto max-w-5xl px-4 py-16 text-center bg-surface-container-lowest rounded-2xl shadow-[0_8px_0_#bdc8d1]">
+        <p className="font-headline-md text-headline-md text-on-surface">Product not found.</p>
+        <Link
+          href="/"
+          className="mt-4 inline-flex items-center gap-1.5 px-5 py-2.5 rounded-full bg-primary text-on-primary font-headline-md text-headline-md shadow-[0_3px_0_#004965]"
+        >
+          <span className="material-symbols-outlined text-[18px]">arrow_back</span>
+          <span>Back to Catalog</span>
         </Link>
       </div>
     );
   }
 
+  const averageRating =
+    reviews.length > 0
+      ? (
+          reviews.reduce((acc, r) => acc + (r.rating || 5), 0) / reviews.length
+        ).toFixed(1)
+      : null;
+
   return (
-    <div className="mx-auto max-w-5xl px-4 py-8 sm:px-6 lg:px-8 space-y-8">
-      <Link href="/" className="inline-flex items-center gap-1.5 text-xs font-semibold text-slate-500 hover:text-sky-600">
-        <ArrowLeft className="h-3.5 w-3.5" /> Back to Catalog
+    <div className="mx-auto max-w-5xl px-4 py-6 sm:px-6 lg:px-8 space-y-8">
+      <Link
+        href="/"
+        className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-surface-container-low text-on-surface hover:bg-surface-container font-label-md text-label-md shadow-[0_2px_0_#bdc8d1] transition-all"
+      >
+        <span className="material-symbols-outlined text-[18px]">arrow_back</span>
+        <span>Back to Play Catalog</span>
       </Link>
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-8 items-start">
         {/* Product Image */}
-        <div className="relative overflow-hidden rounded-3xl border border-slate-200 bg-white p-2 shadow-sm aspect-square">
+        <div className="relative overflow-hidden rounded-2xl bg-surface-container-low p-6 shadow-[0_8px_0_#c4e7ff] flex items-center justify-center aspect-square">
           <Image
-            src={product.image_url || "https://images.unsplash.com/photo-1522771930-78848d9293e8?w=800"}
-            alt={product.name || "SkyB kids product detail"}
-            fill
-            sizes="(max-width: 768px) 100vw, 50vw"
-            className="object-cover rounded-2xl p-2"
+            src={imageSrc}
+            alt={product.name || "Product image"}
+            width={400}
+            height={400}
+            className="w-full h-full object-contain hover:scale-105 transition-transform duration-300"
+            onError={() => setImageSrc(fallbackImg)}
             priority
           />
+          <button
+            onClick={handleToggleWishlist}
+            className={`absolute top-4 right-4 w-10 h-10 rounded-full bg-surface-container-lowest flex items-center justify-center shadow-[0_2px_0_#bdc8d1] transition-colors cursor-pointer ${
+              isWishlisted ? "text-secondary font-bold" : "text-on-surface-variant hover:text-secondary"
+            }`}
+            title="Save to Wishlist"
+          >
+            <span className="material-symbols-outlined text-[20px]">
+              {isWishlisted ? "favorite" : "favorite_border"}
+            </span>
+          </button>
         </div>
 
         {/* Product Info */}
-        <div className="space-y-5">
+        <div className="space-y-5 bg-surface-container-lowest p-6 rounded-2xl shadow-[0_8px_0_#ffdadc]">
           <div>
-            <div className="flex items-center gap-2 mb-2">
-              <span className="rounded-md bg-sky-50 text-sky-700 px-2 py-0.5 text-xs font-bold border border-sky-200">
-                Age: {product.age_group}
+            <div className="flex flex-wrap items-center gap-2 mb-3">
+              <span className="rounded-full bg-primary-fixed text-on-primary-fixed px-3 py-1 font-label-sm text-label-sm font-bold shadow-[0_2px_0_#7bd0ff]">
+                👶 Age: {product.age_group}
               </span>
               {product.size && (
-                <span className="rounded-md bg-amber-50 text-amber-700 px-2 py-0.5 text-xs font-bold border border-amber-200">
-                  Size: {product.size}
+                <span className="rounded-full bg-secondary-fixed text-on-secondary-fixed px-3 py-1 font-label-sm text-label-sm font-bold shadow-[0_2px_0_#fe7488]">
+                  📏 Size: {product.size}
                 </span>
               )}
-              <span className="rounded-md bg-slate-100 text-slate-600 px-2 py-0.5 text-xs font-semibold">
-                Stock: {product.stock_qty} in stock
+              <span className="rounded-full bg-surface-container text-on-surface px-3 py-1 font-label-sm text-label-sm font-bold">
+                📦 {product.stock_qty} in stock
               </span>
             </div>
 
-            <h1 className="text-2xl font-black text-slate-900 leading-snug">{product.name}</h1>
-            <p className="mt-2 text-2xl font-black text-slate-900">₹{product.price.toFixed(2)}</p>
+            <h1 className="font-headline-xl text-headline-xl text-on-surface leading-tight">
+              {product.name}
+            </h1>
+            <div className="mt-3 flex items-baseline gap-3">
+              <span className="font-display-lg text-headline-xl text-primary font-bold">
+                ₹{product.price.toFixed(2)}
+              </span>
+              <span className="font-body-md text-body-md text-on-surface-variant line-through">
+                ₹{(product.price * 1.25).toFixed(2)}
+              </span>
+              <span className="px-2.5 py-0.5 rounded-full bg-secondary-fixed text-on-secondary-container font-label-sm text-label-sm font-bold shadow-[0_1px_0_#fe7488]">
+                Save 20%
+              </span>
+            </div>
           </div>
 
           {/* Description */}
-          <div className="border-t border-slate-100 pt-4">
-            <h3 className="text-xs font-bold uppercase tracking-wider text-slate-400 mb-1">Product Description</h3>
-            <p className="text-xs text-slate-600 leading-relaxed">{product.description}</p>
+          <div className="border-t border-surface-container-high pt-4">
+            <h3 className="font-label-sm text-label-sm font-bold uppercase tracking-wider text-on-surface-variant mb-1.5">
+              Product Story &amp; Details
+            </h3>
+            <p className="font-body-md text-body-md text-on-surface-variant leading-relaxed">
+              {product.description}
+            </p>
           </div>
 
-          {/* AI Safety-First Badge */}
+          {/* Safety-First Badge */}
           <SafetyBadge
             score={product.safety_score}
             summary={product.safety_summary}
@@ -139,45 +233,79 @@ export default function ProductDetailPage() {
           <div className="pt-2 flex flex-col sm:flex-row gap-3">
             <button
               onClick={() => setIsBargainOpen(true)}
-              className="flex-1 flex items-center justify-center gap-2 rounded-2xl bg-gradient-to-r from-amber-400 to-amber-500 hover:from-amber-500 hover:to-amber-600 text-white py-3 px-4 text-xs font-bold shadow-md shadow-amber-200 transition-all"
+              className="flex-1 flex items-center justify-center gap-2 rounded-full bg-tertiary-container text-on-tertiary py-3.5 px-4 font-headline-md text-headline-md shadow-[0_4px_0_#795900] active:translate-y-[2px] active:shadow-[0_1px_0_#795900] transition-all cursor-pointer"
             >
-              <Sparkles className="h-4 w-4" /> Bargain with AI
+              <span className="material-symbols-outlined text-[20px]">smart_toy</span>
+              <span>Bargain with Bot</span>
             </button>
 
             <button
               onClick={handleAddToCart}
               disabled={isAdding}
-              className="flex-1 flex items-center justify-center gap-2 rounded-2xl bg-sky-500 hover:bg-sky-600 text-white py-3 px-4 text-xs font-bold shadow-md shadow-sky-200 transition-all"
+              className="flex-1 flex items-center justify-center gap-2 rounded-full bg-secondary-container text-on-secondary py-3.5 px-4 font-headline-md text-headline-md shadow-[0_4px_0_#730425] active:translate-y-[2px] active:shadow-[0_1px_0_#730425] transition-all cursor-pointer"
             >
-              <ShoppingBag className="h-4 w-4" /> Add to Cart
+              <span className="material-symbols-outlined text-[20px]">shopping_cart</span>
+              <span>{isAdding ? "Adding..." : "Add to Cart"}</span>
             </button>
           </div>
 
           {addMessage && (
-            <p className="text-center text-xs font-bold text-sky-600 animate-fade-in">{addMessage}</p>
+            <p className="text-center font-label-md text-label-md text-primary font-bold animate-pulse">
+              {addMessage}
+            </p>
+          )}
+          {wishlistMsg && (
+            <p className="text-center font-label-sm text-label-sm text-secondary font-bold">
+              {wishlistMsg}
+            </p>
           )}
         </div>
       </div>
 
-      {/* Reviews Section */}
-      <div className="border-t border-slate-200 pt-8 space-y-4">
-        <h2 className="text-lg font-bold text-slate-900">Customer Reviews & Ratings</h2>
+      {/* Real Reviews Section */}
+      <div className="border-t border-surface-container-high pt-8 space-y-4">
+        <div className="flex items-center justify-between">
+          <h2 className="font-headline-lg text-headline-lg text-on-surface">
+            Customer Reviews ({reviews.length})
+          </h2>
+          {averageRating && (
+            <div className="flex items-center gap-1 text-tertiary font-bold font-headline-md text-headline-md">
+              <span>⭐</span>
+              <span>{averageRating} / 5</span>
+            </div>
+          )}
+        </div>
+
         {reviews.length > 0 ? (
           <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
             {reviews.map((rev) => (
-              <div key={rev.id} className="rounded-2xl border border-slate-200 bg-white p-4 shadow-sm space-y-2">
-                <div className="flex items-center gap-1 text-amber-400">
-                  {Array.from({ length: rev.rating }).map((_, i) => (
-                    <Star key={i} className="h-3.5 w-3.5 fill-current" />
-                  ))}
+              <div
+                key={rev.id}
+                className="rounded-2xl bg-surface-container-lowest p-5 shadow-[0_4px_0_#bdc8d1] space-y-2.5 flex flex-col justify-between"
+              >
+                <div>
+                  <div className="text-tertiary text-sm">
+                    {"⭐".repeat(Math.min(rev.rating || 5, 5))}
+                  </div>
+                  <p className="mt-2 font-body-md text-body-md text-on-surface-variant italic leading-relaxed">
+                    &ldquo;{rev.comment}&rdquo;
+                  </p>
                 </div>
-                <p className="text-xs text-slate-600 italic">"{rev.comment}"</p>
-                <p className="text-[10px] font-semibold text-slate-400">Verified Parent Purchaser</p>
+                <div className="flex items-center gap-2 pt-2 border-t border-surface-container-high">
+                  <span className="material-symbols-outlined text-primary text-[18px]">
+                    verified
+                  </span>
+                  <span className="font-label-sm text-label-sm text-on-surface-variant font-bold">
+                    Verified Customer Purchase
+                  </span>
+                </div>
               </div>
             ))}
           </div>
         ) : (
-          <p className="text-xs text-slate-400">No reviews yet.</p>
+          <p className="font-body-md text-body-md text-on-surface-variant">
+            No customer reviews yet for this product.
+          </p>
         )}
       </div>
 

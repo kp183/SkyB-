@@ -1,140 +1,258 @@
 "use client";
 
+import React, { useState } from "react";
 import Link from "next/link";
-import { useState } from "react";
-import { Sparkles, ShoppingBag, ArrowRight } from "lucide-react";
 import Image from "next/image";
-import SafetyBadge from "./SafetyBadge";
-import BargainChatModal from "./BargainChatModal";
-import { api } from "@/lib/api";
+import { useRouter, usePathname } from "next/navigation";
+import { useSkyBot } from "@/context/SkyBotContext";
+import { api, getToken } from "@/lib/api";
+import Icon from "@/components/Icon";
+import PriceBlock from "@/components/ui/PriceBlock";
+import RatingStars from "@/components/ui/RatingStars";
+
+const ROTATING_CARD_SHADOWS = [
+  "card-shadow-blue",
+  "card-shadow-pink",
+  "card-shadow-yellow",
+];
+
+export interface ProductData {
+  id: number;
+  name: string;
+  description?: string;
+  category_id?: number;
+  subcategory?: string | null;
+  gender?: string | null;
+  price: number;
+  mrp?: number | null;
+  min_price?: number;
+  stock?: number;
+  age_group?: string;
+  age_min_months?: number | null;
+  age_max_months?: number | null;
+  image_url?: string | null;
+  safety_score?: "Good" | "Medium" | "Low" | string | null;
+  safety_summary?: string | null;
+  rating?: number | null;
+  review_count?: number | null;
+}
 
 interface ProductCardProps {
-  product: {
-    id: number;
-    name: string;
-    description: string;
-    price: number;
-    min_price: number;
-    age_group: string;
-    size?: string | null;
-    image_url?: string | null;
-    safety_score?: "Good" | "Medium" | "Low" | null;
-    safety_summary?: string | null;
-    safety_tags?: string[] | null;
-  };
+  product: ProductData;
+  index?: number;
   onCartUpdated?: () => void;
 }
 
-export default function ProductCard({ product, onCartUpdated }: ProductCardProps) {
-  const [isBargainOpen, setIsBargainOpen] = useState(false);
-  const [isAdding, setIsAdding] = useState(false);
-  const [message, setMessage] = useState<string | null>(null);
+function subcategoryToSlug(sub?: string | null): string {
+  if (!sub) return "general";
+  return sub
+    .toLowerCase()
+    .replace(/&/g, "")
+    .replace(/[^\w\s-]/g, "")
+    .trim()
+    .replace(/\s+/g, "-");
+}
 
-  const handleQuickAdd = async (e: React.MouseEvent) => {
+export function getProductFallbackImage(categoryId?: number, index: number = 0): string {
+  return "/catalog/general.svg";
+}
+
+export const ProductCard: React.FC<ProductCardProps> = ({
+  product,
+  index = 0,
+  onCartUpdated,
+}) => {
+  const router = useRouter();
+  const pathname = usePathname();
+  const { openSkyBot } = useSkyBot();
+
+  const [isAdding, setIsAdding] = useState(false);
+  const [isWishlisted, setIsWishlisted] = useState(false);
+  const [addFeedback, setAddFeedback] = useState<string | null>(null);
+
+  // Rotating chunky shadow
+  const shadowClass =
+    ROTATING_CARD_SHADOWS[index % ROTATING_CARD_SHADOWS.length];
+
+  // Image source resolution with subcategory fallback
+  const subcategorySlug = subcategoryToSlug(product.subcategory);
+  const fallbackSvg = `/catalog/${subcategorySlug}.svg`;
+  const [imgSrc, setImgSrc] = useState<string>(
+    product.image_url && product.image_url.trim().length > 0
+      ? product.image_url
+      : fallbackSvg
+  );
+
+  const requireAuthRedirect = (): boolean => {
+    const token = getToken();
+    if (!token) {
+      router.push(`/login?next=${encodeURIComponent(pathname || "/")}`);
+      return false;
+    }
+    return true;
+  };
+
+  const handleAddToCart = async (e: React.MouseEvent) => {
     e.preventDefault();
+    e.stopPropagation();
+
+    if (!requireAuthRedirect()) return;
+
     setIsAdding(true);
-    setMessage(null);
+    setAddFeedback(null);
     try {
       await api.addToCart(product.id, 1);
-      setMessage("Added to Cart!");
-      if (onCartUpdated) onCartUpdated();
-      setTimeout(() => setMessage(null), 2000);
-    } catch (err: any) {
-      if (err.status === 401) {
-        window.location.href = "/login";
-      } else {
-        setMessage(err.message || "Failed to add");
-        setTimeout(() => setMessage(null), 3000);
+      setAddFeedback("Added!");
+      if (typeof window !== "undefined") {
+        window.dispatchEvent(new Event("cart-updated"));
       }
+      onCartUpdated?.();
+      setTimeout(() => setAddFeedback(null), 1800);
+    } catch (err: any) {
+      setAddFeedback("Failed");
+      setTimeout(() => setAddFeedback(null), 2000);
     } finally {
       setIsAdding(false);
     }
   };
 
+  const handleBargainClick = (e: React.MouseEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+
+    if (!requireAuthRedirect()) return;
+
+    openSkyBot(product);
+  };
+
+  const handleWishlistToggle = async (e: React.MouseEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+
+    if (!requireAuthRedirect()) return;
+
+    try {
+      if (!isWishlisted) {
+        await api.addToWishlist(product.id);
+        setIsWishlisted(true);
+        if (typeof window !== "undefined") {
+          window.dispatchEvent(new Event("wishlist-updated"));
+        }
+      } else {
+        setIsWishlisted(false);
+      }
+    } catch (err) {
+      console.error("Wishlist update failed", err);
+    }
+  };
+
   return (
-    <>
-      <div className="group relative flex flex-col overflow-hidden rounded-2xl border border-slate-200/80 bg-white shadow-sm hover:shadow-md hover:border-sky-300 transition-all">
-        {/* Product Image & Badges */}
-        <Link href={`/product/${product.id}`} className="relative aspect-square w-full overflow-hidden bg-slate-100">
-          <Image
-            src={product.image_url || "https://images.unsplash.com/photo-1522771930-78848d9293e8?w=500&auto=format&fit=crop&q=60"}
-            alt={product.name || "SkyB kids product"}
-            fill
-            sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 25vw"
-            className="h-full w-full object-cover object-center group-hover:scale-105 transition-transform duration-300"
-          />
-          <div className="absolute top-2.5 left-2.5 flex flex-col gap-1">
-            <span className="rounded-md bg-white/90 px-2 py-0.5 text-[10px] font-bold text-slate-700 shadow-sm backdrop-blur">
-              {product.age_group}
-            </span>
-            {product.size && (
-              <span className="rounded-md bg-sky-500/90 px-2 py-0.5 text-[10px] font-bold text-white shadow-sm backdrop-blur">
-                Size: {product.size}
+    <article
+      className={`group relative rounded-xl bg-surface-container-lowest border border-surface-container p-3 sm:p-4 flex flex-col justify-between transition-transform duration-200 hover:-translate-y-1 ${shadowClass}`}
+    >
+      <div>
+        {/* Card Media Container */}
+        <div className="relative w-full aspect-square rounded-xl bg-surface-container-low overflow-hidden mb-3">
+          <Link href={`/product/${product.id}`} className="block w-full h-full">
+            <Image
+              src={imgSrc}
+              alt={product.name}
+              fill
+              sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 25vw"
+              className="object-cover transition-transform duration-300 group-hover:scale-105"
+              onError={() => setImgSrc(fallbackSvg)}
+            />
+          </Link>
+
+          {/* Top badges overlay */}
+          <div className="absolute top-2 left-2 flex flex-col gap-1 items-start pointer-events-none">
+            {product.stock !== undefined && product.stock <= 0 && (
+              <span className="px-2 py-0.5 rounded-full bg-error text-on-error font-label-sm text-[10px] font-bold shadow-[0_1px_0_#93000a]">
+                Out of Stock
+              </span>
+            )}
+            {product.age_group && (
+              <span className="px-2 py-0.5 rounded-full bg-surface-container-lowest/90 backdrop-blur text-primary font-label-sm text-[10px] font-extrabold shadow-[0_1px_0_#bdc8d1]">
+                {product.age_group}
               </span>
             )}
           </div>
-          <div className="absolute top-2.5 right-2.5">
-            <SafetyBadge score={product.safety_score} compact />
-          </div>
+
+          {/* Wishlist Heart Button */}
+          <button
+            type="button"
+            onClick={handleWishlistToggle}
+            aria-label={isWishlisted ? "Remove from wishlist" : "Add to wishlist"}
+            className="absolute top-2 right-2 w-8 h-8 rounded-full bg-surface-container-lowest/90 backdrop-blur hover:bg-surface-container text-on-surface-variant flex items-center justify-center shadow-[0_2px_0_#bdc8d1] active:scale-90 transition-all cursor-pointer"
+          >
+            <Icon
+              name="favorite"
+              className={`w-4 h-4 transition-colors ${
+                isWishlisted ? "text-secondary fill-current" : "text-outline"
+              }`}
+            />
+          </button>
+        </div>
+
+        {/* Rating row: fixed-height slot so cards keep identical height */}
+        <div className="mb-1.5">
+          <RatingStars
+            rating={product.rating}
+            reviewCount={product.review_count}
+            reserveSlot={true}
+          />
+        </div>
+
+        {/* Product Title */}
+        <Link href={`/product/${product.id}`} className="block group-hover:text-primary transition-colors">
+          <h3 className="font-label-lg text-label-lg font-bold text-on-surface leading-snug line-clamp-2 min-h-[44px]">
+            {product.name}
+          </h3>
         </Link>
 
-        {/* Details Content */}
-        <div className="flex flex-1 flex-col p-4">
-          <Link href={`/product/${product.id}`}>
-            <h3 className="text-sm font-bold text-slate-800 line-clamp-1 group-hover:text-sky-600 transition-colors">
-              {product.name}
-            </h3>
-          </Link>
-          <p className="mt-1 text-xs text-slate-500 line-clamp-2 leading-relaxed">
-            {product.description}
+        {/* Subcategory / Microcopy */}
+        {product.subcategory && (
+          <p className="font-body-sm text-[12px] text-on-surface-variant mt-1 truncate">
+            {product.subcategory}
           </p>
-
-          <div className="mt-auto pt-3 border-t border-slate-100 flex items-center justify-between">
-            <div>
-              <span className="text-base font-black text-slate-900">₹{product.price.toFixed(2)}</span>
-              <span className="block text-[10px] text-emerald-600 font-semibold">Bargainable with AI</span>
-            </div>
-
-            <div className="flex items-center gap-1.5">
-              <button
-                onClick={() => setIsBargainOpen(true)}
-                className="flex items-center gap-1 rounded-xl bg-gradient-to-r from-amber-400 to-amber-500 px-2.5 py-1.5 text-xs font-bold text-white shadow-sm shadow-amber-200 hover:from-amber-500 hover:to-amber-600 transition-all"
-                title="Negotiate price with AI"
-              >
-                <Sparkles className="h-3.5 w-3.5" /> Bargain
-              </button>
-
-              <button
-                onClick={handleQuickAdd}
-                disabled={isAdding}
-                className="flex items-center justify-center rounded-xl bg-sky-50 text-sky-600 p-2 hover:bg-sky-500 hover:text-white transition-colors"
-                title="Add to cart"
-              >
-                <ShoppingBag className="h-4 w-4" />
-              </button>
-            </div>
-          </div>
-
-          {message && (
-            <p className="mt-2 text-center text-xs font-medium text-sky-600 animate-fade-in">
-              {message}
-            </p>
-          )}
-        </div>
+        )}
       </div>
 
-      {/* Bargain AI Modal */}
-      {isBargainOpen && (
-        <BargainChatModal
-          product={product}
-          onClose={() => setIsBargainOpen(false)}
-          onAccepted={() => {
-            setIsBargainOpen(false);
-            if (onCartUpdated) onCartUpdated();
-            window.location.href = "/cart";
-          }}
-        />
-      )}
-    </>
+      {/* Pricing and Action Buttons */}
+      <div className="pt-3 border-t border-surface-container-low mt-2 space-y-3">
+        <PriceBlock price={product.price} mrp={product.mrp} size="md" />
+
+        <div className="grid grid-cols-2 gap-2">
+          {/* Bargain Button (golden #e1a800, shadow #795900) */}
+          <button
+            type="button"
+            onClick={handleBargainClick}
+            className="btn-bargain-action px-2 py-2 rounded-full font-label-sm text-[12px] font-bold flex items-center justify-center gap-1 cursor-pointer select-none"
+          >
+            <Icon name="smart_toy" className="w-4 h-4" />
+            <span>Bargain</span>
+          </button>
+
+          {/* Add to Cart Button (coral #fe7488, shadow #730425) */}
+          <button
+            type="button"
+            onClick={handleAddToCart}
+            disabled={isAdding || (product.stock !== undefined && product.stock <= 0)}
+            className="btn-add-action px-2 py-2 rounded-full font-label-sm text-[12px] font-bold flex items-center justify-center gap-1 cursor-pointer select-none"
+          >
+            {isAdding ? (
+              <span className="w-3.5 h-3.5 border-2 border-white border-t-transparent rounded-full animate-spin" />
+            ) : (
+              <>
+                <Icon name="shopping_bag" className="w-4 h-4" />
+                <span>{addFeedback || "Add"}</span>
+              </>
+            )}
+          </button>
+        </div>
+      </div>
+    </article>
   );
-}
+};
+
+export default ProductCard;

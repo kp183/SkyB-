@@ -7,7 +7,7 @@ class WishlistItem(Base):
     __tablename__ = "wishlist_items"
 
     id = Column(Integer, primary_key=True, index=True, autoincrement=True)
-    user_id = Column(Integer, ForeignKey("users.id", ondelete="CASCADE"), nullable=False)
+    user_id = Column(Integer, ForeignKey("users.id", ondelete="CASCADE"), nullable=False, index=True)
     product_id = Column(Integer, ForeignKey("products.id", ondelete="CASCADE"), nullable=False)
     watch_price = Column(Numeric(10, 2), nullable=True)
     notified = Column(Boolean, default=False, nullable=False)
