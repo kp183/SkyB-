@@ -11,6 +11,7 @@ Provisions initial schema tables and populates demo data:
 
 import os
 import sys
+import json
 from datetime import datetime, date
 from dotenv import load_dotenv
 
@@ -215,6 +216,46 @@ def seed_database():
 
         db.commit()
         print(f"[Seed] Seeded {len(seeded_products)} sample products.")
+
+        # 4b. Load Deterministic Catalog (catalog.json) Idempotently (upsert by name + category)
+        catalog_path = os.path.abspath(os.path.join(os.path.dirname(__file__), "data/catalog.json"))
+        if os.path.exists(catalog_path):
+            with open(catalog_path, "r", encoding="utf-8") as f:
+                catalog_data = json.load(f)
+
+            catalog_added = 0
+            for item in catalog_data:
+                cat_id = categories[item["category"]].id
+                prod = (
+                    db.query(Product)
+                    .filter(Product.name == item["name"], Product.category_id == cat_id)
+                    .first()
+                )
+                if not prod:
+                    prod = Product(
+                        name=item["name"],
+                        description=item["description"],
+                        category_id=cat_id,
+                        subcategory=item.get("subcategory"),
+                        gender=item.get("gender"),
+                        age_group=item["age_group"],
+                        age_min_months=item.get("age_min_months"),
+                        age_max_months=item.get("age_max_months"),
+                        size=item.get("size"),
+                        price=item["price"],
+                        mrp=item.get("mrp"),
+                        min_price=item["min_price"],
+                        max_price=item["max_price"],
+                        stock_qty=item["stock_qty"],
+                        image_url=item["image_url"],
+                        safety_tags=item.get("safety_tags"),
+                        safety_score=item.get("safety_score"),
+                        safety_summary=item.get("safety_summary"),
+                    )
+                    db.add(prod)
+                    catalog_added += 1
+            db.commit()
+            print(f"[Seed] Processed catalog.json ({len(catalog_data)} items, {catalog_added} newly inserted).")
 
         # 5. Seed Reviews on Products
         demo_reviews = [

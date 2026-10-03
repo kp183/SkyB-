@@ -121,10 +121,17 @@ def test_products_sort_discount():
 
 
 def test_products_meta_total():
-    res_all = client.get("/products?limit=100")
-    total = res_all.json()["meta"]["total"]
-    count_items = len(res_all.json()["data"])
-    assert total == count_items
+    db = SessionLocal()
+    try:
+        from backend.models.product import Product
+        expected_total = db.query(Product).count()
+    finally:
+        db.close()
+
+    res = client.get("/products?limit=100")
+    meta = res.json()["meta"]
+    assert meta["total"] == expected_total
+    assert len(res.json()["data"]) == min(expected_total, 100)
 
 
 def test_categories_endpoint():
