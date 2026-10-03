@@ -7,9 +7,14 @@ class ProductBase(BaseModel):
     name: str
     description: str
     category_id: int
+    subcategory: Optional[str] = None
+    gender: Optional[str] = None
     age_group: str
+    age_min_months: Optional[int] = None
+    age_max_months: Optional[int] = None
     size: Optional[str] = None
     price: float = Field(..., gt=0)
+    mrp: Optional[float] = Field(None, gt=0)
     min_price: float = Field(..., gt=0)
     max_price: float = Field(..., gt=0)
     stock_qty: int = Field(0, ge=0)
@@ -25,9 +30,14 @@ class ProductUpdate(BaseModel):
     name: Optional[str] = None
     description: Optional[str] = None
     category_id: Optional[int] = None
+    subcategory: Optional[str] = None
+    gender: Optional[str] = None
     age_group: Optional[str] = None
+    age_min_months: Optional[int] = None
+    age_max_months: Optional[int] = None
     size: Optional[str] = None
     price: Optional[float] = Field(None, gt=0)
+    mrp: Optional[float] = Field(None, gt=0)
     min_price: Optional[float] = Field(None, gt=0)
     max_price: Optional[float] = Field(None, gt=0)
     stock_qty: Optional[int] = Field(None, ge=0)

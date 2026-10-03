@@ -66,13 +66,22 @@ def seed_database():
 
         db.commit()
 
-        # 3. Seed Categories
+        # 3. Seed Categories (Idempotent by name)
         category_names = [
             "Clothing",
             "Toys",
             "Footwear",
             "Baby Care",
             "School Accessories",
+            "Boys Fashion",
+            "Girls Fashion",
+            "Diapering",
+            "Gear",
+            "Feeding",
+            "Bath & Skincare",
+            "Nursery",
+            "Health & Safety",
+            "School Essentials",
         ]
         categories = {}
         for name in category_names:
@@ -166,14 +175,22 @@ def seed_database():
         ]
 
         seeded_products = []
+        from backend.scripts.migrate_additive import parse_age_group
+
         for pdata in sample_products:
             prod = db.query(Product).filter(Product.name == pdata["name"]).first()
+            min_m, max_m = parse_age_group(pdata["age_group"])
+            mrp_val = round(float(pdata["price"]) * 1.25, 2)
             if not prod:
                 prod = Product(
                     name=pdata["name"],
                     description=pdata["description"],
                     category_id=categories[pdata["category"]].id,
                     age_group=pdata["age_group"],
+                    age_min_months=min_m,
+                    age_max_months=max_m,
+                    gender="unisex",
+                    mrp=mrp_val,
                     size=pdata["size"],
                     price=pdata["price"],
                     min_price=pdata["min_price"],
@@ -186,6 +203,14 @@ def seed_database():
                 )
                 db.add(prod)
                 db.flush()
+            else:
+                if prod.age_min_months is None:
+                    prod.age_min_months = min_m
+                    prod.age_max_months = max_m
+                if prod.mrp is None:
+                    prod.mrp = mrp_val
+                if prod.gender is None:
+                    prod.gender = "unisex"
             seeded_products.append(prod)
 
         db.commit()

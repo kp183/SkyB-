@@ -23,9 +23,12 @@ load_dotenv()
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl="/auth/login", auto_error=False)
 
 
-def success_response(data: Any = None) -> Dict[str, Any]:
-    """Uniform JSON success envelope: { "data": ..., "error": null }"""
-    return {"data": data, "error": None}
+def success_response(data: Any = None, meta: Optional[Dict[str, Any]] = None) -> Dict[str, Any]:
+    """Uniform JSON success envelope: { "data": ..., "error": null } with optional meta."""
+    res: Dict[str, Any] = {"data": data, "error": None}
+    if meta is not None:
+        res["meta"] = meta
+    return res
 
 
 def error_response(message: str) -> Dict[str, Any]:

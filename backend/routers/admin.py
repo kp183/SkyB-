@@ -1,3 +1,4 @@
+from datetime import datetime, timedelta
 from typing import Optional
 from fastapi import APIRouter, Depends, HTTPException, Query, status
 from pydantic import BaseModel
@@ -40,6 +41,48 @@ def get_dashboard_stats(db: Session = Depends(get_db)):
             for p in low_stock_products
         ],
     })
+
+
+@router.get("/chart-data")
+def get_admin_chart_data(
+    days: int = Query(14, ge=1, le=30, description="Historical range in days (max 30)"),
+    db: Session = Depends(get_db),
+):
+    """
+    Returns historical daily revenue and order counts for the past `days` days.
+    Zero-filled for days with no qualifying orders.
+    Counts only orders with status: placed, confirmed, shipped, or delivered.
+    """
+    today = datetime.utcnow().date()
+    start_date = today - timedelta(days=days - 1)
+
+    daily_map = {}
+    for i in range(days):
+        d = start_date + timedelta(days=i)
+        d_str = d.strftime("%Y-%m-%d")
+        daily_map[d_str] = {"date": d_str, "revenue": 0.0, "order_count": 0}
+
+    valid_statuses = ["placed", "confirmed", "shipped", "delivered"]
+    orders = (
+        db.query(Order)
+        .filter(
+            Order.status.in_(valid_statuses),
+            Order.created_at >= datetime.combine(start_date, datetime.min.time()),
+        )
+        .all()
+    )
+
+    for o in orders:
+        if o.created_at:
+            d_str = o.created_at.date().strftime("%Y-%m-%d")
+            if d_str in daily_map:
+                daily_map[d_str]["revenue"] += float(o.total_amount)
+                daily_map[d_str]["order_count"] += 1
+
+    for row in daily_map.values():
+        row["revenue"] = round(row["revenue"], 2)
+
+    return success_response([daily_map[k] for k in sorted(daily_map.keys())])
 
 
 @router.get("/orders")
