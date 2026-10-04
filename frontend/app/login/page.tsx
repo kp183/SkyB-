@@ -26,13 +26,24 @@ export default function LoginPage() {
 
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!validate()) return;
+    console.log("=== HANDLE LOGIN INVOKED ===", email, password);
+    if (!validate()) {
+      console.log("Validation failed", fieldErrors);
+      return;
+    }
     setLoading(true);
     setError(null);
     try {
-      await api.login(email.trim(), password);
-      window.location.href = "/";
+      console.log("Calling api.login...");
+      const res = await api.login(email.trim(), password);
+      console.log("api.login returned:", res);
+      const params = typeof window !== "undefined" ? new URLSearchParams(window.location.search) : null;
+      const nextParam = params?.get("next");
+      const target = nextParam && nextParam.startsWith("/") && !nextParam.startsWith("//") ? nextParam : "/";
+      console.log("Navigating to target:", target);
+      window.location.href = target;
     } catch (err: any) {
+      console.error("Login catch error:", err);
       setError(err.message || "Invalid credentials");
     } finally {
       setLoading(false);
@@ -123,6 +134,7 @@ export default function LoginPage() {
           </div>
 
           <button
+            id="login-submit-btn"
             type="submit"
             disabled={loading}
             className="w-full flex items-center justify-center gap-2 rounded-full bg-primary text-on-primary py-3.5 font-headline-md text-headline-md shadow-[0_4px_0_#004965] hover:bg-on-primary-container active:translate-y-[2px] active:shadow-[0_1px_0_#004965] transition-all cursor-pointer"

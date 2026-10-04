@@ -34,9 +34,9 @@ pip install -r backend/requirements.txt
 # Copy .env.example to .env in the repo root (or backend/.env)
 cp .env.example .env
 
-# 4. Seed database with demo catalog, admin & customer accounts
-# ALWAYS run seed as a module from repo root:
-python -m backend.seed
+# 4. Seed database with full catalog, admin & customer accounts
+# Run the single seed command from repo root (idempotent; seeds 14 categories, 5 original products, and 407 catalog items = 412 total):
+python seed.py
 
 # 5. Start the FastAPI backend server
 python -m uvicorn backend.main:app --reload

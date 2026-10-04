@@ -167,17 +167,16 @@ export default function BottomNav() {
 
           {/* 5. Account */}
           <Link
-            href={isLoggedIn ? "/account/child" : "/login"}
+            href="/account/child"
+            onClick={(e) => handleProtectedTab(e, "/account/child")}
             className={`flex flex-col items-center justify-center gap-0.5 flex-1 h-full py-1 transition-all active:scale-95 ${
-              pathname.startsWith("/account") || pathname === "/login"
+              pathname.startsWith("/account")
                 ? "text-primary font-bold"
                 : "text-on-surface-variant hover:text-primary"
             }`}
           >
             <Icon name="account_circle" className="w-6 h-6" />
-            <span className="font-label-sm text-[11px] tracking-tight">
-              {isLoggedIn ? "Account" : "Sign In"}
-            </span>
+            <span className="font-label-sm text-[11px] tracking-tight">Account</span>
           </Link>
         </div>
       </nav>

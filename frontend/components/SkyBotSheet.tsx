@@ -26,12 +26,60 @@ export const SkyBotSheet: React.FC = () => {
 
   const [inputVal, setInputVal] = useState("");
   const chatBottomRef = useRef<HTMLDivElement>(null);
+  const panelRef = useRef<HTMLElement>(null);
+  const triggerRef = useRef<HTMLElement | null>(null);
 
-  // Esc key closes SkyBot panel
+  // Focus trap, trigger restoration, and Escape listener
+  useEffect(() => {
+    if (isOpen) {
+      triggerRef.current = (document.activeElement as HTMLElement) || null;
+      const timer = setTimeout(() => {
+        const focusables = panelRef.current?.querySelectorAll<HTMLElement>(
+          'button:not([disabled]), [href], input:not([disabled]), select:not([disabled]), textarea:not([disabled]), [tabindex]:not([tabindex="-1"])'
+        );
+        if (focusables && focusables.length > 0) {
+          focusables[0].focus();
+        }
+      }, 50);
+
+      return () => {
+        clearTimeout(timer);
+        if (triggerRef.current && typeof triggerRef.current.focus === "function") {
+          triggerRef.current.focus();
+        }
+      };
+    }
+  }, [isOpen]);
+
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
-      if (e.key === "Escape" && isOpen) {
+      if (!isOpen) return;
+      if (e.key === "Escape") {
         closeSkyBot();
+        return;
+      }
+      if (e.key === "Tab" && panelRef.current) {
+        const focusables = Array.from(
+          panelRef.current.querySelectorAll<HTMLElement>(
+            'button:not([disabled]), [href], input:not([disabled]), select:not([disabled]), textarea:not([disabled]), [tabindex]:not([tabindex="-1"])'
+          )
+        ).filter((el) => el.offsetParent !== null || el.offsetWidth > 0);
+
+        if (focusables.length === 0) return;
+        const first = focusables[0];
+        const last = focusables[focusables.length - 1];
+
+        if (e.shiftKey) {
+          if (document.activeElement === first || !panelRef.current.contains(document.activeElement)) {
+            e.preventDefault();
+            last.focus();
+          }
+        } else {
+          if (document.activeElement === last || !panelRef.current.contains(document.activeElement)) {
+            e.preventDefault();
+            first.focus();
+          }
+        }
       }
     };
     window.addEventListener("keydown", handleKeyDown);
@@ -77,6 +125,7 @@ export const SkyBotSheet: React.FC = () => {
 
       {/* Desktop Right Slide-Over (sm and up) & Mobile Bottom Sheet */}
       <aside
+        ref={panelRef}
         role="dialog"
         aria-modal="true"
         aria-label="SkyBot Bargain AI"

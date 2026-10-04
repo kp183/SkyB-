@@ -195,6 +195,20 @@ def list_products(
             else_=0.0,
         )
         query = query.order_by(discount_expr.desc(), Product.id.asc())
+    elif sort == "rating":
+        rating_sub = (
+            db.query(
+                Review.product_id,
+                func.coalesce(func.avg(Review.rating), 0).label("avg_rating"),
+            )
+            .group_by(Review.product_id)
+            .subquery()
+        )
+        query = query.outerjoin(rating_sub, Product.id == rating_sub.c.product_id)
+        query = query.order_by(
+            func.coalesce(rating_sub.c.avg_rating, 0).desc(),
+            Product.id.asc(),
+        )
     else:
         # Default fallback
         query = query.order_by(Product.id.desc())

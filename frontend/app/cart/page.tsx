@@ -31,6 +31,9 @@ export default function CartPage() {
     if (newQty < 1) return;
     try {
       await api.updateCartItem(itemId, newQty);
+      if (typeof window !== "undefined") {
+        window.dispatchEvent(new Event("cart-updated"));
+      }
       loadCart();
     } catch (err) {
       console.error(err);
@@ -40,6 +43,9 @@ export default function CartPage() {
   const handleRemove = async (itemId: number) => {
     try {
       await api.deleteCartItem(itemId);
+      if (typeof window !== "undefined") {
+        window.dispatchEvent(new Event("cart-updated"));
+      }
       loadCart();
     } catch (err) {
       console.error(err);

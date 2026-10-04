@@ -139,7 +139,21 @@ export const ProductCard: React.FC<ProductCardProps> = ({
           window.dispatchEvent(new Event("wishlist-updated"));
         }
       } else {
+        try {
+          const wishItems = await api.getWishlist();
+          const found = Array.isArray(wishItems)
+            ? wishItems.find((w: any) => w.product_id === product.id || w.product?.id === product.id)
+            : null;
+          if (found) {
+            await api.deleteWishlistItem(found.id);
+          }
+        } catch (e) {
+          // ignore
+        }
         setIsWishlisted(false);
+        if (typeof window !== "undefined") {
+          window.dispatchEvent(new Event("wishlist-updated"));
+        }
       }
     } catch (err) {
       console.error("Wishlist update failed", err);

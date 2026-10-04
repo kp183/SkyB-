@@ -253,6 +253,20 @@ export const COLLECTIONS: CollectionConfig[] = [
   },
 ];
 
+export const SLUG_TO_CATEGORY_IDS: Record<string, number[]> = {
+  "boys-fashion": [6, 1],
+  "girls-fashion": [7, 1],
+  footwear: [3],
+  toys: [2],
+  diapering: [8],
+  gear: [9],
+  feeding: [10],
+  "bath-skincare": [11, 4],
+  nursery: [12],
+  "health-safety": [13],
+  "school-essentials": [14, 5],
+};
+
 export function getCategoryBySlug(slug: string): CategoryConfig | undefined {
   return CATEGORIES.find((c) => c.slug === slug);
 }

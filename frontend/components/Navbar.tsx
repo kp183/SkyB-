@@ -34,7 +34,7 @@ export default function Navbar() {
   const [wishlistCount, setWishlistCount] = useState<number>(0);
 
   // Pincode state (client-side only, 6 digits)
-  const [pincode, setPincode] = useState("400001");
+  const [pincode, setPincode] = useState("");
   const [isPincodeModalOpen, setIsPincodeModalOpen] = useState(false);
   const [pincodeInput, setPincodeInput] = useState("");
   const [pincodeError, setPincodeError] = useState("");
@@ -222,24 +222,33 @@ export default function Navbar() {
               </Link>
 
               {/* Pincode Deliver To (Desktop) */}
-              <div className="hidden xl:flex items-center gap-1.5 px-3 py-1.5 bg-surface-container-low rounded-full">
+              <button
+                type="button"
+                onClick={() => {
+                  setPincodeInput(pincode);
+                  setPincodeError("");
+                  setIsPincodeModalOpen(true);
+                }}
+                className="hidden xl:flex items-center gap-1.5 px-3 py-1.5 bg-surface-container-low hover:bg-surface-container rounded-full text-left transition-colors cursor-pointer"
+              >
                 <Icon name="pin_drop" className="w-4 h-4 text-primary" />
                 <div className="flex flex-col text-left leading-tight">
-                  <span className="font-label-sm text-[10px] text-on-surface-variant font-bold">
-                    Deliver to
-                  </span>
-                  <span className="font-label-sm text-[11px] text-on-surface font-extrabold flex items-center gap-1">
-                    PIN {pincode}
-                    <button
-                      type="button"
-                      onClick={() => setIsPincodeModalOpen(true)}
-                      className="text-primary underline hover:text-primary-container cursor-pointer ml-0.5"
-                    >
-                      Edit
-                    </button>
-                  </span>
+                  {pincode ? (
+                    <>
+                      <span className="font-label-sm text-[10px] text-on-surface-variant font-bold">
+                        Deliver to: {pincode}
+                      </span>
+                      <span className="font-label-sm text-[10px] text-primary underline">
+                        Edit
+                      </span>
+                    </>
+                  ) : (
+                    <span className="font-label-sm text-[11px] text-on-surface font-extrabold">
+                      Enter pincode
+                    </span>
+                  )}
                 </div>
-              </div>
+              </button>
             </div>
 
             {/* Center section: Search Bar (Desktop) */}
@@ -440,6 +449,9 @@ export default function Navbar() {
            ------------------------------------------------------------- */}
         {activeMenuTab && (
           <div
+            id="desktop-megamenu"
+            role="region"
+            aria-label="Department Mega Menu"
             ref={megaMenuRef}
             onMouseEnter={() => {
               if (hoverTimeoutRef.current) clearTimeout(hoverTimeoutRef.current);
@@ -613,7 +625,7 @@ export default function Navbar() {
               <input
                 type="text"
                 maxLength={6}
-                placeholder="Enter 6-digit PIN (e.g. 400001)"
+                placeholder="Enter 6-digit PIN"
                 value={pincodeInput}
                 onChange={(e) => {
                   setPincodeInput(e.target.value.replace(/\D/g, ""));

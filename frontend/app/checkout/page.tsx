@@ -6,9 +6,7 @@ import { api } from "@/lib/api";
 
 export default function CheckoutPage() {
   const [cart, setCart] = useState<any>(null);
-  const [address, setAddress] = useState(
-    "Flat 402, Green Valley Apartments, Andheri West, Mumbai, MH - 400053"
-  );
+  const [address, setAddress] = useState("");
   const [addressError, setAddressError] = useState<string | null>(null);
   const [loading, setLoading] = useState(true);
   const [isProcessing, setIsProcessing] = useState(false);

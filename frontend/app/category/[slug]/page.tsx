@@ -1,19 +1,84 @@
-// TODO-PHASE-2: Full Category Listing page with multi-facet filters & sorting
 "use client";
 
-import React, { use } from "react";
-import { getCategoryBySlug } from "@/config/navigation";
-import EmptyState from "@/components/ui/EmptyState";
+import React, { use, useEffect, useState, Suspense } from "react";
+import { useSearchParams } from "next/navigation";
+import { getCategoryBySlug, CategoryConfig, SLUG_TO_CATEGORY_IDS } from "@/config/navigation";
 import SectionHeader from "@/components/ui/SectionHeader";
+import ProductCard from "@/components/ProductCard";
+import Skeleton from "@/components/ui/Skeleton";
+import EmptyState from "@/components/ui/EmptyState";
+import { api } from "@/lib/api";
 
 interface CategoryPageProps {
   params: Promise<{ slug: string }>;
 }
 
-export default function CategoryPage({ params }: CategoryPageProps) {
-  const { slug } = use(params);
-  const category = getCategoryBySlug(slug);
+function CategoryContent({ slug }: { slug: string }) {
+  const searchParams = useSearchParams();
+  const category: CategoryConfig | undefined = getCategoryBySlug(slug);
+
+  const [products, setProducts] = useState<any[]>([]);
+  const [totalCount, setTotalCount] = useState<number>(0);
+  const [loading, setLoading] = useState(true);
+
+  const subcategory = searchParams.get("subcategory") || undefined;
+  const maxPrice = searchParams.get("max_price") ? Number(searchParams.get("max_price")) : undefined;
+  const minPrice = searchParams.get("min_price") ? Number(searchParams.get("min_price")) : undefined;
+  const sort = searchParams.get("sort") || "popular";
+  const q = searchParams.get("q") || undefined;
+
   const title = slug === "all" ? "All Products & Aisles" : category?.name || `Category: ${slug}`;
+
+  useEffect(() => {
+    async function loadProducts() {
+      setLoading(true);
+      try {
+        const queryParams: any = {
+          limit: 48,
+          sort,
+        };
+
+        if (slug !== "all") {
+          const ids = SLUG_TO_CATEGORY_IDS[slug];
+          if (ids && ids.length > 0) {
+            queryParams.category_ids = ids.join(",");
+          }
+          if (category?.genderFilter) {
+            queryParams.gender = category.genderFilter;
+          }
+        }
+
+        if (subcategory) queryParams.subcategory = subcategory;
+        if (maxPrice !== undefined) queryParams.max_price = maxPrice;
+        if (minPrice !== undefined) queryParams.min_price = minPrice;
+        if (q) queryParams.q = q;
+
+        const res = await api.getProductsWithMeta(queryParams);
+        if (res && res.data) {
+          setProducts(res.data);
+          setTotalCount(res.meta?.total ?? res.data.length);
+        } else if (Array.isArray(res)) {
+          setProducts(res);
+          setTotalCount(res.length);
+        } else {
+          setProducts([]);
+          setTotalCount(0);
+        }
+      } catch (err) {
+        console.error("Failed to load category products", err);
+        setProducts([]);
+        setTotalCount(0);
+      } finally {
+        setLoading(false);
+      }
+    }
+
+    loadProducts();
+  }, [slug, category, subcategory, maxPrice, minPrice, sort, q]);
+
+  const subtitle = maxPrice
+    ? `Showing ${totalCount} items under ₹${maxPrice}`
+    : `Explore ${totalCount} certified baby-safe items in this collection.`;
 
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
@@ -21,21 +86,57 @@ export default function CategoryPage({ params }: CategoryPageProps) {
         eyebrow="Department Collection"
         eyebrowIcon="category"
         title={title}
-        subtitle="Explore certified, baby-safe essentials and kid toys curated for Indian parents."
-        actionText="Back to Catalog"
+        subtitle={subtitle}
+        actionText="Back to Home"
         actionHref="/"
       />
 
-      <div className="mt-8">
-        <EmptyState
-          iconName="category"
-          title={`${title} Showcase`}
-          description="The complete category catalog grid with faceted sidebar filters, subcategory tabs, and sorting will be fully connected in Phase 2."
-          actionText="Explore Home Catalog"
-          actionHref="/"
-          todoPhase={2}
-        />
-      </div>
+      {loading ? (
+        <div className="mt-8 grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 sm:gap-6">
+          {Array.from({ length: 8 }).map((_, i) => (
+            <Skeleton key={i} variant="card" />
+          ))}
+        </div>
+      ) : products.length > 0 ? (
+        <div className="mt-8">
+          <div className="flex items-center justify-between mb-4">
+            <span className="font-label-md text-label-md text-on-surface-variant font-bold" id="product-count-label">
+              {totalCount} Products Available
+            </span>
+          </div>
+          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 sm:gap-6">
+            {products.map((p, idx) => (
+              <ProductCard key={p.id} product={p} index={idx} />
+            ))}
+          </div>
+        </div>
+      ) : (
+        <div className="mt-8">
+          <EmptyState
+            iconName="search_off"
+            title="No Products Found"
+            description="We couldn't find any products matching your selected criteria."
+            actionText="Clear Filters"
+            actionHref={`/category/${slug}`}
+          />
+        </div>
+      )}
     </div>
+  );
+}
+
+export default function CategoryPage({ params }: CategoryPageProps) {
+  const { slug } = use(params);
+
+  return (
+    <Suspense
+      fallback={
+        <div className="max-w-7xl mx-auto px-4 py-8">
+          <Skeleton variant="card" />
+        </div>
+      }
+    >
+      <CategoryContent slug={slug} />
+    </Suspense>
   );
 }

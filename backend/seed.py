@@ -219,11 +219,17 @@ def seed_database():
 
         # 4b. Load Deterministic Catalog (catalog.json) Idempotently (upsert by name + category)
         catalog_path = os.path.abspath(os.path.join(os.path.dirname(__file__), "data/catalog.json"))
+        if not os.path.exists(catalog_path):
+            from backend.scripts.generate_catalog import generate_catalog
+            print("[Seed] catalog.json not found. Generating deterministic catalog...")
+            generate_catalog()
+
         if os.path.exists(catalog_path):
             with open(catalog_path, "r", encoding="utf-8") as f:
                 catalog_data = json.load(f)
 
             catalog_added = 0
+            catalog_updated = 0
             for item in catalog_data:
                 cat_id = categories[item["category"]].id
                 prod = (
@@ -254,8 +260,18 @@ def seed_database():
                     )
                     db.add(prod)
                     catalog_added += 1
+                else:
+                    # Update MRP, min_price, max_price, and metadata for generated catalog items
+                    # Products 1-5 (sample_products) are skipped/left untouched
+                    if prod.id > 5:
+                        prod.mrp = item.get("mrp")
+                        prod.min_price = item["min_price"]
+                        prod.max_price = item["max_price"]
+                        prod.stock_qty = item["stock_qty"]
+                        prod.price = item["price"]
+                        catalog_updated += 1
             db.commit()
-            print(f"[Seed] Processed catalog.json ({len(catalog_data)} items, {catalog_added} newly inserted).")
+            print(f"[Seed] Processed catalog.json ({len(catalog_data)} items, {catalog_added} newly inserted, {catalog_updated} updated).")
 
         # 5. Seed Reviews on Products
         demo_reviews = [

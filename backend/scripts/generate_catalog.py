@@ -229,8 +229,15 @@ def generate_catalog():
             slug = subcategory_to_slug(subcat)
             image_url = f"/catalog/{slug}.svg"
             
-            # Each subcategory has at least 5 products
-            num_products = 5 if len(subcats) >= 7 else 6
+            # Yield exactly 407 products across all 11 categories (every subcategory >= 5, every category >= 30)
+            if cat_name == "School Essentials":
+                num_products = 6
+            elif cat_name == "Nursery":
+                num_products = 6
+            elif cat_name == "Gear" and subcat == "Strollers & Prams":
+                num_products = 6
+            else:
+                num_products = 5
             products_per_subcat[subcat] = 0
 
             for i in range(num_products):
@@ -249,17 +256,27 @@ def generate_catalog():
                 p_min, p_max = sinfo["price"]
                 price = float(random.randint(p_min, p_max))
                 
-                # ~35% of products must have discount of 15% or more
-                # mrp = price x (1.10 to 1.60)
-                is_high_discount = (random.random() < 0.35)
-                if is_high_discount:
-                    mrp_multiplier = random.uniform(1.18, 1.55)
+                # Rewrite MRP logic per Phase 1D spec (seed 42):
+                # ~40% of products: mrp = price (no discount shown)
+                # ~25%: discount 5-14%
+                # ~35%: discount 15-35%
+                # mrp stays a whole rupee amount. min_price stays 80-90% of price.
+                r_disc = random.random()
+                if r_disc < 0.40:
+                    mrp = price
+                elif r_disc < 0.65:
+                    d_pct = random.uniform(0.05, 0.14)
+                    mrp = float(int(round(price / (1.0 - d_pct))))
+                    if mrp <= price:
+                        mrp = price + 20.0
                 else:
-                    mrp_multiplier = random.uniform(1.10, 1.14)
-                mrp = float(round(price * mrp_multiplier))
-                
-                # min_price = 80-90% of price rounded; max_price = mrp
-                min_price = float(round(price * random.uniform(0.80, 0.90)))
+                    d_pct = random.uniform(0.15, 0.35)
+                    mrp = float(int(round(price / (1.0 - d_pct))))
+                    if mrp <= price:
+                        mrp = float(int(round(price * 1.25)))
+
+                mrp = float(int(round(mrp)))
+                min_price = float(int(round(price * random.uniform(0.80, 0.90))))
                 max_price = mrp
 
                 # Stock: about 5% at 0, about 8% at 5 or fewer, the rest 10-120
@@ -383,14 +400,26 @@ def generate_catalog():
     print(f"  Minimum products in any subcategory: {min_sub_cnt} (Target: >= 4)")
     assert min_sub_cnt >= 4, "A subcategory has fewer than 4 products!"
 
-    high_discount_count = sum(1 for p in all_products if (p["mrp"] - p["price"]) / p["mrp"] >= 0.15)
-    pct = (high_discount_count / len(all_products)) * 100
-    print(f"\nProducts with >= 15% discount: {high_discount_count}/{len(all_products)} ({pct:.1f}%) (Target: ~35%)")
+    # Calculate discount distribution histogram
+    disc_0 = sum(1 for p in all_products if (p["mrp"] - p["price"]) <= 0)
+    disc_5_14 = sum(1 for p in all_products if 0.05 <= (p["mrp"] - p["price"]) / p["mrp"] < 0.15)
+    disc_15_24 = sum(1 for p in all_products if 0.15 <= (p["mrp"] - p["price"]) / p["mrp"] < 0.25)
+    disc_25_35 = sum(1 for p in all_products if 0.25 <= (p["mrp"] - p["price"]) / p["mrp"] <= 0.36)
+    deals_cnt = sum(1 for p in all_products if (p["mrp"] - p["price"]) / p["mrp"] >= 0.15)
+
+    tot = len(all_products)
+    print("\nDiscount Distribution Histogram:")
+    print(f"  - 0% discount (mrp == price): {disc_0} ({disc_0/tot*100:.1f}%) [Target: ~40%]")
+    print(f"  - 5-14% discount: {disc_5_14} ({disc_5_14/tot*100:.1f}%) [Target: ~25%]")
+    print(f"  - 15-24% discount: {disc_15_24} ({disc_15_24/tot*100:.1f}%)")
+    print(f"  - 25-35% discount: {disc_25_35} ({disc_25_35/tot*100:.1f}%)")
+    print(f"  - Total Deals (>= 15% discount): {deals_cnt} ({deals_cnt/tot*100:.1f}%) [Target: ~35%]")
 
     zero_stock = sum(1 for p in all_products if p["stock_qty"] == 0)
     low_stock = sum(1 for p in all_products if 1 <= p["stock_qty"] <= 5)
-    print(f"Zero stock (0): {zero_stock} ({zero_stock/len(all_products)*100:.1f}%) (Target: ~5%)")
-    print(f"Low stock (1-5): {low_stock} ({low_stock/len(all_products)*100:.1f}%) (Target: ~8%)")
+    print(f"\nStock breakdown:")
+    print(f"  - Zero stock (0): {zero_stock} ({zero_stock/tot*100:.1f}%) (Target: ~5%)")
+    print(f"  - Low stock (1-5): {low_stock} ({low_stock/tot*100:.1f}%) (Target: ~8%)")
 
     print("\n=== CATALOG GENERATION VERIFICATION COMPLETE ===")
 

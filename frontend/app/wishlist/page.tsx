@@ -32,6 +32,9 @@ export default function WishlistPage() {
   const handleRemove = async (itemId: number) => {
     try {
       await api.deleteWishlistItem(itemId);
+      if (typeof window !== "undefined") {
+        window.dispatchEvent(new Event("wishlist-updated"));
+      }
       loadWishlist();
     } catch (err: any) {
       alert(err.message || "Failed to remove item");
@@ -44,6 +47,10 @@ export default function WishlistPage() {
     try {
       await api.addToCart(item.product_id, 1);
       await api.deleteWishlistItem(item.id);
+      if (typeof window !== "undefined") {
+        window.dispatchEvent(new Event("wishlist-updated"));
+        window.dispatchEvent(new Event("cart-updated"));
+      }
       setMessage(`Moved "${item.product_name}" to your Cart!`);
       loadWishlist();
       setTimeout(() => setMessage(null), 3000);

@@ -1,0 +1,191 @@
+{
+  "7c_keyboard": {
+    "status": "PASS",
+    "tabSequenceCount": 22,
+    "tabSequenceSample": [
+      {
+        "tag": "a",
+        "id": "brand-logo",
+        "ariaLabel": "",
+        "text": "skyB",
+        "href": "/"
+      },
+      {
+        "tag": "button",
+        "id": "",
+        "ariaLabel": "",
+        "text": "Enter pincode",
+        "href": ""
+      },
+      {
+        "tag": "select",
+        "id": "",
+        "ariaLabel": "Category Search Filter",
+        "text": "All Categories Boys Fashion Girls F",
+        "href": ""
+      },
+      {
+        "tag": "input",
+        "id": "",
+        "ariaLabel": "",
+        "text": "",
+        "href": ""
+      },
+      {
+        "tag": "button",
+        "id": "",
+        "ariaLabel": "Submit search",
+        "text": "",
+        "href": ""
+      },
+      {
+        "tag": "button",
+        "id": "header-bargain-bot-btn",
+        "ariaLabel": "",
+        "text": "Bargain Bot",
+        "href": ""
+      },
+      {
+        "tag": "a",
+        "id": "",
+        "ariaLabel": "Wishlist",
+        "text": "",
+        "href": "/wishlist"
+      },
+      {
+        "tag": "a",
+        "id": "",
+        "ariaLabel": "",
+        "text": "Orders",
+        "href": "/orders"
+      },
+      {
+        "tag": "a",
+        "id": "",
+        "ariaLabel": "Shopping Cart",
+        "text": "Cart Cart",
+        "href": "/cart"
+      },
+      {
+        "tag": "a",
+        "id": "",
+        "ariaLabel": "",
+        "text": "Sign In",
+        "href": "/login?next=%2F"
+      }
+    ],
+    "megaMenuOpenOnFocus": true,
+    "megaMenuClosedOnEsc": true,
+    "focusInsideOnInit": true,
+    "trapHeld": true,
+    "skyBotClosedOnEsc": true,
+    "returnedToTrigger": true
+  },
+  "7d_login_return": {
+    "status": "PASS",
+    "redirectUrl": "http://localhost:3000/login?next=%2Fcategory%2Ftoys",
+    "finalUrl": "http://localhost:3000/category/toys",
+    "returnedToToys": true
+  },
+  "7e_counts": {
+    "status": "PASS",
+    "wishlistBadgeText": "1",
+    "cartBadgeText": "6",
+    "headerBeforePath": "C:\\Users\\kp294\\Downloads\\files\\docs\\design-qa\\phase-1\\badge_header_before.png",
+    "headerAfterPath": "C:\\Users\\kp294\\Downloads\\files\\docs\\design-qa\\phase-1\\badge_header_after.png",
+    "bottomNavAfterPath": "C:\\Users\\kp294\\Downloads\\files\\docs\\design-qa\\phase-1\\badge_bottom_nav_after.png"
+  },
+  "7f_bargain": {
+    "status": "PASS",
+    "networkCallsCount": 5,
+    "networkCalls": [
+      {
+        "url": "http://localhost:8000/bargain/start",
+        "status": 200,
+        "data": {
+          "data": {
+            "session_id": 8,
+            "product_id": 1,
+            "product_name": "Organic Cotton Baby Romper",
+            "original_price": 699,
+            "status": "ongoing"
+          },
+          "error": null
+        }
+      },
+      {
+        "url": "http://localhost:8000/bargain/offer",
+        "status": 200,
+        "data": {
+          "data": {
+            "counter_price": 546.85,
+            "message": "That's a bit low for this premium Organic Cotton Baby Romper, but I can do ₹546.85 for you!",
+            "round_number": 1,
+            "status": "ongoing",
+            "is_final_round": false
+          },
+          "error": null
+        }
+      },
+      {
+        "url": "http://localhost:8000/bargain/offer",
+        "status": 200,
+        "data": {
+          "data": {
+            "counter_price": 569,
+            "message": "We want to give you a great deal, but the best I can offer right now is ₹569.00.",
+            "round_number": 2,
+            "status": "ongoing",
+            "is_final_round": false
+          },
+          "error": null
+        }
+      },
+      {
+        "url": "http://localhost:8000/bargain/offer",
+        "status": 200,
+        "data": {
+          "data": {
+            "counter_price": 500,
+            "message": "Deal! I can accept ₹500.00 for the Organic Cotton Baby Romper. Let's add it to your cart!",
+            "round_number": 3,
+            "status": "ongoing",
+            "is_final_round": true
+          },
+          "error": null
+        }
+      },
+      {
+        "url": "http://localhost:8000/bargain/accept",
+        "status": 200,
+        "data": {
+          "data": {
+            "session_id": 8,
+            "final_price": 500,
+            "status": "accepted",
+            "cart_item_id": 2,
+            "is_bargained": true
+          },
+          "error": null
+        }
+      }
+    ],
+    "screenshots": [
+      "C:\\Users\\kp294\\Downloads\\files\\docs\\design-qa\\phase-1\\bargain_step0_open.png",
+      "C:\\Users\\kp294\\Downloads\\files\\docs\\design-qa\\phase-1\\bargain_step1_offer520.png",
+      "C:\\Users\\kp294\\Downloads\\files\\docs\\design-qa\\phase-1\\bargain_step2_offer350.png",
+      "C:\\Users\\kp294\\Downloads\\files\\docs\\design-qa\\phase-1\\bargain_step3_offer500.png",
+      "C:\\Users\\kp294\\Downloads\\files\\docs\\design-qa\\phase-1\\bargain_step4_cart.png"
+    ],
+    "showsBargainedBadge": true,
+    "curlReplay": {
+      "session_id": 9,
+      "counters": [
+        546.85,
+        569,
+        500
+      ],
+      "floor_held": true
+    }
+  }
+}
