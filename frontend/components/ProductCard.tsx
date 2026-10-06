@@ -162,7 +162,7 @@ export const ProductCard: React.FC<ProductCardProps> = ({
 
   return (
     <article
-      className={`group relative rounded-xl bg-surface-container-lowest border border-surface-container p-3 sm:p-4 flex flex-col justify-between transition-transform duration-200 hover:-translate-y-1 ${shadowClass}`}
+      className={`product-card group relative rounded-xl bg-surface-container-lowest border border-surface-container p-3 sm:p-4 flex flex-col justify-between transition-transform duration-200 hover:-translate-y-1 ${shadowClass}`}
     >
       <div>
         {/* Card Media Container */}

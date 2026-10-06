@@ -125,6 +125,7 @@ export const SkyBotSheet: React.FC = () => {
 
       {/* Desktop Right Slide-Over (sm and up) & Mobile Bottom Sheet */}
       <aside
+        id="skybot-panel"
         ref={panelRef}
         role="dialog"
         aria-modal="true"
@@ -161,6 +162,7 @@ export const SkyBotSheet: React.FC = () => {
           </div>
 
           <button
+            id="skybot-close-btn"
             type="button"
             onClick={closeSkyBot}
             aria-label="Close SkyBot"
@@ -297,6 +299,7 @@ export const SkyBotSheet: React.FC = () => {
             </p>
 
             <button
+              id="skybot-apply-to-cart-btn"
               type="button"
               onClick={applyDealToCart}
               disabled={isApplied || loading}
@@ -357,6 +360,7 @@ export const SkyBotSheet: React.FC = () => {
               />
             </div>
             <Button
+              id="skybot-submit-offer-btn"
               type="submit"
               variant="primary"
               size="md"

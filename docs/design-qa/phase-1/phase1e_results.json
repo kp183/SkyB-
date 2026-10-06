@@ -1,0 +1,33 @@
+{
+  "categoryResolution": {
+    "toys": {
+      "totalLabel": "41 Products Available",
+      "cardsCount": 41,
+      "matchesCategory": true
+    },
+    "bath-skincare": {
+      "totalLabel": "41 Products Available",
+      "cardsCount": 41,
+      "matchesCategory": true
+    },
+    "school-essentials": {
+      "totalLabel": "31 Products Available",
+      "cardsCount": 31,
+      "matchesCategory": true
+    }
+  },
+  "unknownCategoryEmptyState": true,
+  "megaMenuAndTabs": true,
+  "productDetailStickyMobile": true,
+  "skybotCartBadgeLiveUpdate": true,
+  "headerCartBadge": {
+    "before": "0",
+    "after": "1",
+    "success": true
+  },
+  "bottomNavCartBadge": {
+    "before": "1",
+    "after": "2",
+    "success": true
+  }
+}

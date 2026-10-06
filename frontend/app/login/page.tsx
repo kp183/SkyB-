@@ -79,6 +79,7 @@ export default function LoginPage() {
             </label>
             <div className="relative">
               <input
+                id="email"
                 type="email"
                 value={email}
                 onChange={(e) => {
@@ -109,6 +110,7 @@ export default function LoginPage() {
             </label>
             <div className="relative">
               <input
+                id="password"
                 type="password"
                 value={password}
                 onChange={(e) => {

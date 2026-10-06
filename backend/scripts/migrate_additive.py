@@ -6,7 +6,7 @@ from sqlalchemy import inspect, text
 # Add repository root to path
 sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), "../..")))
 
-from backend.db import engine, SessionLocal
+from backend.db import Base, engine, SessionLocal
 from backend.models.product import Product
 from backend.models.category import Category
 
@@ -39,6 +39,7 @@ def parse_age_group(age_str: str) -> tuple[int, int]:
 
 def run_migration():
     print("=== STARTING ADDITIVE MIGRATION ===")
+    Base.metadata.create_all(bind=engine)
     inspector = inspect(engine)
     existing_cols = {c["name"] for c in inspector.get_columns("products")}
 

@@ -2,7 +2,7 @@
 
 import React, { use, useEffect, useState, Suspense } from "react";
 import { useSearchParams } from "next/navigation";
-import { getCategoryBySlug, CategoryConfig, SLUG_TO_CATEGORY_IDS } from "@/config/navigation";
+import { getCategoryBySlug, CategoryConfig, resolveCategoryIdsFromList } from "@/config/navigation";
 import SectionHeader from "@/components/ui/SectionHeader";
 import ProductCard from "@/components/ProductCard";
 import Skeleton from "@/components/ui/Skeleton";
@@ -13,6 +13,8 @@ interface CategoryPageProps {
   params: Promise<{ slug: string }>;
 }
 
+let inMemoryCategoriesCache: Array<{ id: number; name: string }> | null = null;
+
 function CategoryContent({ slug }: { slug: string }) {
   const searchParams = useSearchParams();
   const category: CategoryConfig | undefined = getCategoryBySlug(slug);
@@ -20,6 +22,7 @@ function CategoryContent({ slug }: { slug: string }) {
   const [products, setProducts] = useState<any[]>([]);
   const [totalCount, setTotalCount] = useState<number>(0);
   const [loading, setLoading] = useState(true);
+  const [categoryNotFound, setCategoryNotFound] = useState(false);
 
   const subcategory = searchParams.get("subcategory") || undefined;
   const maxPrice = searchParams.get("max_price") ? Number(searchParams.get("max_price")) : undefined;
@@ -32,6 +35,7 @@ function CategoryContent({ slug }: { slug: string }) {
   useEffect(() => {
     async function loadProducts() {
       setLoading(true);
+      setCategoryNotFound(false);
       try {
         const queryParams: any = {
           limit: 48,
@@ -39,11 +43,38 @@ function CategoryContent({ slug }: { slug: string }) {
         };
 
         if (slug !== "all") {
-          const ids = SLUG_TO_CATEGORY_IDS[slug];
-          if (ids && ids.length > 0) {
-            queryParams.category_ids = ids.join(",");
+          // If slug is not recognized in navigation config
+          if (!category) {
+            setCategoryNotFound(true);
+            setProducts([]);
+            setTotalCount(0);
+            return;
           }
-          if (category?.genderFilter) {
+
+          // Fetch categories at runtime if not cached in memory
+          if (!inMemoryCategoriesCache) {
+            try {
+              inMemoryCategoriesCache = await api.getCategories();
+            } catch (catErr) {
+              console.error("Failed to fetch runtime categories:", catErr);
+            }
+          }
+
+          const resolvedIds = resolveCategoryIdsFromList(
+            slug,
+            inMemoryCategoriesCache || []
+          );
+
+          // If no mapped DB categories exist in runtime DB, show EmptyState, never wrong products
+          if (resolvedIds.length === 0) {
+            setCategoryNotFound(true);
+            setProducts([]);
+            setTotalCount(0);
+            return;
+          }
+
+          queryParams.category_ids = resolvedIds.join(",");
+          if (category.genderFilter) {
             queryParams.gender = category.genderFilter;
           }
         }
@@ -96,6 +127,16 @@ function CategoryContent({ slug }: { slug: string }) {
           {Array.from({ length: 8 }).map((_, i) => (
             <Skeleton key={i} variant="card" />
           ))}
+        </div>
+      ) : categoryNotFound ? (
+        <div className="mt-8">
+          <EmptyState
+            iconName="category"
+            title="Category Not Found"
+            description={`We couldn't find the category "${slug}" in our catalog.`}
+            actionText="Explore All Categories"
+            actionHref="/category/all"
+          />
         </div>
       ) : products.length > 0 ? (
         <div className="mt-8">

@@ -340,7 +340,7 @@ export default function Navbar() {
                 <div className="relative flex items-center justify-center">
                   <Icon name="shopping_bag" className="w-5 h-5 text-primary" />
                   {isLoggedIn && cartCount > 0 && (
-                    <span className="absolute -top-1 -right-1.5 w-4 h-4 rounded-full bg-secondary-container text-on-secondary-container font-label-sm text-[9px] flex items-center justify-center font-extrabold">
+                    <span id="header-cart-count-badge" className="absolute -top-1 -right-1.5 w-4 h-4 rounded-full bg-secondary-container text-on-secondary-container font-label-sm text-[9px] flex items-center justify-center font-extrabold">
                       {cartCount}
                     </span>
                   )}
@@ -417,6 +417,7 @@ export default function Navbar() {
                 return (
                   <button
                     key={cat.slug}
+                    id={`category-tab-${cat.slug}`}
                     type="button"
                     onMouseEnter={() => handleMouseEnterTab(cat.slug)}
                     onFocus={() => setActiveMenuTab(cat.slug)}

@@ -157,7 +157,7 @@ export default function BottomNav() {
             <div className="relative">
               <Icon name="shopping_cart" className="w-6 h-6" />
               {isLoggedIn && cartCount > 0 && (
-                <span className="absolute -top-1 -right-2 bg-secondary text-on-secondary rounded-full font-label-sm text-[9px] w-4 h-4 flex items-center justify-center font-bold">
+                <span id="bottom-cart-count-badge" className="absolute -top-1 -right-2 bg-secondary text-on-secondary rounded-full font-label-sm text-[9px] w-4 h-4 flex items-center justify-center font-bold">
                   {cartCount}
                 </span>
               )}

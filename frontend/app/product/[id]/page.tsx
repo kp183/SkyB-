@@ -7,11 +7,14 @@ import Image from "next/image";
 import SafetyBadge from "@/components/SafetyBadge";
 import BargainChatModal from "@/components/BargainChatModal";
 import { getProductFallbackImage } from "@/components/ProductCard";
+import Icon from "@/components/Icon";
+import { useSkyBot } from "@/context/SkyBotContext";
 import { api } from "@/lib/api";
 
 export default function ProductDetailPage() {
   const params = useParams();
   const id = Number(params.id);
+  const { openSkyBot } = useSkyBot();
 
   const [product, setProduct] = useState<any>(null);
   const [reviews, setReviews] = useState<any[]>([]);
@@ -53,10 +56,13 @@ export default function ProductDetailPage() {
     try {
       await api.addToCart(product.id, 1);
       setAddMessage("Added to your Cart!");
+      if (typeof window !== "undefined") {
+        window.dispatchEvent(new Event("cart-updated"));
+      }
       setTimeout(() => setAddMessage(null), 2500);
     } catch (err: any) {
       if (err.status === 401) {
-        window.location.href = "/login";
+        window.location.href = "/login?next=" + encodeURIComponent(`/product/${product.id}`);
       } else {
         setAddMessage(err.message || "Failed to add to cart");
       }
@@ -75,10 +81,13 @@ export default function ProductDetailPage() {
         setIsWishlisted(true);
         setWishlistMsg("Saved to Wishlist!");
       }
+      if (typeof window !== "undefined") {
+        window.dispatchEvent(new Event("wishlist-updated"));
+      }
       setTimeout(() => setWishlistMsg(null), 2000);
     } catch (err: any) {
       if (err.status === 401) {
-        window.location.href = "/login";
+        window.location.href = "/login?next=" + encodeURIComponent(`/product/${product.id}`);
       } else {
         setWishlistMsg(err.message || "Could not save to wishlist");
         setTimeout(() => setWishlistMsg(null), 2500);
@@ -145,7 +154,7 @@ export default function ProductDetailPage() {
       : null;
 
   return (
-    <div className="mx-auto max-w-5xl px-4 py-6 sm:px-6 lg:px-8 space-y-8">
+    <div className="mx-auto max-w-5xl px-4 py-6 sm:px-6 lg:px-8 space-y-8 pb-28 sm:pb-8">
       <Link
         href="/"
         className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-surface-container-low text-on-surface hover:bg-surface-container font-label-md text-label-md shadow-[0_2px_0_#bdc8d1] transition-all"
@@ -229,22 +238,28 @@ export default function ProductDetailPage() {
             tags={product.safety_tags}
           />
 
-          {/* Action CTAs */}
+          {/* Action CTAs (Desktop / Tablet) */}
           <div className="pt-2 flex flex-col sm:flex-row gap-3">
             <button
-              onClick={() => setIsBargainOpen(true)}
-              className="flex-1 flex items-center justify-center gap-2 rounded-full bg-tertiary-container text-on-tertiary py-3.5 px-4 font-headline-md text-headline-md shadow-[0_4px_0_#795900] active:translate-y-[2px] active:shadow-[0_1px_0_#795900] transition-all cursor-pointer"
+              onClick={() => {
+                if (openSkyBot) {
+                  openSkyBot(product);
+                } else {
+                  setIsBargainOpen(true);
+                }
+              }}
+              className="flex-1 flex items-center justify-center gap-2 rounded-full btn-bargain-action py-3.5 px-4 font-headline-md text-headline-md font-bold cursor-pointer transition-all"
             >
-              <span className="material-symbols-outlined text-[20px]">smart_toy</span>
+              <Icon name="smart_toy" className="w-5 h-5" />
               <span>Bargain with Bot</span>
             </button>
 
             <button
               onClick={handleAddToCart}
               disabled={isAdding}
-              className="flex-1 flex items-center justify-center gap-2 rounded-full bg-secondary-container text-on-secondary py-3.5 px-4 font-headline-md text-headline-md shadow-[0_4px_0_#730425] active:translate-y-[2px] active:shadow-[0_1px_0_#730425] transition-all cursor-pointer"
+              className="flex-1 flex items-center justify-center gap-2 rounded-full btn-add-action py-3.5 px-4 font-headline-md text-headline-md font-bold cursor-pointer transition-all disabled:opacity-50"
             >
-              <span className="material-symbols-outlined text-[20px]">shopping_cart</span>
+              <Icon name="shopping_cart" className="w-5 h-5" />
               <span>{isAdding ? "Adding..." : "Add to Cart"}</span>
             </button>
           </div>
@@ -309,17 +324,55 @@ export default function ProductDetailPage() {
         )}
       </div>
 
-      {/* Bargain Modal */}
-      {isBargainOpen && (
-        <BargainChatModal
-          product={product}
-          onClose={() => setIsBargainOpen(false)}
-          onAccepted={() => {
-            setIsBargainOpen(false);
-            window.location.href = "/cart";
+      {/* Sticky Mobile Action Bar (Hidden on sm screens, visible on mobile 390px) */}
+      <div
+        id="product-sticky-action-bar"
+        className="fixed bottom-0 left-0 w-full z-40 bg-surface-container-lowest/95 backdrop-blur-md p-3 pb-safe border-t border-surface-container flex items-center gap-3 sm:hidden shadow-[0_-4px_16px_rgba(0,30,44,0.08)]"
+      >
+        {/* Wishlist Heart Button */}
+        <button
+          type="button"
+          onClick={handleToggleWishlist}
+          aria-label="Save to Wishlist"
+          id="sticky-btn-wishlist"
+          className={`w-12 h-12 rounded-full flex items-center justify-center shrink-0 border transition-all cursor-pointer ${
+            isWishlisted
+              ? "bg-secondary text-white border-secondary shadow-[0_2px_0_#730425]"
+              : "bg-surface-container-low text-on-surface-variant border-surface-container-high hover:text-secondary shadow-[0_2px_0_#bdc8d1]"
+          }`}
+        >
+          <Icon name={isWishlisted ? "favorite" : "favorite_border"} className="w-6 h-6" />
+        </button>
+
+        {/* Bargain Button */}
+        <button
+          type="button"
+          onClick={() => {
+            if (openSkyBot) {
+              openSkyBot(product);
+            } else {
+              setIsBargainOpen(true);
+            }
           }}
-        />
-      )}
+          id="sticky-btn-bargain"
+          className="flex-1 h-12 flex items-center justify-center gap-1.5 rounded-full btn-bargain-action font-headline-sm text-headline-sm font-bold cursor-pointer"
+        >
+          <Icon name="smart_toy" className="w-5 h-5" />
+          <span>Bargain</span>
+        </button>
+
+        {/* Add to Cart Button */}
+        <button
+          type="button"
+          onClick={handleAddToCart}
+          disabled={isAdding}
+          id="sticky-btn-add-cart"
+          className="flex-1 h-12 flex items-center justify-center gap-1.5 rounded-full btn-add-action font-headline-sm text-headline-sm font-bold cursor-pointer disabled:opacity-50"
+        >
+          <Icon name="shopping_cart" className="w-5 h-5" />
+          <span>{isAdding ? "Adding..." : "Add to Cart"}</span>
+        </button>
+      </div>
     </div>
   );
 }
