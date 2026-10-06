@@ -299,9 +299,9 @@ export const CategoryDrawer: React.FC<CategoryDrawerProps> = ({ isOpen, onClose 
           {/* Trust Badges */}
           <div className="p-3 rounded-xl bg-surface-container-low flex items-center justify-around gap-2 text-center shadow-[0_2px_0_#dee8ff]">
             <div className="flex flex-col items-center">
-              <Icon name="verified" className="w-5 h-5 text-primary" />
+              <Icon name="shield" className="w-5 h-5 text-primary" />
               <span className="font-label-sm text-[10px] text-on-surface mt-0.5 font-bold">
-                Tested Materials
+                Safety Specs
               </span>
             </div>
             <div className="w-px h-6 bg-outline-variant" />
@@ -343,11 +343,11 @@ export const CategoryDrawer: React.FC<CategoryDrawerProps> = ({ isOpen, onClose 
           )}
 
           <Link
-            href="/terms"
+            href="/terms#faq"
             className="px-3.5 py-2 rounded-full bg-surface-container-lowest text-on-surface font-label-sm text-label-sm font-bold flex items-center gap-1 shadow-[0_2px_0_#dee8ff]"
           >
             <Icon name="help_center" className="w-4 h-4 text-primary" />
-            <span>Help Desk</span>
+            <span>FAQ &amp; Policy</span>
           </Link>
         </div>
       </div>

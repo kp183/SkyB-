@@ -72,7 +72,7 @@ export default function HomePage() {
               Featured Play Gear
             </h2>
             <p className="font-body-md text-body-md text-on-surface-variant">
-              Handcrafted wooden toys, certified soft fabrics, and milestone essentials.
+              Handcrafted wooden toys, breathable soft fabrics, and milestone essentials.
             </p>
           </div>
 

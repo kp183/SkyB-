@@ -11,10 +11,10 @@ export default function Hero() {
       <div className="relative z-10 grid grid-cols-1 lg:grid-cols-12 gap-8 items-center">
         {/* Left Hero Narrative */}
         <div className="lg:col-span-7 flex flex-col items-start gap-5">
-          {/* Verified badge */}
+          {/* Safety specs badge */}
           <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-surface-container-lowest border border-surface-container-high text-on-surface font-label-md text-label-md shadow-[0_2px_0_#bdc8d1]">
-            <Icon name="verified_user" className="w-4 h-4 text-primary" />
-            <span className="font-bold text-primary">Certified Kids' Safety &amp; Non-Toxic Essentials</span>
+            <Icon name="shield" className="w-4 h-4 text-primary" />
+            <span className="font-bold text-primary">Kids' Essentials &amp; Non-Toxic Picks</span>
           </div>
 
           {/* Bubbly Big Headline */}
@@ -52,12 +52,8 @@ export default function Hero() {
           {/* Real Trust Badges Under CTA */}
           <div className="flex flex-wrap items-center gap-4 sm:gap-6 pt-2 font-label-sm text-label-sm text-on-surface-variant">
             <div className="flex items-center gap-1.5">
-              <Icon name="verified" className="w-4 h-4 text-primary" />
-              <span>Tested Materials</span>
-            </div>
-            <div className="flex items-center gap-1.5">
-              <Icon name="favorite" className="w-4 h-4 text-secondary" />
-              <span>Safety Verified</span>
+              <Icon name="shield" className="w-4 h-4 text-primary" />
+              <span>Safety Specs Listed</span>
             </div>
             <div className="flex items-center gap-1.5">
               <Icon name="bolt" className="w-4 h-4 text-tertiary-container" />

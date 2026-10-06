@@ -100,7 +100,7 @@ def seed_database():
         sample_products = [
             {
                 "name": "Organic Cotton Baby Romper",
-                "description": "Super soft 100% certified organic cotton baby onesie. Hypoallergenic, breathable fabric with nickel-free snap buttons for easy diaper changes.",
+                "description": "Super soft organic cotton baby onesie. Hypoallergenic, breathable fabric with nickel-free snap buttons for easy diaper changes.",
                 "category": "Clothing",
                 "age_group": "0-3m",
                 "size": "0-3M",
@@ -111,7 +111,7 @@ def seed_database():
                 "image_url": "https://images.unsplash.com/photo-1522771930-78848d9293e8?w=500&auto=format&fit=crop&q=60",
                 "safety_tags": ["Organic Cotton", "Hypoallergenic", "Non-Toxic"],
                 "safety_score": "Good",
-                "safety_summary": "100% pure organic cotton with non-toxic dyes and hypoallergenic seams.",
+                "safety_summary": "Pure organic cotton with non-toxic dyes and hypoallergenic seams.",
             },
             {
                 "name": "Montessori Wooden Stacking Rings",
@@ -145,7 +145,7 @@ def seed_database():
             },
             {
                 "name": "Gentle Oatmeal Baby Lotion (300ml)",
-                "description": "Dermatologist-tested natural colloidal oatmeal soothing lotion. Free from parabens, phthalates, sulfates, and artificial fragrances.",
+                "description": "Gentle natural colloidal oatmeal soothing lotion. Free from parabens, phthalates, sulfates, and artificial fragrances.",
                 "category": "Baby Care",
                 "age_group": "0-12m",
                 "size": None,
@@ -264,6 +264,9 @@ def seed_database():
                     # Update MRP, min_price, max_price, and metadata for generated catalog items
                     # Products 1-5 (sample_products) are skipped/left untouched
                     if prod.id > 5:
+                        prod.description = item["description"]
+                        prod.safety_summary = item["safety_summary"]
+                        prod.safety_tags = item["safety_tags"]
                         prod.mrp = item.get("mrp")
                         prod.min_price = item["min_price"]
                         prod.max_price = item["max_price"]

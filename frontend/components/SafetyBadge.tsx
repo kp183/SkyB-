@@ -31,8 +31,8 @@ export default function SafetyBadge({
         return {
           cardBg: "bg-surface-container-lowest border-primary-container text-on-surface shadow-[0_6px_0_#c4e7ff]",
           badgeBg: "bg-primary-container text-on-primary-container shadow-[0_2px_0_#00668a]",
-          icon: "verified_user",
-          label: "100% Non-Toxic Child Safe",
+          icon: "shield",
+          label: "Non-Toxic Child Safe",
         };
     }
   };
@@ -57,7 +57,7 @@ export default function SafetyBadge({
           className={`inline-flex items-center gap-1 rounded-full px-2.5 py-0.5 font-label-sm text-label-sm font-bold ${style.badgeBg}`}
         >
           <span className="material-symbols-outlined text-[16px]">{style.icon}</span>
-          {score || "Verified"} Safety
+          {score || "Standard"} Safety
         </span>
         <span className="font-headline-md text-headline-md font-bold">{style.label}</span>
       </div>

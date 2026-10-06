@@ -240,3 +240,70 @@ After the Phase 1D report
 Send me the report. If it passes, reply to Antigravity with:
 
 Phase 1D approved. Begin Phase 2 per docs/BUILD_SPEC.md. Re-read docs/BUILD_SPEC.md and docs/DECISIONS.md first and confirm you did. Same evidence rules. Stop after Phase 2 and report.
+
+---
+
+## 3. Prompt 3: Phase 1F Specification (Redo Integrity, Ratings, Regression, Wording, Differences)
+
+Phase 1E is NOT approved. Do Phase 1F on branch design-v2, commit "phase-1f ...". Do NOT start Phase 2. First re-read docs/BUILD_SPEC.md and docs/DECISIONS.md and confirm you did, then append this whole message to docs/BUILD_SPEC.md. Evidence rules: every claim needs command output, a screenshot, or a request/response. Do not write PASS for anything you did not run. If you cannot view an image, say so. Unverified = "NOT VERIFIED".
+
+1. BACKEND CHANGE AUDIT
+a) Paste in full: git diff 3801d0b^..HEAD -- backend/dependencies.py backend/jobs backend/routers/orders.py backend/models backend/schemas
+b) For every hunk, state whether the new features require it. Revert any hunk that is not required (git checkout 3801d0b^ -- <file>). In particular revert the type-hint edits in the bargain, cart, child, order, review and wishlist models, plus price_watch_job.py and dependencies.py, unless a failing test proves a change is needed. Explain any change you keep.
+c) orders.py: run `git show 3801d0b^:backend/routers/orders.py | grep -n -i simulate`. If simulate_failure did not exist before, show the diff and prove it is additive: idempotency key behavior, retry after failure, stock and coupon handling are unchanged, with tests.
+d) State again which files in backend/ contain the logic for bargain, coupons, cart, payment/idempotency, RBAC and rate limiting, and diff exactly those files against 3801d0b^. Paste the output (must be empty or justified).
+
+2. PRODUCT COLUMNS AND RATINGS
+a) Paste git diff 3801d0b^..HEAD -- backend/models/product.py backend/schemas/product.py. Correct your earlier explanation: list the columns that exist at HEAD vs at 3801d0b^ and why each was added.
+b) Run SQL and paste results: products with rating not null; products with review_count > 0; rows in the reviews table; the rating/review_count distribution for generated products (ids > 5).
+c) Generated products must have NO rating and review_count 0 or NULL unless backed by real rows in reviews. Fix generate_catalog.py and the seed, re-seed, and show the SQL again. Ratings shown in the UI come from the reviews table only (average and count), hidden when there are no reviews.
+d) is_certified: remove it from API responses and from every UI use. Show grep. Leave the column unused if it already exists in a migrated database; do not display it anywhere.
+e) sort=popular must be units sold (sum of order_items.quantity descending, then id ascending) per decision 1.4. Fix it, update tests, and show the query and results on SQLite AND Postgres.
+f) Postgres: add a fixture that runs SELECT version() and prints engine.url.drivername at the start of the pytest run. Re-run the whole suite against Postgres and paste the lines proving it connected to Postgres.
+g) Confirm /category/toys, /category/bath-skincare and /category/school-essentials filter by category_ids (show the network request URLs), not by keywords. State which bargain endpoint the frontend calls (/bargain/message or /bargain/offer) and why the two reports differed.
+
+3. REGRESSION TESTS (existing behavior)
+Write backend/tests/test_regression_core.py that tests existing behavior through the public API only: (1) bargain never returns an accepted price below min_price across at least 200 random offers and all rounds; round limit enforced; (2) coupon non-stacking with a bargained item; (3) cart totals; (4) mock pay idempotency (same key twice = one order); (5) payment failure then retry works; (6) stock decrement on success only; (7) RBAC: a customer gets 403 on admin endpoints, admin succeeds; (8) login rate limiting. Run the SAME test file on a git worktree of 3801d0b^ and on HEAD; both must pass. Paste both outputs. Report any test that cannot pass at 3801d0b^ instead of changing it.
+
+4. DIFFERENCES.md (redo honestly)
+For each of the 8 screens, open the Stitch screen.png and the built screenshot and list measured differences (hex colors, px sizes, copy, icons, missing or extra elements). "No differences" is allowed only with the specific list of what you checked. You must re-check: bottom nav items in the Stitch mobile Home screen, footer background (sample the pixel color from both images), header height, hero tags, card shadows, button colors. Fix what you find. Re-capture all comparison images from a production build.
+
+5. HEADER, WORDING, LINKS (addendum 10-16)
+A) Header locked styles: Bargain Bot button #e1a800, WHITE text and icon, shadow 0 5px 0 #795900. Cart pill and Sign In: #00668a, WHITE text, shadow 0 4px 0 #004965. Guest cart pill shows "Cart" only (no count/total, never "Cart Cart"). Logged in shows "<n> items" and the total in ₹. Find the red dot beside Bargain Bot, explain it or remove it.
+B) Banned wording. grep (case-insensitive) the whole frontend, backend/data/catalog.json, generator templates, seed and docs for: verified, certified, tested, lab, nationwide, "loved by", approved, pediatrician, dermatologist, daily, clinically, safest, and "100%" (allowed only inside discount/price numbers). Rewrite every user-visible hit. Home perk "100% Baby-Safe" becomes "Safety info on every product". Remove the hero tags "Tested Materials" and "Safety Verified". Mega-menu blurbs: New Arrivals "Latest additions", Bestsellers "Top sellers on skyB", Combo Packs "Bundles from our catalog", Top Deals "Products with 15% off or more". Remove "up to 25%" unless computed from real data. Paste the grep before and after. If catalog descriptions change, re-seed and show the update leaves ids 1-5 untouched.
+C) Policy text. "Free delivery above ₹499" and "7-day returns/pickup": check what checkout and Terms implement. Remove the text, or implement a documented rule only if a delivery/totals mechanism already exists; otherwise change to "See Terms" and make /terms state the demo policy honestly. Report what you chose.
+D) Dead links and icons. Remove "Help Desk" from the drawer or link it to a real existing page. Re-run the link audit including every button in the drawer footer; paste the table. Every header tab and drawer category needs a distinct relevant icon (Footwear shoe, Diapering diaper, Gear stroller, Feeding bottle, Bath drop, Nursery crib or moon, Health & Safety shield or cross, School backpack). List the icon used per tab and per drawer category.
+E) Mega-menu price chips: hide any chip that returns zero products for that tab. Paste the result count per tab and chip. Bands: Under ₹199, 299, 399, 499, 999, 1,499, 2,499.
+F) SkyBot suggestion chips: derive them only from the listed price (about 90%, 85%, 80%), never from min_price. Label them "Suggestions". The backend is the only source of counter-offers. Show the code.
+G) Production QA: do everything from `next build && next start` (no dev overlay). Re-capture ALL Phase 1 screenshots and re-run keyboard focus trap, login return and cart badge checks from that build.
+
+6. FINAL REPORT
+PASS/FAIL table for items 1-5 with evidence links, list of files changed and files reverted, and a "NOT VERIFIED" section that is honest. Then STOP.
+
+---
+
+## 4. Prompt 4: Addendum to Phase 1F (items 17-22)
+
+ADDENDUM TO PHASE 1F (items 17-22). Append to docs/BUILD_SPEC.md too.
+
+17. COMPARISON METHOD (replaces the old compare images)
+Render each Stitch screen's code.html with Playwright at the SAME viewport as the built page (1440x900 or 390x844) and capture it at 100%, not a thumbnail. Build each comparison as two equal-size crops side by side of the SAME region (e.g. header strip, footer, bottom nav, drawer, slide-over). Reference screens to use: header = home_restyled_locked_candy; mobile home = home_hub_skyb_india_mobile; drawer = category_drawer_category (its screen.png is blank, so render code.html with the drawer open, or note that it is blank and compare against the DESIGN spec); SkyBot desktop = skybot_sheet_skybot_sheet (slide-over), NOT skybot_hub; SkyBot mobile = skybot_sheet_skybot_sheet mobile; bottom nav = crop of the mobile Home bottom bar; footer = crop of the home footer. Redo DIFFERENCES.md from these. Sample and report hex colors of the footer background, header buttons and card shadows from BOTH images. Remove the claim that the Stitch footer is #001e2c unless the sampled pixels prove it, and correct it if wrong. Intended deviations from Stitch (no coupon codes, no countdown timers, no "Certified" wording, no mock customer names) must be listed as "intentional".
+
+18. MOBILE HEADER
+Hamburger (left), centered skyB logo, then search icon, Bargain Bot icon button (#e1a800, white icon, shadow 0 3px 0 #795900), cart icon with count badge, account avatar. Remove the wishlist heart from the mobile header (wishlist stays in the bottom nav). Search icon opens a full-width search bar.
+
+19. WORDING
+Remove or rewrite exactly: "Certified Kids' Safety & Non-Toxic Essentials", "Tested Materials", "Safety Verified", "100% Baby-Safe" (and its "verified" subtitle), "Explore 412 certified baby-safe items" (and the page title "All Products & Aisles" -> "All Products"; never show a hardcoded count, use meta.total), footer "Top Daily Deals" -> "Top Deals". Re-run the banned-words grep on the final code and paste the before/after.
+
+20. FOOTER
+- Copyright year computed from the current date (new Date().getFullYear()), and the text "skyB, academic project".
+- Every link goes to an existing route. Map: Track Order -> /orders, Saved Wishlist -> /wishlist, My Orders -> /orders, Quick Re-Order -> /reorder, Child Profile -> /account/child, Privacy -> /privacy, Terms -> /terms. "Returns & Exchanges", "Shipping & Delivery", "Help Center & FAQs", "Safety Standards & Promise", "Academic Project Info": either remove them, or point them to sections of /terms (add anchors #returns, #shipping, #faq, #safety, #about) and make sure those sections exist with honest demo-policy text. List each footer link with its destination.
+- If any product images come from Pexels (fetch_images.py was run), add "Photos: Pexels" in the footer. State whether Pexels images are in use.
+
+21. DEV BADGE
+All screenshots and QA runs must come from `next build && next start`. The black "N" dev badge must not appear in any screenshot. Confirm by running `npm run build` and `npm start`, and list which earlier QA runs used the dev server instead (correct any earlier claim that said production).
+
+22. DRAWER AND MEGA-MENU ICONS
+Remove "Help Desk" from the drawer (or link it to /terms#faq). Footwear needs a shoe icon, no dot. Paste the icon list per tab and per drawer category.
+
+

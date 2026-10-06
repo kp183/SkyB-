@@ -15,6 +15,14 @@ router = APIRouter(prefix="/products", tags=["Products"])
 
 
 def serialize_product(p: Product) -> dict:
+    reviews_list = getattr(p, "reviews", []) or []
+    rev_count = len(reviews_list)
+    avg_rating = (
+        round(float(sum(r.rating for r in reviews_list)) / rev_count, 1)
+        if rev_count > 0
+        else None
+    )
+
     return {
         "id": p.id,
         "name": p.name,
@@ -35,6 +43,8 @@ def serialize_product(p: Product) -> dict:
         "safety_tags": p.safety_tags,
         "safety_score": p.safety_score,
         "safety_summary": p.safety_summary,
+        "rating": avg_rating,
+        "review_count": rev_count,
         "created_at": p.created_at.isoformat() if p.created_at else None,
     }
 
@@ -221,7 +231,11 @@ def list_products(
         "skip": skip,
         "limit": limit,
     }
-    return success_response([serialize_product(p) for p in products], meta=meta)
+    return {
+        "data": [serialize_product(p) for p in products],
+        "meta": meta,
+        "error": None,
+    }
 
 
 @router.get("/{id}")

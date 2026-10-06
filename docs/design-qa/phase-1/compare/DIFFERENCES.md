@@ -1,149 +1,195 @@
-# Phase 1E Visual Difference Audit — Built Application vs. Stitch Specification
+# Phase 1F Visual Difference Audit — Built Production vs. Stitch Specification
 
-This document provides a written analysis of visible differences (colors, spacing, copy, icons, and layout) between the built SkyB application and the Stitch design-v2 reference mockups across all 8 required screens. Every listed difference is explicitly classified as either `[fixed]` or `[won't fix (reason)]`.
+This document provides an honest, empirical analysis of visible differences (colors, spacing, copy, icons, and layout) between the built SkyB application and the Stitch design-v2 reference mockups across all 8 required screens. 
 
-Visual comparison artifacts are stored in [`docs/design-qa/phase-1/compare/`](file:///c:/Users/kp294/Downloads/files/docs/design-qa/phase-1/compare/).
+All comparisons were produced using **Playwright headless Chrome** capturing side-by-side equal-dimension crops at **100% unscaled resolution** (1440x900 desktop, 390x844 mobile). The built application was served from `next build && next start` (production mode on port 3005) with **zero dev overlays** (no Next.js "N" badge).
 
----
-
-## 1. Home Desktop (`home_desktop_compare.png`)
-- **Stitch Reference:** `stitch_skyb_v2/home_restyled_locked_candy/screen.png`
-- **Built Screen:** `docs/design-qa/phase-1/home_full_desktop_1440px.png` (1440x900)
-- **Side-by-side artifact:** [`docs/design-qa/phase-1/compare/home_desktop_compare.png`](file:///c:/Users/kp294/Downloads/files/docs/design-qa/phase-1/compare/home_desktop_compare.png)
-
-### Visible Differences & Audit Checks:
-1. **Pincode Delivery Selector:** `[fixed]`
-   - *Stitch reference:* Showed mock "Deliver to: Mumbai 400001".
-   - *Built:* Starts empty displaying "Enter pincode" placeholder per user requirement 2. Grep scan confirms 0 occurrences of 400001 or Mumbai. Once 6 digits are saved, updates dynamically to "Deliver to: [PIN]".
-2. **Product Data:** `[won't fix (reason: Stitch reference used static placeholder toys. The production application dynamically renders real products from the database, certified with 412 items across 14 categories per PRD)]`
-   - *Stitch reference:* Rendered static placeholder toys (e.g. "Wooden Montessori Cubes").
-   - *Built:* Dynamically loaded from database containing 412 seeded items (5 original + 407 generated across 14 categories).
-3. **Discount Distribution:** `[won't fix (reason: Follows the approved 4-tier realistic distribution algorithm specified in Phase 1D decisions: 35.9% zero discount, 23.3% tier 1 (5-14%), 22.3% tier 2 (15-24%), 18.4% tier 3 (25-35%))]`
-   - *Stitch reference:* Showed arbitrary mock discount badges.
-   - *Built:* Strictly follows the 4-tier distribution: 35.9% zero discount (MRP=Price), 23.3% 5-14% discount, 22.3% 15-24% discount, 18.4% 25-35% discount.
-4. **Header Height & Spacing:** `[fixed]`
-   - *Stitch reference:* 68px top bar height.
-   - *Built:* 64px top bar height with 44px sub-header category navigation bar. Spacing and alignment match within 4px grid.
-5. **Action Buttons:** `[fixed]`
-   - *Stitch reference:* Tactile buttons with hard drop shadows.
-   - *Built:* Verified exact color tokens: Bargain golden `#e1a800` (shadow `#795900`), Add to Cart coral `#fe7488` (shadow `#730425`), Cards with rotating chunky bottom shadows (`#c4e7ff`, `#ffdadc`, `#ffdf9f`).
+Artifacts are located in [`docs/design-qa/phase-1/compare/`](file:///c:/Users/kp294/Downloads/files/docs/design-qa/phase-1/compare/).
 
 ---
 
-## 2. Home Mobile (`home_mobile_compare.png`)
-- **Stitch Reference:** `stitch_skyb_v2/home_hub_skyb_india_mobile/screen.png`
-- **Built Screen:** `docs/design-qa/phase-1/home_mobile_390px.png` (390x844)
-- **Side-by-side artifact:** [`docs/design-qa/phase-1/compare/home_mobile_compare.png`](file:///c:/Users/kp294/Downloads/files/docs/design-qa/phase-1/compare/home_mobile_compare.png)
+## Retraction of Previous Erroneous Claim
 
-### Visible Differences & Audit Checks:
-1. **Bottom Navigation Items:** `[fixed]`
-   - *Stitch reference:* Showed Home, Categories, SkyBot, Wishlist, Profile.
-   - *Built:* Fixed in Phase 1D to exactly 5 items: **Home, Categories, Wishlist (badge), Cart (badge), Account**. SkyBot removed from bottom nav and retained in header and product cards per user requirement 1.
-2. **Top Header & Stage Bar:** `[fixed]`
-   - *Stitch reference:* Dense top mobile header with search icon.
-   - *Built:* Hamburger drawer trigger, centered skyB cloud logo, search input, and Deliver to pincode chip. Scrollable age stage bar below header.
-3. **Product Card Grid:** `[fixed]`
-   - *Stitch reference:* 2-column grid layout with 12px gutter.
-   - *Built:* 2-column mobile grid matching 12px gutter, with responsive `PriceBlock` and touch-friendly action buttons.
+> [!WARNING]
+> **Retraction Regarding Footer Color in Previous QA Reports:**
+> An earlier version of `DIFFERENCES.md` incorrectly claimed that Stitch's footer background was dark slate `#001e2c`. Pixel sampling and DOM computed-style measurements from `code.html` prove that claim was **completely false**.
+> - **Stitch reference footer background:** `rgb(240, 243, 255)` (`#f0f3ff` — light surface-container-low).
+> - **Built application footer background:** `rgb(239, 244, 255)` (`#eff4ff` — light surface-container-low).
+> Both reference and built footers are light blue; there is no dark `#001e2c` footer in Stitch.
 
 ---
 
-## 3. Category Navigation Drawer (`category_drawer_compare.png`)
-- **Stitch Reference:** `stitch_skyb_v2/category_drawer_category/screen.png`
-- **Built Screen:** `docs/design-qa/phase-1/mobile_drawer_390px.png` (390x844)
-- **Side-by-side artifact:** [`docs/design-qa/phase-1/compare/category_drawer_compare.png`](file:///c:/Users/kp294/Downloads/files/docs/design-qa/phase-1/compare/category_drawer_compare.png)
+## Sampled Color & Geometry Metrics
 
-### Visible Differences & Audit Checks:
-1. **Drawer Dimensions:** `[fixed]`
-   - *Stitch reference:* Full slide-over drawer with 85% width.
-   - *Built:* 86% width (`w-[86%] max-w-[360px]`) leaving a 30px dimmed backdrop strip for thumb click dismissal on 390px viewport.
-2. **Category Hierarchy & Icons:** `[fixed]`
-   - *Stitch reference:* Rendered standard icon set.
-   - *Built:* 11 accordion categories with pure SVG icons from `ICON_REGISTRY` (boy, girl, steps, smart_toy, baby_changing_station, child_care, restaurant, soap, crib, medical_services, backpack).
-3. **Utility Section:** `[fixed]`
-   - *Stitch reference:* Static links.
-   - *Built:* Fully functional navigation to Quick Re-order (`/reorder`), Newborn Checklist (`/newborn-checklist`), Child Profile (`/account/child`), and Order History (`/orders`).
+Measurements sampled directly from DOM computed styles (`docs/design-qa/phase-1/compare/sampled_metrics.json`):
+
+| Element | Stitch Reference | Built Application | Status / Classification |
+|---|---|---|---|
+| **Footer Background** | `rgb(240, 243, 255)` (`#f0f3ff`) | `rgb(239, 244, 255)` (`#eff4ff`) | `[intentional (matches light surface-container-low within 1 delta E)]` |
+| **Bargain Bot Button** | `rgb(255, 222, 160)` (`#ffdea0` pale peach), text `rgb(38, 26, 0)`, shadow `0 3px 0 #795900` | `rgb(225, 168, 0)` (`#e1a800` locked gold), text `rgb(255, 255, 255)` (pure white), shadow `0 5px 0 #795900` | `[intentional (locked brand gold per DECISIONS.md item 10)]` |
+| **Cart Button / Pill** | Pale blue pill `#c4e7ff` with dark blue text | Ocean primary `#00668a`, pure white text, shadow `0 4px 0 #004965` | `[intentional (locked tactile styling per DECISIONS.md item 10)]` |
+| **Sign In Button** | Pale blue pill `#c4e7ff` with dark blue text | Ocean primary `#00668a`, pure white text, shadow `0 4px 0 #004965` | `[intentional (locked tactile styling per DECISIONS.md item 10)]` |
+| **Card Shadow** | `rgba(0, 30, 44, 0.06) 0px 4px 16px 0px` (soft blur) | `rgb(196, 231, 255) 0px 8px 0px 0px` (tactile solid candy shadow) | `[intentional (locked tactile candy drop-shadow design language)]` |
 
 ---
 
-## 4. SkyBot Desktop Slide-Over (`skybot_desktop_compare.png`)
-- **Stitch Reference:** `stitch_skyb_v2/skybot_hub_skybot/screen.png`
-- **Built Screen:** `docs/design-qa/phase-1/skybot_desktop_slideover_1440px.png` (1440x900)
-- **Side-by-side artifact:** [`docs/design-qa/phase-1/compare/skybot_desktop_compare.png`](file:///c:/Users/kp294/Downloads/files/docs/design-qa/phase-1/compare/skybot_desktop_compare.png)
+## 1. Header Desktop (`header_desktop_compare.png`)
+- **Stitch Reference:** `stitch_skyb_v2/home_restyled_locked_candy/code.html` (Header crop at 1440x900)
+- **Built Production:** `http://localhost:3005` (Header crop at 1440x900)
+- **Side-by-side artifact:** [`docs/design-qa/phase-1/compare/header_desktop_compare.png`](file:///c:/Users/kp294/Downloads/files/docs/design-qa/phase-1/compare/header_desktop_compare.png) (2880x156)
 
 ### Visible Differences & Audit Checks:
-1. **Right Dock Panel Geometry:** `[fixed]`
-   - *Stitch reference:* 420px right dock with dark backdrop.
-   - *Built:* Matches 420px width (`w-[420px]`), full viewport height, with backdrop blur.
-2. **Dynamic Negotiation State:** `[fixed]`
-   - *Stitch reference:* Mock static negotiation bubbles.
-   - *Built:* Live interactive negotiation connected to `POST /bargain/offer`. Counter offers computed by `process_offer` service. When an offer drops below `min_price`, the counter rises following the margin fallback formula.
-3. **Accessibility & Focus:** `[fixed]`
-   - *Stitch reference:* Static design.
-   - *Built:* Tab keyboard focus is trapped within the slide-over dialog while open and focus is returned to trigger button (`#header-bargain-bot-btn` or card button) on close. Escape key dismisses panel.
+1. **Bargain Bot Button Color:** `[intentional (locked design)]`
+   - *Stitch reference:* Pale peach `#ffdea0` with dark brown text.
+   - *Built:* Locked brand gold `#e1a800` with pure white text/icon and `0 5px 0 #795900` hard shadow. The pink notification ping dot has been completely removed.
+2. **Cart Pill & Sign In Styling:** `[intentional (locked design)]`
+   - *Stitch reference:* Pale sky blue `#c4e7ff` with dark text.
+   - *Built:* Ocean primary `#00668a` with white text and `0 4px 0 #004965` shadow. For guests, displays "Cart" only (no "Cart Cart" or mock item count).
+3. **Pincode Delivery Selector:** `[fixed]`
+   - *Stitch reference:* Hardcoded "Deliver to: Mumbai 400001".
+   - *Built:* Starts empty with "Enter pincode" placeholder. Validates 6-digit Indian PIN codes client-side.
+4. **Sub-header Category Navigation:** `[fixed]`
+   - *Stitch reference:* 11 category tabs with icons.
+   - *Built:* 11 category tabs with distinct SVG icons matching the design registry. Mega-menu price chips filter out any chip with zero items (`VALID_PRICE_BANDS_BY_SLUG`).
 
 ---
 
-## 5. SkyBot Mobile Bottom Sheet (`skybot_mobile_compare.png`)
-- **Stitch Reference:** `stitch_skyb_v2/skybot_sheet_skybot_sheet/screen.png`
-- **Built Screen:** `docs/design-qa/phase-1/skybot_mobile_bottom_sheet_390px.png` (390x844)
-- **Side-by-side artifact:** [`docs/design-qa/phase-1/compare/skybot_mobile_compare.png`](file:///c:/Users/kp294/Downloads/files/docs/design-qa/phase-1/compare/skybot_mobile_compare.png)
+## 2. Home Desktop Hero & Body (`home_desktop_compare.png`)
+- **Stitch Reference:** `stitch_skyb_v2/home_restyled_locked_candy/code.html` (Hero & grid crop at 1440x900)
+- **Built Production:** `http://localhost:3005` (Hero & grid crop at 1440x900)
+- **Side-by-side artifact:** [`docs/design-qa/phase-1/compare/home_desktop_compare.png`](file:///c:/Users/kp294/Downloads/files/docs/design-qa/phase-1/compare/home_desktop_compare.png) (2880x676)
 
 ### Visible Differences & Audit Checks:
-1. **Sheet Style & Drag Handle:** `[fixed]`
-   - *Stitch reference:* Rounded top corners with centered drag handle pill.
-   - *Built:* Features rounded top corners (`rounded-t-3xl`), drag handle bar (`w-12 h-1.5 rounded-full bg-outline-variant/60`), and 90vh height (`h-[90vh]`).
-2. **Input Form & Keyboard Docking:** `[fixed]`
-   - *Stitch reference:* Input dock at bottom.
-   - *Built:* Bottom dock styled with `pb-safe` to maintain clearance above iOS/Android virtual keyboards and mobile navigation bar.
+1. **Hero Headline & Copy:** `[won't fix (Phase 2 task)]`
+   - *Stitch reference:* "Where Smart Parenting Meets Serious Play".
+   - *Built:* Retains "Play, Snuggle & Score Big Discounts!" until Phase 2 Home redesign as specified by user instructions.
+2. **Banned Words Removal:** `[fixed]`
+   - *Stitch reference:* Showed "Certified Baby-Safe", "Tested Materials", "Safety Verified".
+   - *Built:* Cleaned all 13 banned words. Home perks bar displays "Safety info on every product" instead of "100% Baby-Safe". Hero pill tags removed.
+3. **Product Catalog Cards:** `[won't fix (dynamic data vs static mockup)]`
+   - *Stitch reference:* Static placeholder toys with mock ratings (e.g. 4.9 stars across all cards).
+   - *Built:* Live database products. Generated products (IDs > 5) show no stars or review count unless backed by rows in the `reviews` table.
 
 ---
 
-## 6. Header Desktop (`header_desktop_compare.png`)
-- **Stitch Reference:** `stitch_skyb_v2/skyb_india_marketplace_home_hub/screen.png` (Header section)
-- **Built Screen:** `docs/design-qa/phase-1/header_desktop_1440px.png` (1440x900)
-- **Side-by-side artifact:** [`docs/design-qa/phase-1/compare/header_desktop_compare.png`](file:///c:/Users/kp294/Downloads/files/docs/design-qa/phase-1/compare/header_desktop_compare.png)
+## 3. Footer Desktop (`footer_compare.png`)
+- **Stitch Reference:** `stitch_skyb_v2/home_restyled_locked_candy/code.html` (Footer crop at 1440x900)
+- **Built Production:** `http://localhost:3005` (Footer crop at 1440x900)
+- **Side-by-side artifact:** [`docs/design-qa/phase-1/compare/footer_compare.png`](file:///c:/Users/kp294/Downloads/files/docs/design-qa/phase-1/compare/footer_compare.png) (2880x478)
 
 ### Visible Differences & Audit Checks:
-1. **Pincode Display:** `[fixed]`
-   - *Stitch reference:* "Deliver to: Mumbai 400001".
-   - *Built:* Starts empty as "Enter pincode". Modal displays "Standard delivery in 3-5 business days" when opened.
-2. **Category Search Dropdown:** `[fixed]`
-   - *Stitch reference:* Integrated category filter before search input.
-   - *Built:* Functional dropdown allowing direct search filtering across categories.
-3. **Cart Badge:** `[fixed]`
-   - *Stitch reference:* Static badge count.
-   - *Built:* Real-time live count and subtotal (`₹X`) updating immediately via `cart-updated` custom events without page reload.
+1. **Footer Background Color:** `[fixed]`
+   - *Stitch reference:* `rgb(240, 243, 255)` (`#f0f3ff`).
+   - *Built:* `rgb(239, 244, 255)` (`#eff4ff`). Matches light container tokens.
+2. **Copyright Year & Attribution:** `[fixed]`
+   - *Stitch reference:* "© 2024 SkyB Inc." or "© 2025".
+   - *Built:* Dynamically computes `new Date().getFullYear()` (2026) and states: `"© 2026 skyB, academic project. Built for demo purposes only."`.
+3. **Photo Attribution:** `[fixed]`
+   - *Stitch reference:* None.
+   - *Built:* Explicit attribution added: `"Photos: Unsplash & Pexels (demo catalog)"`.
+4. **Policy Links & Anchor Routing:** `[fixed]`
+   - *Stitch reference:* Dead links (`#`).
+   - *Built:* Zero dead links. All links point to live routes or valid `/terms` anchor sections:
+     - Track Order -> `/orders`
+     - Saved Wishlist -> `/wishlist`
+     - My Orders -> `/orders`
+     - Quick Re-Order -> `/reorder`
+     - Child Profile -> `/account/child`
+     - Privacy Policy -> `/privacy`
+     - Terms of Service -> `/terms`
+     - Returns & Exchanges -> `/terms#returns`
+     - Shipping & Delivery -> `/terms#shipping`
+     - Help Center & FAQs -> `/terms#faq`
+     - Safety Standards & Promise -> `/terms#safety`
+     - Academic Project Info -> `/terms#about`
+5. **Marketing Wording:** `[fixed]`
+   - *Stitch reference:* "Top Daily Deals".
+   - *Built:* Rewritten to "Top Deals".
 
 ---
 
-## 7. Mobile Bottom Navigation (`bottom_nav_mobile_compare.png`)
-- **Stitch Reference:** `stitch_skyb_v2/home_hub_skyb_india_mobile/screen.png` (Bottom Nav section)
-- **Built Screen:** `docs/design-qa/phase-1/bottom_nav_390px.png` (390x844)
-- **Side-by-side artifact:** [`docs/design-qa/phase-1/compare/bottom_nav_mobile_compare.png`](file:///c:/Users/kp294/Downloads/files/docs/design-qa/phase-1/compare/bottom_nav_mobile_compare.png)
+## 4. Home Mobile (`home_mobile_compare.png`)
+- **Stitch Reference:** `stitch_skyb_v2/home_hub_skyb_india_mobile/code.html` (Mobile crop at 390x844)
+- **Built Production:** `http://localhost:3005` (Mobile crop at 390x844)
+- **Side-by-side artifact:** [`docs/design-qa/phase-1/compare/home_mobile_compare.png`](file:///c:/Users/kp294/Downloads/files/docs/design-qa/phase-1/compare/home_mobile_compare.png) (780x636)
 
 ### Visible Differences & Audit Checks:
-1. **Item Ordering & Count:** `[fixed]`
-   - *Stitch reference:* 5 items with SkyBot in slot 3: Home, Categories, SkyBot, Wishlist, Profile.
-   - *Built:* Fixed in Phase 1D to exactly 5 items: **Home, Categories, Wishlist, Cart, Account**.
-2. **Badges:** `[fixed]`
-   - *Stitch reference:* Static red dot.
-   - *Built:* Live numeric count badges on both Wishlist and Cart updating immediately without page reload.
-3. **Guest Protection:** `[fixed]`
-   - *Stitch reference:* Direct links.
-   - *Built:* Unauthenticated taps on Wishlist, Cart, or Account intercept and redirect to `/login?next=...`.
+1. **Mobile Header Composition (Item 18):** `[fixed]`
+   - *Stitch reference:* Hamburger, centered logo, search, bot, cart, avatar.
+   - *Built:* Exactly conforms to Item 18: Hamburger (left), centered skyB logo, search toggle button (opens full-width input overlay), Bargain Bot button (`#e1a800`, white icon, shadow `0 3px 0 #795900`), cart icon with count badge, and account avatar. Wishlist heart removed from mobile header.
+2. **Next.js Dev Overlay Badge:** `[fixed]`
+   - *Built:* Captured from production build on port 3005. Black "N" dev badge is 100% absent.
 
 ---
 
-## 8. Footer Desktop (`footer_compare.png`)
-- **Stitch Reference:** `stitch_skyb_v2/home_restyled_locked_candy/screen.png` (Footer section)
-- **Built Screen:** `docs/design-qa/phase-1/footer_desktop_1440px.png` (1440x900)
-- **Side-by-side artifact:** [`docs/design-qa/phase-1/compare/footer_compare.png`](file:///c:/Users/kp294/Downloads/files/docs/design-qa/phase-1/compare/footer_compare.png)
+## 5. Mobile Bottom Navigation (`bottom_nav_mobile_compare.png`)
+- **Stitch Reference:** `stitch_skyb_v2/home_hub_skyb_india_mobile/code.html` (Bottom nav crop at 390x844)
+- **Built Production:** `http://localhost:3005` (Bottom nav crop at 390x844)
+- **Side-by-side artifact:** [`docs/design-qa/phase-1/compare/bottom_nav_mobile_compare.png`](file:///c:/Users/kp294/Downloads/files/docs/design-qa/phase-1/compare/bottom_nav_mobile_compare.png) (780x101)
 
 ### Visible Differences & Audit Checks:
-1. **Link Completeness:** `[fixed]`
-   - *Stitch reference:* Mock text items.
-   - *Built:* 100% active semantic links across Catalog, Customer Service, and Quick Links. Zero dead links (`href="#"`).
-2. **Color & Typography:** `[fixed]`
-   - *Stitch reference:* Dark slate background `#001e2c` with cyan and white accents.
-   - *Built:* Matches tokens from DESIGN.md: background `#001e2c`, headings Quicksand bold, body Nunito Sans.
+1. **Navigation Slots:** `[fixed]`
+   - *Stitch reference:* 5 slots: Home, Categories, SkyBot, Wishlist, Profile.
+   - *Built:* Fixed to 5 slots: **Home, Categories, Wishlist (badge), Cart (badge), Account**. SkyBot is accessed via the header and product cards.
+2. **Label Visibility:** `[fixed]`
+   - *Built:* All 5 labels are crisp and fully visible. No dev badge obscuring the "Home" label.
+
+---
+
+## 6. Category Navigation Drawer (`category_drawer_compare.png`)
+- **Stitch Reference:** `stitch_skyb_v2/category_drawer_category/code.html` (Rendered with drawer open at 360x786)
+- **Built Production:** `http://localhost:3005` (Rendered with drawer open at 360x786)
+- **Side-by-side artifact:** [`docs/design-qa/phase-1/compare/category_drawer_compare.png`](file:///c:/Users/kp294/Downloads/files/docs/design-qa/phase-1/compare/category_drawer_compare.png) (720x786)
+
+### Visible Differences & Audit Checks:
+1. **Reference Screen Truth:** `[fixed]`
+   - *Previous issue:* The static `screen.png` for `category_drawer_category` was blank/unrendered.
+   - *Resolution:* Rendered directly from `category_drawer_category/code.html` with JavaScript drawer activation at 100% scale.
+2. **Category Icons:** `[fixed]`
+   - *Built:* Footwear uses a dedicated shoe SVG icon (`steps`/shoe), Diapering uses diaper, Gear uses stroller, Feeding uses bottle, Bath uses drop, Nursery uses crib, Health & Safety uses shield, School uses backpack. No plain dots.
+3. **Dead Links Removal:** `[fixed]`
+   - *Stitch reference:* Showed mock "Help Desk".
+   - *Built:* "Help Desk" removed; footer quick links point to `/terms#faq`, `/account/child`, `/orders`, and `/reorder`.
+
+---
+
+## 7. SkyBot Desktop Slide-Over (`skybot_desktop_compare.png`)
+- **Stitch Reference:** `stitch_skyb_v2/skybot_sheet_skybot_sheet/code.html` (Rendered at 1440x900 as right slide-over)
+- **Built Production:** `http://localhost:3005` (Rendered with SkyBot open at 1440x900)
+- **Side-by-side artifact:** [`docs/design-qa/phase-1/compare/skybot_desktop_compare.png`](file:///c:/Users/kp294/Downloads/files/docs/design-qa/phase-1/compare/skybot_desktop_compare.png) (2880x936)
+
+### Visible Differences & Audit Checks:
+1. **Correct Reference Screen:** `[fixed]`
+   - *Previous issue:* Earlier report compared against `skybot_hub` (full page) instead of `skybot_sheet_skybot_sheet` (slide-over).
+   - *Resolution:* Rendered from `skybot_sheet_skybot_sheet/code.html` styled as a slide-over at 100% scale.
+2. **Suggestion Chips Math:** `[intentional (rule-based)]`
+   - *Stitch reference:* Mock static suggestions.
+   - *Built:* Suggestion chips are computed purely from the listed price (₹629 / ₹594 / ₹559 = 90%, 85%, 80% of ₹699) and labeled "Suggestions". Never derived from `min_price`.
+3. **Product Card Background:** `[fixed]`
+   - *Built:* Real catalog cards behind modal backdrop blur. Attributed to Unsplash & Pexels in footer.
+
+---
+
+## 8. SkyBot Mobile Bottom Sheet (`skybot_mobile_compare.png`)
+- **Stitch Reference:** `stitch_skyb_v2/skybot_sheet_skybot_sheet/code.html` (Rendered at 390x844 mobile viewport)
+- **Built Production:** `http://localhost:3005` (Rendered with SkyBot bottom sheet at 390x844)
+- **Side-by-side artifact:** [`docs/design-qa/phase-1/compare/skybot_mobile_compare.png`](file:///c:/Users/kp294/Downloads/files/docs/design-qa/phase-1/compare/skybot_mobile_compare.png) (780x796)
+
+### Visible Differences & Audit Checks:
+1. **Geometry & Drag Handle:** `[fixed]`
+   - *Stitch reference:* Rounded top sheet with drag handle.
+   - *Built:* 90vh bottom sheet with rounded top corners (`rounded-t-3xl`), centered drag bar, and smooth touch-dismiss backdrop.
+2. **Keyboard & Mobile Safe Area:** `[fixed]`
+   - *Built:* Bottom input area uses `pb-safe` to prevent occlusion by mobile home indicators and virtual keyboards.
+
+---
+
+## Summary of Intentional Deviations
+
+The following differences between the built application and Stitch mockups are deliberate architectural and product decisions:
+
+1. **No Coupon Leaks or Banners:** Stitch mockups showed arbitrary banners with promo codes (e.g. `KIDS20`). In SkyB, coupon codes are never pre-leaked; they are applied at checkout and non-stackable with bargained items.
+2. **No Countdown Urgency Timers:** Stitch included fake "Ending in 02:45:10" countdowns. These are omitted to maintain student project honesty and prevent deceptive urgency patterns.
+3. **Removal of Unverified Safety Claims:** Banned terms ("Certified", "Tested Materials", "Safety Verified", "100% Baby-Safe") present in Stitch mockups are replaced with neutral statements ("Safety info on every product", "Safety Details").
+4. **No Synthetic Review Authors:** Static Stitch mockups showed arbitrary customer names and reviews on every product. In the built application, generated products (IDs > 5) show zero stars and zero review counts until genuine reviews are posted.
+5. **Locked Button Colors:** Locked brand tokens (`#e1a800` gold for Bargain Bot, `#00668a` ocean blue for Cart pill and Sign In) override Stitch's pale peach `#ffdea0` and pale blue `#c4e7ff` pills to maintain high contrast and tactile consistency across the application.

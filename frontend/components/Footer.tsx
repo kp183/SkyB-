@@ -40,16 +40,16 @@ export default function Footer() {
                 <Link href="/category/girls-fashion">Girls Fashion</Link>
               </li>
               <li className="font-body-sm text-body-sm text-on-surface-variant hover:text-on-surface">
-                <Link href="/category/toys">Educational Toys &amp; Puzzles</Link>
+                <Link href="/category/toys">Toys &amp; Puzzles</Link>
               </li>
               <li className="font-body-sm text-body-sm text-on-surface-variant hover:text-on-surface">
                 <Link href="/category/diapering">Diapering &amp; Wipes</Link>
               </li>
               <li className="font-body-sm text-body-sm text-on-surface-variant hover:text-on-surface">
-                <Link href="/category/feeding">Feeding Bottles &amp; Nursing</Link>
+                <Link href="/category/feeding">Feeding &amp; Nursing</Link>
               </li>
               <li className="font-body-sm text-body-sm text-on-surface-variant hover:text-on-surface">
-                <Link href="/deals">Top Daily Deals (₹)</Link>
+                <Link href="/deals">Top Deals</Link>
               </li>
             </ul>
           </div>
@@ -64,13 +64,13 @@ export default function Footer() {
                 <Link href="/orders">Track Order</Link>
               </li>
               <li className="font-body-sm text-body-sm text-on-surface-variant hover:text-on-surface">
-                <Link href="/terms">Returns &amp; Exchanges</Link>
+                <Link href="/terms#returns">Returns &amp; Exchanges</Link>
               </li>
               <li className="font-body-sm text-body-sm text-on-surface-variant hover:text-on-surface">
-                <Link href="/terms">Shipping Rates &amp; Delivery</Link>
+                <Link href="/terms#shipping">Shipping &amp; Delivery</Link>
               </li>
               <li className="font-body-sm text-body-sm text-on-surface-variant hover:text-on-surface">
-                <Link href="/terms">Help Center &amp; FAQs</Link>
+                <Link href="/terms#faq">Help Center &amp; FAQs</Link>
               </li>
             </ul>
           </div>
@@ -82,16 +82,16 @@ export default function Footer() {
             </h3>
             <ul className="space-y-2">
               <li className="font-body-sm text-body-sm text-on-surface-variant hover:text-on-surface">
-                <Link href="/orders">My Orders &amp; Invoices</Link>
+                <Link href="/orders">My Orders</Link>
               </li>
               <li className="font-body-sm text-body-sm text-on-surface-variant hover:text-on-surface">
                 <Link href="/wishlist">Saved Wishlist</Link>
               </li>
               <li className="font-body-sm text-body-sm text-on-surface-variant hover:text-on-surface">
-                <Link href="/reorder">Quick Re-Order Pantry</Link>
+                <Link href="/reorder">Quick Re-Order</Link>
               </li>
               <li className="font-body-sm text-body-sm text-on-surface-variant hover:text-on-surface">
-                <Link href="/account/child">Child Profile &amp; Size Reminder</Link>
+                <Link href="/account/child">Child Profile</Link>
               </li>
             </ul>
           </div>
@@ -103,16 +103,16 @@ export default function Footer() {
             </h3>
             <ul className="space-y-2">
               <li className="font-body-sm text-body-sm text-on-surface-variant hover:text-on-surface">
-                <Link href="/privacy">Safety Standards &amp; Promise</Link>
+                <Link href="/terms#safety">Safety Standards &amp; Promise</Link>
               </li>
               <li className="font-body-sm text-body-sm text-on-surface-variant hover:text-on-surface">
-                <Link href="/terms">Academic Project Info</Link>
+                <Link href="/terms#about">Academic Project Info</Link>
               </li>
               <li className="font-body-sm text-body-sm text-on-surface-variant hover:text-on-surface">
-                <Link href="/privacy">Privacy Policy</Link>
+                <Link href="/privacy">Privacy</Link>
               </li>
               <li className="font-body-sm text-body-sm text-on-surface-variant hover:text-on-surface">
-                <Link href="/terms">Terms of Service</Link>
+                <Link href="/terms">Terms</Link>
               </li>
             </ul>
           </div>
@@ -120,11 +120,11 @@ export default function Footer() {
 
         <div className="mt-12 pt-6 border-t border-surface-container flex flex-col md:flex-row items-center justify-between gap-4 text-center md:text-left">
           <p className="font-body-sm text-body-sm text-on-surface-variant">
-            © 2025 skyB, academic project (T.Y. B.Sc. CS). All prices listed in Indian Rupees (₹).
+            © {new Date().getFullYear()} skyB, academic project (T.Y. B.Sc. CS). Photos: Unsplash &amp; Pexels.
           </p>
           <div className="flex items-center gap-2">
             <span className="px-2.5 py-1 rounded-full bg-surface-container font-label-sm text-label-sm text-primary font-bold">
-              Safety Info On Every Product
+              Safety Specs On Every Item
             </span>
             <span className="px-2.5 py-1 rounded-full bg-surface-container font-label-sm text-label-sm text-primary font-bold">
               ₹ INR Currency

@@ -12,7 +12,7 @@ export default function ReorderPage() {
         eyebrow="Parent Pantry"
         eyebrowIcon="sync_alt"
         title="Quick Re-Order Pantry"
-        subtitle="One-tap replenishment for diapers, wipes, formula, and daily baby care staples."
+        subtitle="One-tap replenishment for diapers, wipes, formula, and everyday baby care staples."
         actionText="Back to Home"
         actionHref="/"
       />

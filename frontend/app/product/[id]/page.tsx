@@ -308,10 +308,10 @@ export default function ProductDetailPage() {
                 </div>
                 <div className="flex items-center gap-2 pt-2 border-t border-surface-container-high">
                   <span className="material-symbols-outlined text-primary text-[18px]">
-                    verified
+                    check_circle
                   </span>
                   <span className="font-label-sm text-label-sm text-on-surface-variant font-bold">
-                    Verified Customer Purchase
+                    Customer Review
                   </span>
                 </div>
               </div>

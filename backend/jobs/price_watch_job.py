@@ -13,17 +13,11 @@ from backend.db import SessionLocal
 from backend.services.price_watch_service import check_price_drops
 
 
-import logging
-
-logger = logging.getLogger("price_watch_job")
-logging.basicConfig(level=logging.INFO, format="%(asctime)s [%(levelname)s] %(message)s")
-
-
 def run_price_watch_job():
     db = SessionLocal()
     try:
         updated = check_price_drops(db)
-        logger.info(f"Check completed. {updated} items triggered price-drop alerts.")
+        print(f"[PriceWatchJob] Check completed. {updated} items triggered price-drop alerts.")
     finally:
         db.close()
 

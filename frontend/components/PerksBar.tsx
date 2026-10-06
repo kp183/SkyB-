@@ -6,11 +6,11 @@ export default function PerksBar() {
       {/* Perk 1 */}
       <div className="flex items-start gap-4 p-5 rounded-lg bg-surface-container-lowest shadow-[0_6px_0_#c4e7ff] hover:translate-y-[-2px] transition-transform">
         <div className="w-12 h-12 rounded-2xl bg-primary-fixed flex items-center justify-center shrink-0 shadow-[0_3px_0_#7bd0ff]">
-          <Icon name="verified_user" className="w-6 h-6 text-primary" />
+          <Icon name="shield" className="w-6 h-6 text-primary" />
         </div>
         <div className="flex flex-col">
-          <h3 className="font-headline-md text-headline-md text-on-surface">100% Baby-Safe</h3>
-          <p className="font-body-sm text-body-sm text-on-surface-variant">Safety info verified on every single product.</p>
+          <h3 className="font-headline-md text-headline-md text-on-surface">Safety Details</h3>
+          <p className="font-body-sm text-body-sm text-on-surface-variant">Detailed materials and age guides on every item.</p>
         </div>
       </div>
 
@@ -31,8 +31,8 @@ export default function PerksBar() {
           <Icon name="redeem" className="w-6 h-6 text-tertiary" />
         </div>
         <div className="flex flex-col">
-          <h3 className="font-headline-md text-headline-md text-on-surface">Pan-India Delivery</h3>
-          <p className="font-body-sm text-body-sm text-on-surface-variant">Free delivery across India on orders above ₹499.</p>
+          <h3 className="font-headline-md text-headline-md text-on-surface">Delivery Support</h3>
+          <p className="font-body-sm text-body-sm text-on-surface-variant">Free delivery on eligible demo orders (See Terms).</p>
         </div>
       </div>
 
@@ -42,8 +42,8 @@ export default function PerksBar() {
           <Icon name="sync_alt" className="w-6 h-6 text-primary" />
         </div>
         <div className="flex flex-col">
-          <h3 className="font-headline-md text-headline-md text-on-surface">Doorstep Returns</h3>
-          <p className="font-body-sm text-body-sm text-on-surface-variant">Hassle-free 7-day pickup if explorer changes their mind.</p>
+          <h3 className="font-headline-md text-headline-md text-on-surface">Easy Returns</h3>
+          <p className="font-body-sm text-body-sm text-on-surface-variant">Return requests supported for demo orders (See Terms).</p>
         </div>
       </div>
     </section>

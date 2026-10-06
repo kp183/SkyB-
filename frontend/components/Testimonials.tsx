@@ -63,15 +63,15 @@ export default function Testimonials() {
       <div className="flex items-center justify-between">
         <div>
           <div className="font-label-sm text-label-sm text-primary font-bold uppercase tracking-wider">
-            Verified Customer Feedback
+            Parent Community Feedback
           </div>
           <h2 className="font-headline-xl text-headline-xl text-on-surface">
             Praise From Parents
           </h2>
         </div>
         <div className="hidden sm:flex items-center gap-1.5 text-primary font-label-md text-label-md font-bold">
-          <span className="material-symbols-outlined text-[18px]">verified</span>
-          <span>Verified Customer Purchases</span>
+          <span className="material-symbols-outlined text-[18px]">rate_review</span>
+          <span>Customer Product Reviews</span>
         </div>
       </div>
 
@@ -100,11 +100,11 @@ export default function Testimonials() {
               </div>
               <div>
                 <div className="font-label-md text-label-md text-on-surface font-bold">
-                  Verified Parent #{rev.id || idx + 1}
+                  Customer Review #{rev.id || idx + 1}
                 </div>
                 <div className="font-label-sm text-[11px] text-primary flex items-center gap-1 font-bold">
-                  <span className="material-symbols-outlined text-[14px]">verified</span>
-                  <span>Verified Purchase</span>
+                  <span className="material-symbols-outlined text-[14px]">check_circle</span>
+                  <span>Purchased Item</span>
                 </div>
               </div>
             </div>

@@ -11,6 +11,7 @@ import {
   CATEGORIES,
   AGE_GROUPS,
   PRICE_BANDS,
+  VALID_PRICE_BANDS_BY_SLUG,
   COLLECTIONS,
   CategoryConfig,
 } from "@/config/navigation";
@@ -23,6 +24,7 @@ export default function Navbar() {
 
   // Mobile drawer state
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
+  const [isMobileSearchOpen, setIsMobileSearchOpen] = useState(false);
 
   // Auth & user state
   const [isLoggedIn, setIsLoggedIn] = useState(false);
@@ -115,10 +117,11 @@ export default function Navbar() {
     };
   }, [loadUserData]);
 
-  // Route change closes mega-menu and drawer
+  // Route change closes mega-menu, drawer, mobile search
   useEffect(() => {
     setActiveMenuTab(null);
     setIsDrawerOpen(false);
+    setIsMobileSearchOpen(false);
   }, [pathname]);
 
   // Keyboard accessibility: Escape key closes mega menu
@@ -127,6 +130,7 @@ export default function Navbar() {
       if (e.key === "Escape") {
         setActiveMenuTab(null);
         setIsPincodeModalOpen(false);
+        setIsMobileSearchOpen(false);
       }
     };
     window.addEventListener("keydown", handleKeyDown);
@@ -159,6 +163,7 @@ export default function Navbar() {
       params.set("category_slug", searchCategory);
     }
     router.push(`/category/all?${params.toString()}`);
+    setIsMobileSearchOpen(false);
   };
 
   // Pincode validation & save (6 digits, client-side only)
@@ -193,20 +198,130 @@ export default function Navbar() {
     <>
       <header className="fixed top-0 left-0 w-full z-40 bg-surface-container-lowest shadow-[0_4px_16px_rgba(0,30,44,0.06)]">
         <div className="w-full">
-          {/* Top Bar (Desktop & Mobile) */}
-          <div className="h-14 sm:h-16 w-full px-4 lg:px-8 flex items-center justify-between gap-3 bg-surface-container-lowest">
-            {/* Left section: Hamburger (Mobile) + Logo + Pincode */}
-            <div className="flex items-center gap-2 sm:gap-3 shrink-0">
-              {/* Mobile Hamburger Drawer Trigger */}
+          {/* -------------------------------------------------------------
+              MOBILE TOP BAR (Item 18: Hamburger, centered logo, search, bot, cart, avatar)
+             ------------------------------------------------------------- */}
+          <div className="h-14 w-full px-3 flex items-center justify-between gap-2 bg-surface-container-lowest md:hidden relative">
+            {/* Hamburger (Left) */}
+            <button
+              type="button"
+              onClick={() => setIsDrawerOpen(true)}
+              aria-label="Open Navigation Drawer"
+              className="w-9 h-9 flex items-center justify-center rounded-full text-primary hover:bg-surface-container-high transition-colors active:scale-95 cursor-pointer shrink-0"
+            >
+              <Icon name="menu" className="w-6 h-6" />
+            </button>
+
+            {/* Centered skyB Logo */}
+            <Link
+              href="/"
+              className="flex items-center gap-1.5 group cursor-pointer focus:outline-none absolute left-1/2 -translate-x-1/2"
+              id="brand-logo-mobile"
+            >
+              <div className="w-7 h-7 rounded-full bg-primary flex items-center justify-center text-on-primary shadow-[0_2px_0_#004965]">
+                <Icon name="cloud" className="w-4 h-4 text-primary-container" />
+              </div>
+              <span className="font-headline-md text-[19px] font-bold text-primary tracking-tight">
+                skyB
+              </span>
+            </Link>
+
+            {/* Right Group: Search, Bargain Bot, Cart with badge, Avatar */}
+            <div className="flex items-center gap-1.5 shrink-0 ml-auto">
+              {/* Search Toggle Icon */}
               <button
                 type="button"
-                onClick={() => setIsDrawerOpen(true)}
-                aria-label="Open Navigation Drawer"
-                className="w-10 h-10 flex items-center justify-center rounded-full text-primary hover:bg-surface-container-high transition-colors lg:hidden active:scale-95 cursor-pointer"
+                onClick={() => setIsMobileSearchOpen((prev) => !prev)}
+                aria-label="Open Search"
+                className="w-8 h-8 flex items-center justify-center rounded-full text-on-surface-variant hover:bg-surface-container transition-colors cursor-pointer"
               >
-                <Icon name="menu" className="w-6 h-6" />
+                <Icon name="search" className="w-5 h-5" />
               </button>
 
+              {/* Bargain Bot Button: #e1a800, white icon, shadow 0 3px 0 #795900 */}
+              <button
+                type="button"
+                onClick={() => openSkyBot()}
+                aria-label="Open Bargain Bot"
+                className="w-8 h-8 rounded-full bg-[#e1a800] text-white flex items-center justify-center shadow-[0_3px_0_#795900] active:translate-y-0.5 transition-all cursor-pointer select-none"
+                id="mobile-bargain-bot-btn"
+              >
+                <Icon name="smart_toy" className="w-4 h-4 text-white" />
+              </button>
+
+              {/* Cart Button with count badge (no heart wishlist on mobile header) */}
+              <Link
+                href="/cart"
+                onClick={(e) => handleAuthAction(e, "/cart")}
+                aria-label="Shopping Cart"
+                className="relative w-8 h-8 flex items-center justify-center rounded-full text-primary hover:bg-surface-container transition-colors"
+                id="mobile-cart-btn"
+              >
+                <Icon name="shopping_bag" className="w-5 h-5 text-primary" />
+                {isLoggedIn && cartCount > 0 && (
+                  <span
+                    id="mobile-header-cart-count-badge"
+                    className="absolute -top-0.5 -right-0.5 w-4 h-4 rounded-full bg-secondary-container text-on-secondary-container font-label-sm text-[9px] flex items-center justify-center font-extrabold"
+                  >
+                    {cartCount}
+                  </span>
+                )}
+              </Link>
+
+              {/* Account Avatar */}
+              {isLoggedIn ? (
+                <Link
+                  href="/account/child"
+                  className="w-8 h-8 rounded-full bg-primary flex items-center justify-center text-on-primary shadow-[0_2px_0_#004965]"
+                  title="Account & Child Profile"
+                >
+                  <Icon name="person" className="w-4 h-4" />
+                </Link>
+              ) : (
+                <Link
+                  href={`/login?next=${encodeURIComponent(pathname || "/")}`}
+                  className="w-8 h-8 rounded-full bg-[#00668a] text-white flex items-center justify-center shadow-[0_2px_0_#004965]"
+                  title="Sign In"
+                >
+                  <Icon name="person" className="w-4 h-4" />
+                </Link>
+              )}
+            </div>
+          </div>
+
+          {/* Full-width Mobile Search Bar Overlay */}
+          {isMobileSearchOpen && (
+            <div className="w-full px-3 py-2 bg-surface-container-low border-b border-surface-container md:hidden flex items-center gap-2 animate-in fade-in-50 duration-150">
+              <form onSubmit={handleSearchSubmit} className="flex-1 flex items-center bg-surface-container-lowest rounded-full px-3 py-1.5 shadow-[0_2px_0_#d8e3fb]">
+                <input
+                  type="text"
+                  placeholder="Search clothes, toys, feeding..."
+                  value={searchQuery}
+                  onChange={(e) => setSearchQuery(e.target.value)}
+                  className="w-full bg-transparent font-body-sm text-body-sm text-on-surface placeholder:text-outline focus:outline-none"
+                  autoFocus
+                />
+                <button type="submit" aria-label="Search" className="text-primary cursor-pointer p-1">
+                  <Icon name="search" className="w-4 h-4" />
+                </button>
+              </form>
+              <button
+                type="button"
+                onClick={() => setIsMobileSearchOpen(false)}
+                className="p-1.5 text-outline hover:text-on-surface rounded-full cursor-pointer"
+                aria-label="Close search"
+              >
+                <Icon name="close" className="w-4 h-4" />
+              </button>
+            </div>
+          )}
+
+          {/* -------------------------------------------------------------
+              DESKTOP TOP BAR (md and up)
+             ------------------------------------------------------------- */}
+          <div className="h-16 w-full px-4 lg:px-8 hidden md:flex items-center justify-between gap-3 bg-surface-container-lowest">
+            {/* Left section: Logo + Pincode */}
+            <div className="flex items-center gap-3 shrink-0">
               {/* Logo (Links to "/" everywhere) */}
               <Link
                 href="/"
@@ -229,7 +344,7 @@ export default function Navbar() {
                   setPincodeError("");
                   setIsPincodeModalOpen(true);
                 }}
-                className="hidden xl:flex items-center gap-1.5 px-3 py-1.5 bg-surface-container-low hover:bg-surface-container rounded-full text-left transition-colors cursor-pointer"
+                className="flex items-center gap-1.5 px-3 py-1.5 bg-surface-container-low hover:bg-surface-container rounded-full text-left transition-colors cursor-pointer"
               >
                 <Icon name="pin_drop" className="w-4 h-4 text-primary" />
                 <div className="flex flex-col text-left leading-tight">
@@ -252,7 +367,7 @@ export default function Navbar() {
             </div>
 
             {/* Center section: Search Bar (Desktop) */}
-            <div className="flex-1 max-w-2xl mx-2 hidden md:flex items-center">
+            <div className="flex-1 max-w-2xl mx-2 flex items-center">
               <form
                 onSubmit={handleSearchSubmit}
                 className="w-full flex items-center bg-surface-container-low rounded-full p-1 pl-4 shadow-[0_2px_0_#d8e3fb] focus-within:shadow-[0_2px_0_#00668a]"
@@ -273,7 +388,7 @@ export default function Navbar() {
 
                 <input
                   type="text"
-                  placeholder="Search baby-safe clothes, toys, feeding... (e.g. wooden blocks)"
+                  placeholder="Search clothes, toys, feeding... (e.g. wooden blocks)"
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
                   className="w-full bg-transparent px-3 py-1 font-body-sm text-body-sm text-on-surface placeholder:text-outline focus:outline-none"
@@ -290,19 +405,18 @@ export default function Navbar() {
             </div>
 
             {/* Right section: Bargain Bot + Wishlist + Orders + Cart + User */}
-            <div className="flex items-center gap-1.5 sm:gap-2 lg:gap-3 shrink-0">
-              {/* SkyBot Bargain AI Trigger */}
+            <div className="flex items-center gap-2 lg:gap-3 shrink-0">
+              {/* SkyBot Bargain AI Trigger: #e1a800, white text/icon, shadow 0 5px 0 #795900, NO ping dot */}
               <button
                 type="button"
                 onClick={() => openSkyBot()}
-                className="flex items-center gap-1.5 px-3 py-1.5 sm:py-2 rounded-full bg-tertiary-fixed text-on-tertiary-fixed shadow-[0_3px_0_#795900] active:translate-y-0.5 transition-all cursor-pointer select-none"
+                className="flex items-center gap-1.5 px-3.5 py-2 rounded-full bg-[#e1a800] text-white shadow-[0_5px_0_#795900] active:translate-y-0.5 transition-all cursor-pointer select-none"
                 id="header-bargain-bot-btn"
               >
-                <Icon name="smart_toy" className="w-4 h-4 text-tertiary" />
-                <span className="font-label-md text-label-md hidden lg:inline font-bold">
+                <Icon name="smart_toy" className="w-4 h-4 text-white" />
+                <span className="font-label-md text-label-md hidden lg:inline font-bold text-white">
                   Bargain Bot
                 </span>
-                <span className="w-2 h-2 rounded-full bg-secondary-container animate-ping hidden lg:block" />
               </button>
 
               {/* Wishlist Button (Guests redirected to login) */}
@@ -330,32 +444,39 @@ export default function Navbar() {
                 <span className="font-label-md text-label-md font-bold">Orders</span>
               </Link>
 
-              {/* Cart Button (Guests redirected to login) */}
+              {/* Cart Button: #00668a, WHITE text, shadow 0 4px 0 #004965 */}
               <Link
                 href="/cart"
                 onClick={(e) => handleAuthAction(e, "/cart")}
                 aria-label="Shopping Cart"
-                className="flex items-center gap-2 px-3 py-1.5 rounded-full bg-surface-container hover:bg-surface-container-high transition-colors text-primary"
+                className="flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-[#00668a] hover:brightness-105 transition-all text-white shadow-[0_4px_0_#004965]"
               >
                 <div className="relative flex items-center justify-center">
-                  <Icon name="shopping_bag" className="w-5 h-5 text-primary" />
+                  <Icon name="shopping_bag" className="w-5 h-5 text-white" />
                   {isLoggedIn && cartCount > 0 && (
-                    <span id="header-cart-count-badge" className="absolute -top-1 -right-1.5 w-4 h-4 rounded-full bg-secondary-container text-on-secondary-container font-label-sm text-[9px] flex items-center justify-center font-extrabold">
+                    <span
+                      id="header-cart-count-badge"
+                      className="absolute -top-1 -right-1.5 w-4 h-4 rounded-full bg-secondary-container text-on-secondary-container font-label-sm text-[9px] flex items-center justify-center font-extrabold"
+                    >
                       {cartCount}
                     </span>
                   )}
                 </div>
-                <div className="hidden sm:flex flex-col text-left leading-none">
-                  <span className="font-label-sm text-[10px] text-on-surface-variant">Cart</span>
-                  <span className="font-label-md text-label-md font-extrabold text-on-surface">
-                    {isLoggedIn && cartSubtotal > 0
-                      ? `₹${Math.round(cartSubtotal).toLocaleString("en-IN")}`
-                      : "Cart"}
+                {isLoggedIn ? (
+                  <div className="hidden sm:flex flex-col text-left leading-none">
+                    <span className="font-label-sm text-[10px] text-white/80">{cartCount} items</span>
+                    <span className="font-label-md text-label-md font-extrabold text-white">
+                      ₹{Math.round(cartSubtotal).toLocaleString("en-IN")}
+                    </span>
+                  </div>
+                ) : (
+                  <span className="hidden sm:inline font-label-md text-label-md font-extrabold text-white">
+                    Cart
                   </span>
-                </div>
+                )}
               </Link>
 
-              {/* Account Dropdown / Link */}
+              {/* Account Dropdown / Sign In Button: #00668a, white text, shadow 0 4px 0 #004965 */}
               {isLoggedIn ? (
                 <div className="flex items-center gap-2 pl-1">
                   <Link
@@ -380,7 +501,7 @@ export default function Navbar() {
               ) : (
                 <Link
                   href={`/login?next=${encodeURIComponent(pathname || "/")}`}
-                  className="px-3 py-1.5 rounded-full bg-primary-fixed text-primary font-label-md text-[13px] font-bold shadow-[0_2px_0_#87cff8] hover:bg-primary-fixed-dim"
+                  className="px-4 py-1.5 rounded-full bg-[#00668a] text-white font-label-md text-[13px] font-bold shadow-[0_4px_0_#004965] hover:brightness-105 active:translate-y-0.5 transition-all"
                 >
                   Sign In
                 </Link>
@@ -542,7 +663,11 @@ export default function Navbar() {
                       Shop by Price
                     </h4>
                     <div className="flex flex-wrap gap-1.5">
-                      {PRICE_BANDS.map((pb) => {
+                      {PRICE_BANDS.filter((pb) => {
+                        const targetCat = activeCategory ? activeCategory.slug : "all";
+                        const allowed = VALID_PRICE_BANDS_BY_SLUG[targetCat] || VALID_PRICE_BANDS_BY_SLUG["all"];
+                        return allowed.includes(pb.maxPrice);
+                      }).map((pb) => {
                         const targetCat = activeCategory ? activeCategory.slug : "all";
                         return (
                           <Link

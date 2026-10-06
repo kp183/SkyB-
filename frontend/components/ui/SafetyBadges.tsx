@@ -36,7 +36,7 @@ export const SafetyBadges: React.FC<SafetyBadgesProps> = ({
         return {
           cardBg: "bg-surface-container-lowest border-primary-container text-on-surface shadow-[0_4px_0_#c4e7ff]",
           badgeBg: "bg-primary-container text-on-primary-container shadow-[0_2px_0_#004965]",
-          icon: "verified",
+          icon: "shield",
           label: "Safety Information On File",
         };
     }
@@ -49,7 +49,7 @@ export const SafetyBadges: React.FC<SafetyBadgesProps> = ({
       <span
         className={`inline-flex items-center gap-1 rounded-full px-2.5 py-0.5 font-label-sm text-[11px] font-bold ${style.badgeBg} ${className}`}
       >
-        <Icon name="verified" className="w-3.5 h-3.5" />
+        <Icon name={style.icon} className="w-3.5 h-3.5" />
         <span>{style.label}</span>
       </span>
     );
@@ -61,7 +61,7 @@ export const SafetyBadges: React.FC<SafetyBadgesProps> = ({
         <span
           className={`inline-flex items-center gap-1 rounded-full px-2.5 py-0.5 font-label-sm text-label-sm font-bold ${style.badgeBg}`}
         >
-          <Icon name="verified" className="w-4 h-4" />
+          <Icon name={style.icon} className="w-4 h-4" />
           <span>Safety Profile</span>
         </span>
         <span className="font-headline-md text-headline-md font-bold text-on-surface">

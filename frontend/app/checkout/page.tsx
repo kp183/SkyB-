@@ -335,7 +335,7 @@ export default function CheckoutPage() {
 
           <div className="rounded-xl bg-surface-container-low border border-surface-container-high p-4 text-[12px] text-on-surface-variant space-y-1">
             <p className="font-bold flex items-center gap-1.5 text-on-surface">
-              <span className="material-symbols-outlined text-primary text-[18px]">verified</span>
+              <span className="material-symbols-outlined text-primary text-[18px]">school</span>
               Academic Evaluation Sandbox
             </p>
             <p className="text-[11px] leading-relaxed">

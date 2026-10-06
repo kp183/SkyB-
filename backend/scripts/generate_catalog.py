@@ -150,7 +150,7 @@ CATEGORIES_SPEC = {
 
 DESCRIPTIVE_ADJECTIVES = [
     "Soft", "Comfortable", "Breathable", "Pure", "Cozy", "Classic", "Delicate",
-    "Gentle", "Premium", "Durable", "Lightweight", "Essential", "Daily", "Snug"
+    "Gentle", "Premium", "Durable", "Lightweight", "Essential", "Everyday", "Snug"
 ]
 
 def subcategory_to_slug(name: str) -> str:
@@ -312,11 +312,11 @@ def generate_catalog():
                 # Read services/safety_badge_service.py keywords:
                 # choking, small parts, flammable, bpa-free, non-toxic, hypoallergenic, organic cotton
                 if cat_name in ["Boys Fashion", "Girls Fashion"]:
-                    material = "100% certified pure organic cotton"
+                    material = "pure organic cotton"
                     desc = f"Soft, breathable {subcat.lower()} designed for children aged {age_choice}. Made with {material}."
                     safety_tags = ["Organic Cotton", "Hypoallergenic", "Non-Toxic"]
                     safety_score = "Good"
-                    safety_summary = "Crafted with 100% certified pure organic cotton, safe and breathable on child skin."
+                    safety_summary = "Crafted with pure organic cotton, safe and breathable on child skin."
                 elif cat_name == "Toys":
                     if min_m < 36 and subcat in ["Blocks & Construction", "Puzzles", "Role Play"]:
                         material = "natural smooth hardwood with water-based non-toxic lacquer"
@@ -325,23 +325,23 @@ def generate_catalog():
                         safety_score = "Low"
                         safety_summary = "Warning: Contains small parts that may pose a choking hazard for children under 3 years."
                     else:
-                        material = "certified non-toxic child-safe wood and rounded edge silicone"
+                        material = "non-toxic child-safe wood and rounded edge silicone"
                         desc = f"Engaging sensory and motor play {subcat.lower()} suitable for {age_choice}. Built with {material}."
                         safety_tags = ["Non-Toxic", "Smooth Edges"]
                         safety_score = "Good"
-                        safety_summary = "Crafted with certified 100% non-toxic, eco-friendly organic materials."
+                        safety_summary = "Crafted with non-toxic, eco-friendly organic materials."
                 elif cat_name == "Feeding":
                     material = "food-grade bpa-free silicone and premium borosilicate glass"
-                    desc = f"Daily infant feeding essential designed for {age_choice}. Made from {material}."
+                    desc = f"Infant feeding essential designed for {age_choice}. Made from {material}."
                     safety_tags = ["BPA-Free", "Non-Toxic"]
                     safety_score = "Good"
-                    safety_summary = "Certified BPA-free food-grade materials, completely safe for infants."
+                    safety_summary = "BPA-free food-grade materials, suitable for infants."
                 elif cat_name in ["Diapering", "Bath & Skincare"]:
-                    material = "hypoallergenic, plant-based dermatologically tested ingredients"
-                    desc = f"Gentle daily baby care formulation for {age_choice}. Free from harsh sulfates and artificial perfumes. Features {material}."
-                    safety_tags = ["Hypoallergenic", "Dermatologist-Tested"]
+                    material = "hypoallergenic, plant-based soothing ingredients"
+                    desc = f"Gentle baby care formulation for {age_choice}. Free from harsh sulfates and artificial perfumes. Features {material}."
+                    safety_tags = ["Hypoallergenic", "Gentle Formula"]
                     safety_score = "Good"
-                    safety_summary = "Dermatologically tested and hypoallergenic for delicate skin."
+                    safety_summary = "Hypoallergenic and soothing formulation for delicate skin."
                 else:
                     material = "durable child-safe tear-resistant canvas with safety reflectors"
                     desc = f"Practical ergonomic {subcat.lower()} built for {age_choice}. Made with {material}."

@@ -18,7 +18,7 @@ export async function generateMetadata({
           title: `${product.name} (Ages ${product.age_group || "Kids"})`,
           description:
             product.description ||
-            `Buy ${product.name} on SkyB. Child safety certified with real-time AI Bargain Assistant.`,
+            `Buy ${product.name} on SkyB. Safety specs detailed with real-time AI Bargain Assistant.`,
           alternates: {
             canonical: `/product/${id}`,
           },
@@ -26,7 +26,7 @@ export async function generateMetadata({
             title: `${product.name} | SkyB Kids Store`,
             description:
               product.description ||
-              `Buy ${product.name} on SkyB with safety certification and developmental sizing.`,
+              `Buy ${product.name} on SkyB with safety specs and developmental sizing.`,
             images: [
               {
                 url: ogImage,

@@ -294,8 +294,8 @@ export const SkyBotSheet: React.FC = () => {
 
             <p className="font-body-sm text-[12px] text-on-tertiary-fixed-variant mb-3">
               {isFinalRound
-                ? "Final round: this is the best server-approved price available."
-                : "Backend verified price. Tap below to seal deal and apply to cart!"}
+                ? "Final round: this is the best server offer available."
+                : "Calculated server price. Tap below to seal deal and apply to cart!"}
             </p>
 
             <button
@@ -323,7 +323,7 @@ export const SkyBotSheet: React.FC = () => {
         {activeProduct && !isFinalRound && !isAccepted && (
           <div className="px-4 py-2 bg-surface-container-lowest border-t border-surface-container flex items-center gap-2 overflow-x-auto shrink-0">
             <span className="font-label-sm text-[11px] text-outline shrink-0 flex items-center gap-1">
-              <Icon name="touch_app" className="w-3.5 h-3.5" /> Suggest:
+              <Icon name="touch_app" className="w-3.5 h-3.5" /> Suggestions:
             </span>
             {quickOffers.map((price) => (
               <button

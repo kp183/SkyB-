@@ -30,7 +30,7 @@ function CategoryContent({ slug }: { slug: string }) {
   const sort = searchParams.get("sort") || "popular";
   const q = searchParams.get("q") || undefined;
 
-  const title = slug === "all" ? "All Products & Aisles" : category?.name || `Category: ${slug}`;
+  const title = slug === "all" ? "All Products" : category?.name || `Category: ${slug}`;
 
   useEffect(() => {
     async function loadProducts() {
@@ -109,7 +109,7 @@ function CategoryContent({ slug }: { slug: string }) {
 
   const subtitle = maxPrice
     ? `Showing ${totalCount} items under ₹${maxPrice}`
-    : `Explore ${totalCount} certified baby-safe items in this collection.`;
+    : `Explore ${totalCount} items in this collection.`;
 
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">

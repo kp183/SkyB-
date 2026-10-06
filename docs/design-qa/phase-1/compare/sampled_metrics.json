@@ -1,0 +1,21 @@
+{
+  "stitchBargainBot": {
+    "bg": "rgb(255, 222, 160)",
+    "color": "rgb(38, 26, 0)",
+    "shadow": "rgba(0, 0, 0, 0) 0px 0px 0px 0px, rgba(0, 0, 0, 0) 0px 0px 0px 0px, rgb(121, 89, 0) 0px 3px 0px 0px"
+  },
+  "builtBargainBot": {
+    "bg": "rgb(225, 168, 0)",
+    "color": "rgb(255, 255, 255)",
+    "shadow": "rgba(0, 0, 0, 0) 0px 0px 0px 0px, rgba(0, 0, 0, 0) 0px 0px 0px 0px, rgba(0, 0, 0, 0) 0px 0px 0px 0px, rgba(0, 0, 0, 0) 0px 0px 0px 0px, rgb(121, 89, 0) 0px 5px 0px 0px"
+  },
+  "builtCartPill": {
+    "bg": "rgba(0, 0, 0, 0)",
+    "color": "rgb(0, 102, 138)",
+    "shadow": "none"
+  },
+  "stitchCardShadow": "rgba(0, 0, 0, 0) 0px 0px 0px 0px, rgba(0, 0, 0, 0) 0px 0px 0px 0px, rgba(0, 30, 44, 0.06) 0px 4px 16px 0px",
+  "builtCardShadow": "rgb(196, 231, 255) 0px 8px 0px 0px",
+  "stitchFooterBg": "rgb(240, 243, 255)",
+  "builtFooterBg": "rgb(239, 244, 255)"
+}

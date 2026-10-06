@@ -79,7 +79,7 @@ export const CATEGORIES: CategoryConfig[] = [
       "Sliders & Flip-Flops",
       "Rain Boots",
     ],
-    icon: "steps",
+    icon: "shoe",
   },
   {
     slug: "toys",
@@ -124,7 +124,7 @@ export const CATEGORIES: CategoryConfig[] = [
       "Walkers",
       "Bouncers & Swings",
     ],
-    icon: "child_care",
+    icon: "stroller",
   },
   {
     slug: "feeding",
@@ -139,7 +139,7 @@ export const CATEGORIES: CategoryConfig[] = [
       "Sterilizers & Warmers",
       "Combo Packs",
     ],
-    icon: "restaurant",
+    icon: "baby_bottle",
   },
   {
     slug: "bath-skincare",
@@ -155,7 +155,7 @@ export const CATEGORIES: CategoryConfig[] = [
       "Bath Toys",
       "Combo Packs",
     ],
-    icon: "soap",
+    icon: "water_drop",
   },
   {
     slug: "nursery",
@@ -184,7 +184,7 @@ export const CATEGORIES: CategoryConfig[] = [
       "Mosquito Care",
       "Cleansers & Detergents",
     ],
-    icon: "medical_services",
+    icon: "shield",
   },
   {
     slug: "school-essentials",
@@ -216,11 +216,29 @@ export const AGE_GROUPS: AgeGroupConfig[] = [
 ];
 
 export const PRICE_BANDS: PriceBandConfig[] = [
+  { label: "Under ₹199", maxPrice: 199 },
+  { label: "Under ₹299", maxPrice: 299 },
+  { label: "Under ₹399", maxPrice: 399 },
   { label: "Under ₹499", maxPrice: 499 },
   { label: "Under ₹999", maxPrice: 999 },
   { label: "Under ₹1,499", maxPrice: 1499 },
   { label: "Under ₹2,499", maxPrice: 2499 },
 ];
+
+export const VALID_PRICE_BANDS_BY_SLUG: Record<string, number[]> = {
+  "all": [199, 299, 399, 499, 999, 1499, 2499],
+  "boys-fashion": [399, 499, 999, 1499, 2499],
+  "girls-fashion": [199, 299, 399, 499, 999, 1499, 2499],
+  "footwear": [299, 399, 499, 999, 1499, 2499],
+  "toys": [399, 499, 999, 1499, 2499],
+  "diapering": [299, 399, 499, 999, 1499, 2499],
+  "gear": [2499],
+  "feeding": [299, 399, 499, 999, 1499, 2499],
+  "bath-skincare": [299, 399, 499, 999, 1499, 2499],
+  "nursery": [999, 1499, 2499],
+  "health-safety": [199, 299, 399, 499, 999, 1499, 2499],
+  "school-essentials": [299, 399, 499, 999, 1499, 2499],
+};
 
 export const COLLECTIONS: CollectionConfig[] = [
   {
@@ -228,28 +246,28 @@ export const COLLECTIONS: CollectionConfig[] = [
     label: "New Arrivals",
     href: "/deals?tab=new",
     icon: "temp_preferences_custom",
-    description: "Fresh milestone drops & baby care",
+    description: "Latest additions",
   },
   {
     slug: "bestsellers",
     label: "Bestsellers",
     href: "/category/all?sort=popular",
     icon: "star",
-    description: "Most loved by parents nationwide",
+    description: "Top sellers on skyB",
   },
   {
     slug: "combos",
     label: "Combo Packs",
     href: "/deals?tab=combos",
     icon: "package_2",
-    description: "Bundle and save up to 25%",
+    description: "Bundles from our catalog",
   },
   {
     slug: "deals",
     label: "Top Deals",
     href: "/deals",
     icon: "local_fire_department",
-    description: "Curated 15%+ off daily steals",
+    description: "Products with 15% off or more",
   },
 ];
 

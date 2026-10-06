@@ -148,7 +148,7 @@ export default function AdminDashboardPage() {
             {stats?.total_customers}
           </p>
           <p className="font-label-sm text-[11px] text-on-surface-variant">
-            Verified Explorer Accounts
+            Customer Accounts
           </p>
         </div>
       </div>
