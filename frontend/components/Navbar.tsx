@@ -11,7 +11,6 @@ import {
   CATEGORIES,
   AGE_GROUPS,
   PRICE_BANDS,
-  VALID_PRICE_BANDS_BY_SLUG,
   COLLECTIONS,
   CategoryConfig,
 } from "@/config/navigation";
@@ -194,6 +193,29 @@ export default function Navbar() {
     (c) => c.slug === activeMenuTab
   );
 
+  // Dynamic price band count caching (queried at runtime from API)
+  const [priceBandCounts, setPriceBandCounts] = useState<Record<string, number>>({});
+
+  useEffect(() => {
+    if (!activeCategory) return;
+    const catSlug = activeCategory.slug;
+    PRICE_BANDS.forEach(async (pb) => {
+      const cacheKey = `${catSlug}_${pb.maxPrice}`;
+      if (priceBandCounts[cacheKey] !== undefined) return;
+      try {
+        const res = await api.getProductsWithMeta({
+          category_slug: catSlug,
+          max_price: pb.maxPrice,
+          limit: 1,
+        });
+        const total = res.meta?.total ?? 0;
+        setPriceBandCounts((prev) => ({ ...prev, [cacheKey]: total }));
+      } catch {
+        // Ignore network errors
+      }
+    });
+  }, [activeCategory, priceBandCounts]);
+
   return (
     <>
       <header className="fixed top-0 left-0 w-full z-40 bg-surface-container-lowest shadow-[0_4px_16px_rgba(0,30,44,0.06)]">
@@ -238,10 +260,17 @@ export default function Navbar() {
                 <Icon name="search" className="w-5 h-5" />
               </button>
 
-              {/* Bargain Bot Button: #e1a800, white icon, shadow 0 3px 0 #795900 */}
+              {/* Bargain Bot Button: #e1a800, white icon, shadow 0 3px 0 #795900 (Guest redirects to login) */}
               <button
                 type="button"
-                onClick={() => openSkyBot()}
+                onClick={(e) => {
+                  if (!isLoggedIn) {
+                    e.preventDefault();
+                    router.push(`/login?next=${encodeURIComponent(pathname || "/")}`);
+                    return;
+                  }
+                  openSkyBot();
+                }}
                 aria-label="Open Bargain Bot"
                 className="w-8 h-8 rounded-full bg-[#e1a800] text-white flex items-center justify-center shadow-[0_3px_0_#795900] active:translate-y-0.5 transition-all cursor-pointer select-none"
                 id="mobile-bargain-bot-btn"
@@ -406,10 +435,17 @@ export default function Navbar() {
 
             {/* Right section: Bargain Bot + Wishlist + Orders + Cart + User */}
             <div className="flex items-center gap-2 lg:gap-3 shrink-0">
-              {/* SkyBot Bargain AI Trigger: #e1a800, white text/icon, shadow 0 5px 0 #795900, NO ping dot */}
+              {/* SkyBot Bargain AI Trigger: #e1a800, white text/icon, shadow 0 5px 0 #795900, NO ping dot (Guest redirects to login) */}
               <button
                 type="button"
-                onClick={() => openSkyBot()}
+                onClick={(e) => {
+                  if (!isLoggedIn) {
+                    e.preventDefault();
+                    router.push(`/login?next=${encodeURIComponent(pathname || "/")}`);
+                    return;
+                  }
+                  openSkyBot();
+                }}
                 className="flex items-center gap-1.5 px-3.5 py-2 rounded-full bg-[#e1a800] text-white shadow-[0_5px_0_#795900] active:translate-y-0.5 transition-all cursor-pointer select-none"
                 id="header-bargain-bot-btn"
               >
@@ -665,8 +701,9 @@ export default function Navbar() {
                     <div className="flex flex-wrap gap-1.5">
                       {PRICE_BANDS.filter((pb) => {
                         const targetCat = activeCategory ? activeCategory.slug : "all";
-                        const allowed = VALID_PRICE_BANDS_BY_SLUG[targetCat] || VALID_PRICE_BANDS_BY_SLUG["all"];
-                        return allowed.includes(pb.maxPrice);
+                        const count = priceBandCounts[`${targetCat}_${pb.maxPrice}`];
+                        // If count is resolved to 0, hide chip. Otherwise show it.
+                        return count === undefined || count > 0;
                       }).map((pb) => {
                         const targetCat = activeCategory ? activeCategory.slug : "all";
                         return (

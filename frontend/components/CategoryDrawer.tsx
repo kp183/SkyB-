@@ -9,7 +9,7 @@ import {
   AGE_GROUPS,
   COLLECTIONS,
 } from "@/config/navigation";
-import { getCurrentStoredUser, removeToken } from "@/lib/api";
+import { api, getToken, getCurrentStoredUser, removeToken } from "@/lib/api";
 import { useSkyBot } from "@/context/SkyBotContext";
 
 interface CategoryDrawerProps {
@@ -23,10 +23,30 @@ export const CategoryDrawer: React.FC<CategoryDrawerProps> = ({ isOpen, onClose 
   const { openSkyBot } = useSkyBot();
   const [openAccordion, setOpenAccordion] = useState<string | null>("toys");
   const [user, setUser] = useState<any>(null);
+  const [childrenList, setChildrenList] = useState<any[]>([]);
 
   useEffect(() => {
-    setUser(getCurrentStoredUser());
+    const u = getCurrentStoredUser();
+    setUser(u);
+    if (u && getToken()) {
+      api.getChildren().then((kids: any) => {
+        if (Array.isArray(kids)) setChildrenList(kids);
+      }).catch(() => setChildrenList([]));
+    } else {
+      setChildrenList([]);
+    }
   }, [isOpen]);
+
+  const formatAge = (birthDateStr: string) => {
+    if (!birthDateStr) return "";
+    const birth = new Date(birthDateStr);
+    const now = new Date();
+    let months = (now.getFullYear() - birth.getFullYear()) * 12 + (now.getMonth() - birth.getMonth());
+    if (months < 0) months = 0;
+    const years = Math.floor(months / 12);
+    if (years >= 1) return `${years}y`;
+    return `${months}m`;
+  };
 
   // Close drawer on actual route change
   const prevPathRef = useRef(pathname);
@@ -57,9 +77,12 @@ export const CategoryDrawer: React.FC<CategoryDrawerProps> = ({ isOpen, onClose 
   const handleSignOut = () => {
     removeToken();
     setUser(null);
+    setChildrenList([]);
     onClose();
     router.push("/login");
   };
+
+  const primaryChild = childrenList.length > 0 ? childrenList[0] : null;
 
   return (
     <div className="fixed inset-0 z-50 flex">
@@ -104,31 +127,40 @@ export const CategoryDrawer: React.FC<CategoryDrawerProps> = ({ isOpen, onClose 
             </button>
           </div>
 
-          {/* User profile card or Guest card */}
+          {/* Stitch-style Welcome block when logged in / Guest card when guest */}
           {user ? (
             <div className="flex items-center gap-3 p-3 rounded-xl bg-surface-container-lowest shadow-[0_3px_0_#c4e7ff]">
-              <div className="w-10 h-10 rounded-full bg-secondary-fixed flex items-center justify-center text-secondary shadow-[0_2px_0_#ffb2b9]">
-                <Icon name="person" className="w-5 h-5" />
+              <div className="relative shrink-0">
+                <div className="w-11 h-11 rounded-full bg-secondary-fixed flex items-center justify-center text-secondary shadow-[0_2px_0_#ffb2b9]">
+                  <Icon name="face_3" className="w-6 h-6" />
+                </div>
+                <span className="absolute -bottom-0.5 -right-0.5 w-3.5 h-3.5 bg-secondary-container rounded-full ring-2 ring-surface-container-lowest flex items-center justify-center">
+                  <Icon name="star" className="w-2.5 h-2.5 text-on-secondary" />
+                </span>
               </div>
               <div className="flex flex-col min-w-0 flex-1">
-                <span className="font-label-sm text-[11px] text-outline">
-                  Welcome back
-                </span>
+                <div className="flex items-center gap-1">
+                  <span className="font-label-sm text-[11px] text-outline">Welcome back</span>
+                  <Icon name="waving_hand" className="w-3.5 h-3.5 text-tertiary" />
+                </div>
                 <h3 className="font-headline-sm text-[15px] font-bold text-on-surface truncate">
-                  {user.name || "Valued Parent"}
+                  Hi, {user.name ? user.name.split(" ")[0] : "Parent"}
                 </h3>
               </div>
-              <Link
-                href="/account/child"
-                className="px-2.5 py-1 rounded-full bg-primary text-on-primary font-label-sm text-[11px] font-bold shadow-[0_2px_0_#004965] active:translate-y-0.5"
-              >
-                Child Profile
-              </Link>
+              {primaryChild && (
+                <Link
+                  href="/account/child"
+                  className="px-3 py-1.5 rounded-full bg-primary text-on-primary font-label-sm text-label-sm flex items-center gap-1 shadow-[0_3px_0_#004c68] active:translate-y-0.5 shrink-0"
+                >
+                  <Icon name="child_care" className="w-3.5 h-3.5" />
+                  <span>{primaryChild.name} ({formatAge(primaryChild.birth_date)})</span>
+                </Link>
+              )}
             </div>
           ) : (
             <div className="flex items-center justify-between p-3 rounded-xl bg-surface-container-lowest shadow-[0_3px_0_#c4e7ff]">
               <div className="flex flex-col">
-                <span className="font-label-sm text-label-sm font-bold text-on-surface">
+                <span className="font-headline-sm text-label-md font-bold text-on-surface">
                   Welcome to skyB!
                 </span>
                 <span className="font-body-sm text-[11px] text-on-surface-variant">
@@ -137,7 +169,7 @@ export const CategoryDrawer: React.FC<CategoryDrawerProps> = ({ isOpen, onClose 
               </div>
               <Link
                 href={`/login?next=${encodeURIComponent(pathname || "/")}`}
-                className="px-3 py-1.5 rounded-full bg-primary text-on-primary font-label-sm text-label-sm font-bold shadow-[0_2px_0_#004965]"
+                className="px-3.5 py-1.5 rounded-full bg-primary text-on-primary font-label-sm text-label-sm font-bold shadow-[0_2px_0_#004965] active:translate-y-0.5"
               >
                 Sign In
               </Link>
@@ -147,7 +179,7 @@ export const CategoryDrawer: React.FC<CategoryDrawerProps> = ({ isOpen, onClose 
 
         {/* Scrollable Drawer Body */}
         <div className="flex-1 overflow-y-auto p-4 space-y-4 overscroll-contain">
-          {/* Bargain Finder Banner */}
+          {/* Bargain Finder Banner (Guest redirects to login) */}
           <div className="p-3.5 rounded-xl bg-surface-container-low flex items-center justify-between shadow-[0_3px_0_#c4e7ff]">
             <div className="flex items-center gap-2.5">
               <div className="w-9 h-9 rounded-full bg-secondary-container text-on-secondary flex items-center justify-center shadow-[0_2px_0_#730425]">
@@ -164,8 +196,13 @@ export const CategoryDrawer: React.FC<CategoryDrawerProps> = ({ isOpen, onClose 
             </div>
             <button
               type="button"
+              id="drawer-bargain-btn"
               onClick={() => {
                 onClose();
+                if (!user) {
+                  router.push(`/login?next=${encodeURIComponent(pathname || "/")}`);
+                  return;
+                }
                 openSkyBot();
               }}
               className="px-3 py-1.5 rounded-full btn-bargain-action font-label-sm text-label-sm font-bold cursor-pointer"

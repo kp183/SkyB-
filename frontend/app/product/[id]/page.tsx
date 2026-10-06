@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { useParams } from "next/navigation";
+import { useParams, useRouter, usePathname } from "next/navigation";
 import Link from "next/link";
 import Image from "next/image";
 import SafetyBadge from "@/components/SafetyBadge";
@@ -9,10 +9,12 @@ import BargainChatModal from "@/components/BargainChatModal";
 import { getProductFallbackImage } from "@/components/ProductCard";
 import Icon from "@/components/Icon";
 import { useSkyBot } from "@/context/SkyBotContext";
-import { api } from "@/lib/api";
+import { api, getToken } from "@/lib/api";
 
 export default function ProductDetailPage() {
   const params = useParams();
+  const router = useRouter();
+  const pathname = usePathname();
   const id = Number(params.id);
   const { openSkyBot } = useSkyBot();
 
@@ -69,6 +71,15 @@ export default function ProductDetailPage() {
     } finally {
       setIsAdding(false);
     }
+  };
+
+  const handleBargainClick = () => {
+    const token = getToken();
+    if (!token) {
+      router.push(`/login?next=${encodeURIComponent(pathname || `/product/${id}`)}`);
+      return;
+    }
+    openSkyBot(product);
   };
 
   const handleToggleWishlist = async () => {
@@ -241,13 +252,7 @@ export default function ProductDetailPage() {
           {/* Action CTAs (Desktop / Tablet) */}
           <div className="pt-2 flex flex-col sm:flex-row gap-3">
             <button
-              onClick={() => {
-                if (openSkyBot) {
-                  openSkyBot(product);
-                } else {
-                  setIsBargainOpen(true);
-                }
-              }}
+              onClick={handleBargainClick}
               className="flex-1 flex items-center justify-center gap-2 rounded-full btn-bargain-action py-3.5 px-4 font-headline-md text-headline-md font-bold cursor-pointer transition-all"
             >
               <Icon name="smart_toy" className="w-5 h-5" />
@@ -347,13 +352,7 @@ export default function ProductDetailPage() {
         {/* Bargain Button */}
         <button
           type="button"
-          onClick={() => {
-            if (openSkyBot) {
-              openSkyBot(product);
-            } else {
-              setIsBargainOpen(true);
-            }
-          }}
+          onClick={handleBargainClick}
           id="sticky-btn-bargain"
           className="flex-1 h-12 flex items-center justify-center gap-1.5 rounded-full btn-bargain-action font-headline-sm text-headline-sm font-bold cursor-pointer"
         >

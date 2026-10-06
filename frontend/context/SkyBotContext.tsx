@@ -2,7 +2,7 @@
 
 import React, { createContext, useContext, useState, useCallback } from "react";
 import { useRouter, usePathname } from "next/navigation";
-import { api, getToken } from "@/lib/api";
+import { api, getToken, getCurrentStoredUser, removeToken } from "@/lib/api";
 
 export interface BotChatMessage {
   id: string;
@@ -64,11 +64,32 @@ export const SkyBotProvider: React.FC<{ children: React.ReactNode }> = ({ childr
     return d.toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" });
   };
 
+  const handleAuthError = useCallback(
+    (err: any): boolean => {
+      const msg = (err?.message || "").toLowerCase();
+      if (
+        err?.status === 401 ||
+        msg.includes("credentials") ||
+        msg.includes("token") ||
+        msg.includes("401") ||
+        msg.includes("unauthorized")
+      ) {
+        removeToken();
+        setIsOpen(false);
+        router.push(`/login?next=${encodeURIComponent(pathname || "/")}`);
+        return true;
+      }
+      return false;
+    },
+    [pathname, router]
+  );
+
   const openSkyBot = useCallback(
     async (product?: SkyBotProduct | null, initialOffer?: number) => {
-      // Check auth requirement for bargaining per rule 1.8
+      // 1. Strict Guest Check: Guests must NEVER see the panel open
       const token = getToken();
       if (!token) {
+        setIsOpen(false);
         router.push(`/login?next=${encodeURIComponent(pathname || "/")}`);
         return;
       }
@@ -80,6 +101,13 @@ export const SkyBotProvider: React.FC<{ children: React.ReactNode }> = ({ childr
       setSavings(null);
       setRoundNumber(0);
       setIsFinalRound(false);
+
+      // Get real user name if available
+      const storedUser = getCurrentStoredUser();
+      const customerName = storedUser?.name ? storedUser.name.split(" ")[0] : null;
+      const greetingSalutation = customerName
+        ? `Namaste <strong class="text-primary">${customerName}</strong>! 🙏`
+        : `Namaste! 🙏`;
 
       if (product) {
         setActiveProduct(product);
@@ -93,24 +121,24 @@ export const SkyBotProvider: React.FC<{ children: React.ReactNode }> = ({ childr
             {
               id: "msg-welcome",
               sender: "bot",
-              text: `Namaste! I'm SkyBot AI, your interactive Indian shopping assistant. The catalog price for ${product.name} is ₹${Math.round(
+              text: `${greetingSalutation} I see you love our ${product.name}. The catalog price is ₹${Math.round(
                 product.price
-              )}. What offer would you like to put on the table? (Up to 3 negotiation rounds)`,
+              )}. What offer would you like to put on the table?`,
               time: formatCurrentTime(),
             },
           ]);
 
           if (initialOffer && initialOffer > 0) {
-            // Auto submit if initial offer provided
             await sendOfferInternal(res.session_id, initialOffer, product);
           }
         } catch (err: any) {
-          setError(err.message || "Failed to start bargain session");
+          if (handleAuthError(err)) return;
+          setError("Unable to start negotiation session right now. Please try again.");
           setMessages([
             {
               id: "msg-err",
               sender: "bot",
-              text: `Sorry, unable to start bargaining session. ${err.message || ""}`,
+              text: "Sorry, unable to start bargaining session. Please try again in a moment.",
               time: formatCurrentTime(),
             },
           ]);
@@ -118,21 +146,21 @@ export const SkyBotProvider: React.FC<{ children: React.ReactNode }> = ({ childr
           setLoading(false);
         }
       } else {
-        // Open without preloaded product (general helper)
+        // Open without preloaded product
         setActiveProduct(null);
         setSessionId(null);
         setMessages([
           {
             id: "msg-general",
             sender: "bot",
-            text: "Namaste! I am SkyBot AI. To negotiate an instant parent savings deal, tap 'Bargain' on any product card or catalog item!",
+            text: `${greetingSalutation} I am SkyBot AI. To negotiate an instant savings deal, tap 'Bargain' on any product card or catalog item!`,
             time: formatCurrentTime(),
           },
         ]);
         setIsOpen(true);
       }
     },
-    [pathname, router]
+    [pathname, router, handleAuthError]
   );
 
   const closeSkyBot = useCallback(() => {
@@ -177,7 +205,8 @@ export const SkyBotProvider: React.FC<{ children: React.ReactNode }> = ({ childr
       };
       setMessages((prev) => [...prev, botMsg]);
     } catch (err: any) {
-      setError(err.message || "Could not process offer");
+      if (handleAuthError(err)) return;
+      setError("Could not process your offer. Please try again.");
     } finally {
       setLoading(false);
     }
@@ -204,11 +233,12 @@ export const SkyBotProvider: React.FC<{ children: React.ReactNode }> = ({ childr
         window.dispatchEvent(new Event("cart-updated"));
       }
     } catch (err: any) {
-      setError(err.message || "Failed to apply deal to cart");
+      if (handleAuthError(err)) return;
+      setError("Failed to apply deal to cart. Please try again.");
     } finally {
       setLoading(false);
     }
-  }, [sessionId]);
+  }, [sessionId, handleAuthError]);
 
   return (
     <SkyBotContext.Provider

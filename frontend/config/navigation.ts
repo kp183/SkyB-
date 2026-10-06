@@ -225,21 +225,6 @@ export const PRICE_BANDS: PriceBandConfig[] = [
   { label: "Under ₹2,499", maxPrice: 2499 },
 ];
 
-export const VALID_PRICE_BANDS_BY_SLUG: Record<string, number[]> = {
-  "all": [199, 299, 399, 499, 999, 1499, 2499],
-  "boys-fashion": [399, 499, 999, 1499, 2499],
-  "girls-fashion": [199, 299, 399, 499, 999, 1499, 2499],
-  "footwear": [299, 399, 499, 999, 1499, 2499],
-  "toys": [399, 499, 999, 1499, 2499],
-  "diapering": [299, 399, 499, 999, 1499, 2499],
-  "gear": [2499],
-  "feeding": [299, 399, 499, 999, 1499, 2499],
-  "bath-skincare": [299, 399, 499, 999, 1499, 2499],
-  "nursery": [999, 1499, 2499],
-  "health-safety": [199, 299, 399, 499, 999, 1499, 2499],
-  "school-essentials": [299, 399, 499, 999, 1499, 2499],
-};
-
 export const COLLECTIONS: CollectionConfig[] = [
   {
     slug: "new-arrivals",

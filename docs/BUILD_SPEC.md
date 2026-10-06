@@ -306,4 +306,49 @@ All screenshots and QA runs must come from `next build && next start`. The black
 22. DRAWER AND MEGA-MENU ICONS
 Remove "Help Desk" from the drawer (or link it to /terms#faq). Footwear needs a shoe icon, no dot. Paste the icon list per tab and per drawer category.
 
+---
+
+## 5. Prompt 5: Phase 1G Fixes & Phase 2A (Home Only) Fidelity Specification
+
+Phase 1F is accepted with the fixes in PART 1. Then do PART 3 (Phase 2A: Home only) using the method in PART 2. Branch design-v2. Commits: "phase-1g ..." and "phase-2a ...". First re-read docs/BUILD_SPEC.md and docs/DECISIONS.md, confirm you did, and append this whole message to docs/BUILD_SPEC.md. Evidence rules unchanged: no PASS without command output, screenshot or measurement. Do NOT start any page after Home.
+
+### PART 1: PHASE 1G FIXES
+1. Guest + Bargain. Any Bargain trigger as a guest (header button desktop and mobile, product card, product page, promo tile) must redirect to /login?next=<current path>. The panel must never open for a guest. If the token expires mid-session (401), close the panel and redirect to login. Never show raw API error text; map errors to friendly messages. Playwright: test every trigger as a guest and attach a screenshot of the resulting /login page.
+2. SkyBot UI to match skybot_sheet_skybot_sheet (mobile sheet; use the same layout in a 420px right dock on desktop): white sheet with drag handle, round robot avatar with a green online dot, title "SkyBot AI" with a small "Bargain" pill and the subtitle "Instant Indian Rupee Negotiator", close button; product card with image, "Active Bargain Session" chip, struck-through listed price, name, price and % off computed from real data; bot bubbles white, user bubbles dark teal with white text, timestamps; offer card with "SkyBot Deal: ₹X" and "Apply to Cart • ₹X" button (coral #fe7488, white text, shadow 0 5px 0 #730425; 3px on mobile); "Tap:" suggestion chips (90%/85%/80% of the listed price, plus an "Accept ₹X" chip only after the backend returns a counter); offer input with ₹ prefix and round send button (#00668a). Keep a small "Round n/3" text from the backend. REMOVE: coupon codes, "Locked for" timers, "Add Free Gift?", "15% Extra OFF" unless computed from real price vs counter, and the footer line "100% Non-Toxic Beechwood • 7 Days Easy Exchange". Show the real customer name in the greeting only if the backend or profile supplies it.
+3. Category drawer: keep the category order of the header tabs and your real subcategories (intentional). When logged in, show the Stitch-style welcome block: avatar, "Hi, <real first name>", and a child chip "<child name> (<age>)" from the child profile, hidden when no child profile exists. Guests keep "Welcome to skyB! Sign In".
+4. Footer photo credit: show "Photos: <source>" only for sources actually used by product image URLs (query distinct hosts of products.image_url). If no external photos are used, show nothing.
+5. Mega-menu price chips: counts must come from the API at runtime (cached), not a precomputed table. Remove VALID_PRICE_BANDS_BY_SLUG and any hardcoded counts.
+Evidence: screenshots from `next build && next start`, no dev badge.
+
+### PART 2: FIDELITY METHOD (applies to Phase 2A and every later page)
+A. Tailwind port. Copy the tailwind.config from the Stitch code.html (colors, borderRadius, spacing, fontFamily, fontSize, with the SAME token names, e.g. font-headline-md, text-headline-md, space-md, margin-sm) into the project's Tailwind setup so Stitch class strings work unchanged. Then extract every class token from all stitch_skyb_v2/**/code.html, run them through the project's Tailwind, and list any class that produces no CSS. Fix every one.
+B. Assets. Download every image referenced by the v2 code.html files (including the skyB logo and hero images) into frontend/public/stitch-v2/ with stable names. Create local copies of each code.html with the src paths rewritten to those files under docs/design-qa/stitch-local/, so the reference renders show real images and no alt text. List any download that failed.
+C. Literal conversion. Build each page from its Stitch code.html: keep the element structure and class strings identical (class->className, for->htmlFor, style strings->objects, icons through the existing Icon component with the same icon names). Then split into components WITHOUT changing classes. Replace only the data (text, prices, images, links, handlers). Keep a list of every place where markup or copy intentionally deviates from Stitch, with the reason.
+D. Fixture mode. Add a route /__fixture/<page> enabled only when NEXT_PUBLIC_FIXTURE=1 that renders the built components with the exact placeholder data from the Stitch HTML (same names, prices, images, counts). Use it to compare, and do not ship it in normal production (guard the route).
+E. Pixel diff. Render the local Stitch copy and the fixture route at 1440x900 and 390x844 from `next build && next start` with NEXT_PUBLIC_FIXTURE=1. Compare section by section with pixelmatch (devDependency only, list it). Target: at most 3% differing pixels per section. Save the Stitch crop, the built crop and the diff image per section. If a section is above 3%, fix it or explain exactly why.
+F. Landmark table. For about 20 landmarks per page (header height, hero height and padding, card width/height/gap, section title font size and weight, button height and radius, key colors, shadow values), print Stitch value vs built value from computed styles. Tolerance: 2px; colors exact.
+G. Never summarize as "matches" without these artifacts. If anything cannot be matched, say so.
+
+### PART 3: PHASE 2A: HOME (/) ONLY
+Build Home desktop and mobile from home_restyled_locked_candy and home_hub_skyb_india_mobile. Follow the section order in those code.html files exactly (do not use any list from me). Rules:
+- Real data: product rows come from GET /products: Top Deals = min_discount=15 sorted by discount; New Arrivals = sort=newest; Under ₹499 = max_price=499; Bestsellers = sort=popular but only if at least 4 products have units sold, otherwise hide the row; "Safety info listed" row = products whose safety summary lists material, age range and any small-parts warning. Department cards: 2x2 mosaic of 4 in-stock products from that category (real image_url), card links to the category, each tile to the product.
+- Hero carousel (3 slides, arrows, dots, swipe on mobile): static config; copy must be factual with no material or safety claims; remove "Spring '25" and any "Fresh milestone"-style seasonal text that implies a date. Links: New Arrivals -> /deals?tab=new, Shop by Age -> /age/6-9-months, Top Deals -> /deals. Use the downloaded Stitch images.
+- Shop by Age tiles link to /age/<slug> using the slugs in config/navigation.ts.
+- Replace "Deals of the Day" with "Top Deals", with no timers or "Ends in" anywhere.
+- Personalized rows (Recently Viewed, Buy Again, Grows With <child name>) only for logged-in users with data; guests see none of them and no placeholder names.
+- SkyBot promo strip opens the SkyBot panel (guests -> login). New Born Checklist banner links to /newborn-checklist.
+- Perks row: Safety info on every product / SkyBot Negotiator / delivery and returns text only if backed by Terms (use the wording already in /terms).
+- All product cards use the shared ProductCard with the locked buttons. Loading skeletons and empty states for every row.
+- Remove the old home components (Hero, PerksBar, Testimonials and the old hero image) completely. grep to prove no references remain.
+- No invented counts, ratings, customer names or certification wording. Run the banned-words grep again and paste before/after.
+
+VERIFY AND STOP
+1. npm run build: 0 errors. Backend tests green (same counts as before).
+2. PART 2 artifacts for Home at 1440 and 390: per-section crops and diff images, diff percentage table, landmark table, unresolved-class list (must be empty), list of intentional deviations.
+3. Real-data screenshots (not fixture) of Home at 1440 and 390 from a production build, as a guest and as a logged-in user with a child profile.
+4. Link audit for every link on Home (href, status, shows correct content).
+5. Network throttled to Slow 3G: Home screenshot with no layout shift (CLS number from Playwright).
+Then STOP and report. Do not start Phase 2B.
+
+
 

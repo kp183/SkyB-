@@ -120,7 +120,7 @@ export default function Footer() {
 
         <div className="mt-12 pt-6 border-t border-surface-container flex flex-col md:flex-row items-center justify-between gap-4 text-center md:text-left">
           <p className="font-body-sm text-body-sm text-on-surface-variant">
-            © {new Date().getFullYear()} skyB, academic project (T.Y. B.Sc. CS). Photos: Unsplash &amp; Pexels.
+            © {new Date().getFullYear()} skyB, academic project (T.Y. B.Sc. CS). Photos: Unsplash.
           </p>
           <div className="flex items-center gap-2">
             <span className="px-2.5 py-1 rounded-full bg-surface-container font-label-sm text-label-sm text-primary font-bold">
