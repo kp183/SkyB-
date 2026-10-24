@@ -1,36 +1,37 @@
 @import "tailwindcss";
+@config "../tailwind.config.js";
 
 @theme {
-  --color-primary: #00668a;
+  --color-primary: #004d69;
   --color-on-primary: #ffffff;
-  --color-primary-container: #38bdf8;
-  --color-on-primary-container: #004965;
-  --color-primary-fixed: #c4e7ff;
-  --color-primary-fixed-dim: #7bd0ff;
+  --color-primary-container: #00668a;
+  --color-on-primary-container: #ade0ff;
+  --color-primary-fixed: #c3e8ff;
+  --color-primary-fixed-dim: #87cff8;
   --color-on-primary-fixed: #001e2c;
-  --color-on-primary-fixed-variant: #004c69;
-  --color-inverse-primary: #7bd0ff;
+  --color-on-primary-fixed-variant: #004c68;
+  --color-inverse-primary: #87cff8;
 
   --color-secondary: #a93349;
   --color-on-secondary: #ffffff;
   --color-secondary-container: #fe7488;
-  --color-on-secondary-container: #730425;
+  --color-on-secondary-container: #720525;
   --color-secondary-fixed: #ffdadc;
   --color-secondary-fixed-dim: #ffb2b9;
   --color-on-secondary-fixed: #400010;
-  --color-on-secondary-fixed-variant: #891933;
+  --color-on-secondary-fixed-variant: #881a33;
 
   --color-tertiary: #5c4300;
   --color-on-tertiary: #ffffff;
-  --color-tertiary-container: #e1a800;
-  --color-on-tertiary-container: #584000;
-  --color-tertiary-fixed: #ffdf9f;
-  --color-tertiary-fixed-dim: #f9bd22;
+  --color-tertiary-container: #795900;
+  --color-on-tertiary-container: #ffd377;
+  --color-tertiary-fixed: #ffdea0;
+  --color-tertiary-fixed-dim: #f9bd26;
   --color-on-tertiary-fixed: #261a00;
   --color-on-tertiary-fixed-variant: #5c4300;
 
   --color-surface: #f8f9ff;
-  --color-surface-dim: #ccdbf3;
+  --color-surface-dim: #ccdbf4;
   --color-surface-bright: #f8f9ff;
   --color-surface-variant: #d5e3fc;
   --color-surface-container-lowest: #ffffff;
@@ -39,7 +40,7 @@
   --color-surface-container-high: #dce9ff;
   --color-surface-container-highest: #d5e3fc;
   --color-on-surface: #0d1c2e;
-  --color-on-surface-variant: #3e484f;
+  --color-on-surface-variant: #40484e;
   --color-inverse-surface: #233144;
   --color-inverse-on-surface: #eaf1ff;
   --color-surface-tint: #00668a;
@@ -47,13 +48,32 @@
   --color-background: #f8f9ff;
   --color-on-background: #0d1c2e;
 
-  --color-outline: #6e7980;
-  --color-outline-variant: #bdc8d1;
+  --color-outline: #70787e;
+  --color-outline-variant: #bfc8ce;
 
   --color-error: #ba1a1a;
   --color-on-error: #ffffff;
   --color-error-container: #ffdad6;
   --color-on-error-container: #93000a;
+
+  /* Spacing */
+  --spacing-space-xl: 2.5rem;
+  --spacing-space-lg: 1.5rem;
+  --spacing-space-md: 1rem;
+  --spacing-space-sm: 0.5rem;
+  --spacing-space-xs: 0.25rem;
+  --spacing-margin: 1rem;
+  --spacing-margin-desktop: 2.5rem;
+  --spacing-margin-mobile: 1rem;
+  --spacing-gutter: 1rem;
+  --spacing-gutter-desktop: 1.5rem;
+  --spacing-gutter-mobile: 0.75rem;
+
+  /* Radius */
+  --radius-DEFAULT: 1rem;
+  --radius-lg: 2rem;
+  --radius-xl: 3rem;
+  --radius-full: 9999px;
 }
 
 @layer base {
@@ -75,9 +95,23 @@
   display: none;
 }
 
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+.no-scrollbar {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+
+/* Safe area padding utilities */
+.pb-safe { padding-bottom: max(env(safe-area-inset-bottom, 0px), 0.75rem); }
+.pt-safe { padding-top: env(safe-area-inset-top, 0px); }
+
 /* Typography Utility Classes from Stitch */
 .font-headline-xl { font-family: var(--font-quicksand), 'Quicksand', sans-serif; font-weight: 700; }
+.font-headline-xl-mobile { font-family: var(--font-quicksand), 'Quicksand', sans-serif; font-weight: 700; }
 .font-headline-lg { font-family: var(--font-quicksand), 'Quicksand', sans-serif; font-weight: 700; }
+.font-headline-lg-mobile { font-family: var(--font-quicksand), 'Quicksand', sans-serif; font-weight: 700; }
 .font-headline-md { font-family: var(--font-quicksand), 'Quicksand', sans-serif; font-weight: 600; }
 .font-headline-sm { font-family: var(--font-quicksand), 'Quicksand', sans-serif; font-weight: 600; }
 .font-display-lg { font-family: var(--font-quicksand), 'Quicksand', sans-serif; font-weight: 700; }
@@ -87,22 +121,24 @@
 .font-body-md { font-family: var(--font-nunito-sans), 'Nunito Sans', sans-serif; font-weight: 400; }
 .font-body-sm { font-family: var(--font-nunito-sans), 'Nunito Sans', sans-serif; font-weight: 400; }
 
-.font-label-lg { font-family: var(--font-nunito-sans), 'Nunito Sans', sans-serif; font-weight: 800; }
+.font-label-lg { font-family: var(--font-nunito-sans), 'Nunito Sans', sans-serif; font-weight: 700; }
 .font-label-md { font-family: var(--font-nunito-sans), 'Nunito Sans', sans-serif; font-weight: 700; }
-.font-label-sm { font-family: var(--font-nunito-sans), 'Nunito Sans', sans-serif; font-weight: 700; }
+.font-label-sm { font-family: var(--font-nunito-sans), 'Nunito Sans', sans-serif; font-weight: 800; }
 
-.text-display-lg { font-size: 48px; line-height: 56px; }
-.text-display-lg-mobile { font-size: 34px; line-height: 42px; }
-.text-headline-xl { font-size: 32px; line-height: 40px; }
-.text-headline-lg { font-size: 26px; line-height: 34px; }
-.text-headline-md { font-size: 24px; line-height: 32px; }
-.text-headline-sm { font-size: 20px; line-height: 28px; }
-.text-body-lg { font-size: 18px; line-height: 28px; }
-.text-body-md { font-size: 16px; line-height: 24px; }
-.text-body-sm { font-size: 14px; line-height: 20px; }
-.text-label-lg { font-size: 16px; line-height: 20px; }
-.text-label-md { font-size: 14px; line-height: 18px; }
-.text-label-sm { font-size: 12px; line-height: 16px; }
+.text-display-lg { font-size: 48px; line-height: 56px; letter-spacing: -0.02em; font-weight: 700; }
+.text-display-lg-mobile { font-size: 34px; line-height: 42px; letter-spacing: -0.01em; font-weight: 700; }
+.text-headline-xl { font-size: 44px; line-height: 52px; font-weight: 700; }
+.text-headline-xl-mobile { font-size: 32px; line-height: 38px; font-weight: 700; }
+.text-headline-lg { font-size: 32px; line-height: 40px; font-weight: 700; }
+.text-headline-lg-mobile { font-size: 26px; line-height: 34px; font-weight: 700; }
+.text-headline-md { font-size: 24px; line-height: 32px; font-weight: 600; }
+.text-headline-sm { font-size: 20px; line-height: 28px; font-weight: 600; }
+.text-body-lg { font-size: 18px; line-height: 28px; font-weight: 400; }
+.text-body-md { font-size: 16px; line-height: 24px; font-weight: 400; }
+.text-body-sm { font-size: 14px; line-height: 20px; font-weight: 400; }
+.text-label-lg { font-size: 16px; line-height: 22px; letter-spacing: 0.01em; font-weight: 700; }
+.text-label-md { font-size: 14px; line-height: 18px; letter-spacing: 0.02em; font-weight: 700; }
+.text-label-sm { font-size: 12px; line-height: 16px; letter-spacing: 0.04em; font-weight: 800; }
 
 /* -------------------------------------------------------------
    LOCKED BUTTON RULES & SHADOWS (5px desktop, 3px mobile)
@@ -164,7 +200,8 @@
 }
 
 /* 3. Primary Action Button (#00668a with #004965 shadow) */
-.btn-primary-action {
+.btn-primary-action,
+.btn-primary-chunky {
   background-color: #00668a !important;
   color: #ffffff !important;
   box-shadow: 0 3px 0 #004965 !important;
@@ -172,53 +209,137 @@
   transition: transform 0.1s ease, box-shadow 0.1s ease;
 }
 @media (min-width: 640px) {
-  .btn-primary-action {
-    box-shadow: 0 5px 0 #004965 !important;
+  .btn-primary-action,
+  .btn-primary-chunky {
+    box-shadow: 0 4px 0 #004965 !important;
   }
 }
-.btn-primary-action:active {
+.btn-primary-action:active,
+.btn-primary-chunky:active {
   transform: translateY(2px) !important;
   box-shadow: 0 1px 0 #004965 !important;
 }
 @media (min-width: 640px) {
-  .btn-primary-action:active {
-    transform: translateY(3px) !important;
+  .btn-primary-action:active,
+  .btn-primary-chunky:active {
+    transform: translateY(2px) !important;
     box-shadow: 0 2px 0 #004965 !important;
   }
 }
-.btn-primary-action * {
+
+/* Tactile button variants from Stitch */
+.btn-tactile-coral {
+  background-color: #fe7488 !important;
   color: #ffffff !important;
+  box-shadow: 0 5px 0 #730425 !important;
+  transition: all 0.1s ease;
+}
+.btn-tactile-coral:active {
+  transform: translateY(2px);
+  box-shadow: 0 3px 0 #730425 !important;
+}
+.btn-tactile-yellow {
+  background-color: #e1a800 !important;
+  color: #ffffff !important;
+  box-shadow: 0 5px 0 #795900 !important;
+  transition: all 0.1s ease;
+}
+.btn-tactile-yellow:active {
+  transform: translateY(2px);
+  box-shadow: 0 3px 0 #795900 !important;
+}
+.btn-tactile-primary {
+  background-color: #00668a !important;
+  color: #ffffff !important;
+  box-shadow: 0 4px 0 #004965 !important;
+  transition: all 0.1s ease;
+}
+.btn-tactile-primary:active {
+  transform: translateY(2px);
+  box-shadow: 0 2px 0 #004965 !important;
+}
+
+.tactile-btn-primary {
+  box-shadow: 0 4px 0 #004965;
+  transition: all 0.1s ease-in-out;
+}
+.tactile-btn-primary:active {
+  transform: translateY(2px);
+  box-shadow: 0 2px 0 #004965;
+}
+.tactile-btn-bargain {
+  box-shadow: 0 5px 0 #795900;
+  background-color: #e1a800;
+  transition: all 0.1s ease-in-out;
+}
+.tactile-btn-bargain:active {
+  transform: translateY(2px);
+  box-shadow: 0 3px 0 #795900;
+}
+
+/* Hero Banner Bottom Edge & Glow */
+.hero-banner-custom {
+  background: linear-gradient(135deg, #ffffff 0%, #eff4ff 50%, #c4e7ff 100%) !important;
+  border-bottom: 5px solid #38bdf8 !important;
+  box-shadow: 0 10px 25px -5px rgba(56, 189, 248, 0.25), 0 8px 0 #c4e7ff !important;
 }
 
 /* -------------------------------------------------------------
    ROTATING CHUNKY BOTTOM SHADOWS FOR CARDS
    (#c4e7ff, #ffdadc, #ffdf9f)
    ------------------------------------------------------------- */
-.card-shadow-blue {
+.card-shadow-blue,
+.tactile-card-a {
   box-shadow: 0 6px 0 #c4e7ff !important;
 }
 @media (min-width: 640px) {
-  .card-shadow-blue {
+  .card-shadow-blue,
+  .tactile-card-a {
     box-shadow: 0 8px 0 #c4e7ff !important;
   }
 }
 
-.card-shadow-pink {
+.card-shadow-pink,
+.tactile-card-b {
   box-shadow: 0 6px 0 #ffdadc !important;
 }
 @media (min-width: 640px) {
-  .card-shadow-pink {
+  .card-shadow-pink,
+  .tactile-card-b {
     box-shadow: 0 8px 0 #ffdadc !important;
   }
 }
 
-.card-shadow-yellow {
+.card-shadow-yellow,
+.tactile-card-c {
   box-shadow: 0 6px 0 #ffdf9f !important;
 }
 @media (min-width: 640px) {
-  .card-shadow-yellow {
+  .card-shadow-yellow,
+  .tactile-card-c {
     box-shadow: 0 8px 0 #ffdf9f !important;
   }
+}
+
+.toy-shadow-primary { box-shadow: 0 5px 0 #004c68 !important; }
+.toy-shadow-coral { box-shadow: 0 5px 0 #881a33 !important; }
+.toy-shadow-card { box-shadow: 0 8px 0 #dee8ff !important; }
+.toy-shadow-subtle { box-shadow: 0 4px 0 #e2e8f0 !important; }
+
+/* Animations */
+@keyframes bobble {
+  0%, 100% { transform: translateY(0px) rotate(0deg); }
+  50% { transform: translateY(-8px) rotate(1deg); }
+}
+@keyframes pulseGlow {
+  0%, 100% { opacity: 0.45; transform: scale(1); }
+  50% { opacity: 0.85; transform: scale(1.06); }
+}
+.animate-bobble {
+  animation: bobble 4.5s ease-in-out infinite;
+}
+.animate-pulse-glow {
+  animation: pulseGlow 6s ease-in-out infinite;
 }
 
 /* Material Symbols font fallback class */
@@ -237,4 +358,27 @@
   -webkit-font-smoothing: antialiased;
   text-rendering: optimizeLegibility;
   -moz-osx-font-smoothing: grayscale;
+}
+
+/* Stitch utility & semantic hooks */
+.rounded-DEFAULT { border-radius: 1rem; }
+.rounded-l-DEFAULT { border-top-left-radius: 1rem; border-bottom-left-radius: 1rem; }
+.rounded-r-DEFAULT { border-top-right-radius: 1rem; border-bottom-right-radius: 1rem; }
+.space-md { gap: 1rem; }
+.py-0\.2 { padding-top: 0.05rem; padding-bottom: 0.05rem; }
+
+@media (min-width: 480px) {
+  .xs\:inline { display: inline !important; }
+}
+
+.accordion-icon, .active-color, .active-pill, .active-tab, .active-thumb, .age-pill,
+.animate-fade-in, .animate-in, .badge-status, .cat-pill, .chip-btn, .color-btn, .coupon-item,
+.current-status-badge, .dropdown-menu, .dropdown-toggle-btn, .fade-in, .faq-body, .faq-content,
+.faq-icon, .faq-item, .faq-toggle, .faq-trigger, .filter-chip, .filter-pill, .group-hover\:r-11,
+.group-hover\:r-9, .light, .offer-chip, .open-drawer-btn, .order-card, .pantry-item,
+.payment-option, .product-card, .product-item, .qty-btn-minus, .qty-btn-plus, .qty-display,
+.reorder-single-btn, .slide-in-from-bottom, .status-dropdown-wrapper, .status-filter-btn,
+.status-option, .status-text, .suggest-chip, .tab-btn, .tab-header-btn, .tab-pane,
+.thumb-btn, .type-tab, .zoom-in, .zoom-in-95 {
+  outline: none;
 }

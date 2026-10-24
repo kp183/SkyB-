@@ -52,6 +52,14 @@ const nextConfig: NextConfig = {
       },
     ];
   },
+  async rewrites() {
+    return [
+      {
+        source: "/__fixture/:path*",
+        destination: "/fixture/:path*",
+      },
+    ];
+  },
 };
 
 export default nextConfig;

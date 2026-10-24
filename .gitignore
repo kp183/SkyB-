@@ -1,35 +1,55 @@
-# Environment Variables
+# Environment Variables & Secrets
 .env
-.env.local
-.env.*.local
+.env.*
+.env*.local
+!.env.example
 
 # Python
-venv/
-.venv/
-env/
 __pycache__/
 *.py[cod]
 *$py.class
-*.sqlite
+*.pyc
+.pytest_cache/
+.venv/
+venv/
+env/
+
+# Databases & Backups
 *.db
 *.db*
+*.sqlite
+*.sqlite3
 *.bak*
 
-# Node.js
+# Node.js & Frontend Build Artifacts
 node_modules/
 .next/
 out/
-build/
 dist/
+build/
+.turbo/
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
+
+# Testing, Reporting & Media
+DEMO_ACCOUNTS.md
+docs/report-pack/
+docs/report-pack.zip
+docs/design-qa/
+stitch_skyb_kids/
+stitch_skyb_v2/
+*.mp4
+*.webm
+scratch/
+scripts/
+frontend/app/__fixture/
+frontend/app/fixture/
+frontend/scripts/
+
 
 # IDE & OS
 .vscode/
 .idea/
 .DS_Store
 Thumbs.db
-
-# Scratch
-scratch/

@@ -1,0 +1,483 @@
+{
+  "slides": [
+    {
+      "title": "New Arrivals for Playful Explorers",
+      "subtitle": "Thoughtfully curated organic cotton staples, chemical-free wooden Montessori sets, and ergonomic nursery must-haves calibrated for modern Indian homes.",
+      "badge": "Fresh Milestone Drops",
+      "img": "../../../../frontend/public/stitch-v2/img_1c1a6cc5d2.png",
+      "chip": "Explore New In\narrow_forward"
+    },
+    {
+      "title": "Shop by Age: Calibrated Milestones",
+      "subtitle": "From delicate umbilical cords and first crawlers to curious school beginners (0–8+ years), every stage receives vetted gear, safe materials, and verified sizes.",
+      "badge": "Developmental Stages",
+      "img": "../../../../frontend/public/stitch-v2/img_e1498c7b0b.png",
+      "chip": "Milestone Matched"
+    },
+    {
+      "title": "Deals of the Day: Save up to 45%",
+      "subtitle": "Everyday family replenishment essentials at direct parent-friendly prices. No hidden charges, verified brand warranties, and instant bot negotiation ready.",
+      "badge": "Flash Savings in ₹ INR",
+      "img": "../../../../frontend/public/stitch-v2/img_03f1eef913.png",
+      "chip": "bolt\nFlash Savings in ₹ INR"
+    }
+  ],
+  "ageTiles": [
+    {
+      "name": "New Born",
+      "range": "crib",
+      "icon": "crib",
+      "path": "age-newborn"
+    },
+    {
+      "name": "0-6 M",
+      "range": "child_care",
+      "icon": "child_care",
+      "path": "age-0-6m"
+    },
+    {
+      "name": "6-12 M",
+      "range": "toys",
+      "icon": "toys",
+      "path": "age-6-12m"
+    },
+    {
+      "name": "1-2 Y",
+      "range": "directions_walk",
+      "icon": "directions_walk",
+      "path": "age-1-2y"
+    },
+    {
+      "name": "2-4 Y",
+      "range": "pest_control_rodent",
+      "icon": "pest_control_rodent",
+      "path": "age-2-4y"
+    },
+    {
+      "name": "4-6 Y",
+      "range": "school",
+      "icon": "school",
+      "path": "age-4-6y"
+    },
+    {
+      "name": "6-8 Y",
+      "range": "sports_soccer",
+      "icon": "sports_soccer",
+      "path": "age-6-8y"
+    },
+    {
+      "name": "8+ Y",
+      "range": "psychology",
+      "icon": "psychology",
+      "path": "age-8plus"
+    }
+  ],
+  "departments": [
+    {
+      "title": "Toys & STEM",
+      "subtitle": "Montessori & motor skills",
+      "linkText": "Shop Toys & STEM chevron_right",
+      "linkPath": "toys",
+      "items": [
+        {
+          "title": "Wooden Blocks",
+          "img": "../../../../frontend/public/stitch-v2/img_ea32a59b49.png",
+          "path": "toys-blocks"
+        },
+        {
+          "title": "Sensory Rattle",
+          "img": "../../../../frontend/public/stitch-v2/img_81c482ba47.png",
+          "path": "toys-rattle"
+        },
+        {
+          "title": "Shape Sorter",
+          "img": "../../../../frontend/public/stitch-v2/img_f7c7fe6b69.png",
+          "path": "toys-sorter"
+        },
+        {
+          "title": "Robot Kit",
+          "img": "../../../../frontend/public/stitch-v2/img_cd77cf9993.png",
+          "path": "toys-robot"
+        }
+      ]
+    },
+    {
+      "title": "Kids Footwear",
+      "subtitle": "Anti-skid & breathable",
+      "linkText": "Shop Footwear chevron_right",
+      "linkPath": "footwear",
+      "items": [
+        {
+          "title": "Soft Booties",
+          "img": "../../../../frontend/public/stitch-v2/img_a6477cbf7f.png",
+          "path": "footwear-booties"
+        },
+        {
+          "title": "Gripper Socks",
+          "img": "../../../../frontend/public/stitch-v2/img_2d1720a30d.png",
+          "path": "footwear-socks"
+        },
+        {
+          "title": "Casual Sneakers",
+          "img": "../../../../frontend/public/stitch-v2/img_69f2493e75.png",
+          "path": "footwear-sneakers"
+        },
+        {
+          "title": "Sandal Straps",
+          "img": "../../../../frontend/public/stitch-v2/img_b2523491cb.png",
+          "path": "footwear-sandals"
+        }
+      ]
+    },
+    {
+      "title": "Diapering Essentials",
+      "subtitle": "Rash-free sensitive skin protection",
+      "linkText": "Shop Diapering chevron_right",
+      "linkPath": "diapering",
+      "items": [
+        {
+          "title": "Cloth Diapers",
+          "img": "../../../../frontend/public/stitch-v2/img_65e921e56b.png",
+          "path": "diaper-cloth"
+        },
+        {
+          "title": "Dry Sheets",
+          "img": "../../../../frontend/public/stitch-v2/img_e7780c4e69.png",
+          "path": "diaper-sheet"
+        },
+        {
+          "title": "Eco Wipes 80s",
+          "img": "../../../../frontend/public/stitch-v2/img_38b4ef7ac8.png",
+          "path": "diaper-wipes"
+        },
+        {
+          "title": "Rash Cream",
+          "img": "../../../../frontend/public/stitch-v2/img_a479cd2985.png",
+          "path": "diaper-cream"
+        }
+      ]
+    },
+    {
+      "title": "Feeding & Nursing",
+      "subtitle": "100% food grade & BPA-free",
+      "linkText": "Shop Feeding chevron_right",
+      "linkPath": "feeding",
+      "items": [
+        {
+          "title": "Suction Bowl",
+          "img": "../../../../frontend/public/stitch-v2/img_8ff70ee607.png",
+          "path": "feed-bowl"
+        },
+        {
+          "title": "Spoon & Bib",
+          "img": "../../../../frontend/public/stitch-v2/img_ef86bb17f0.png",
+          "path": "feed-bib"
+        },
+        {
+          "title": "Anti-Colic Bottle",
+          "img": "../../../../frontend/public/stitch-v2/img_7b9364f492.png",
+          "path": "feed-bottle"
+        },
+        {
+          "title": "Bamboo Sipper",
+          "img": "../../../../frontend/public/stitch-v2/img_e26d50a083.png",
+          "path": "feed-sipper"
+        }
+      ]
+    },
+    {
+      "title": "Bath & Skincare",
+      "subtitle": "Tear-free & paediatrician approved",
+      "linkText": "Shop Bath & Body chevron_right",
+      "linkPath": "bath-skincare",
+      "items": [
+        {
+          "title": "Tear-Free Wash",
+          "img": "../../../../frontend/public/stitch-v2/img_234891f26c.png",
+          "path": "bath-wash"
+        },
+        {
+          "title": "Massage Oil",
+          "img": "../../../../frontend/public/stitch-v2/img_27bc383967.png",
+          "path": "bath-oil"
+        },
+        {
+          "title": "Hooded Towel",
+          "img": "../../../../frontend/public/stitch-v2/img_2aa4ab441a.png",
+          "path": "bath-towel"
+        },
+        {
+          "title": "Konjac Sponge",
+          "img": "../../../../frontend/public/stitch-v2/img_1ca1025f60.png",
+          "path": "bath-sponge"
+        }
+      ]
+    },
+    {
+      "title": "Nursery & Sleep",
+      "subtitle": "Breathable, soft & non-toxic",
+      "linkText": "Shop Nursery chevron_right",
+      "linkPath": "nursery",
+      "items": [
+        {
+          "title": "Muslin Swaddles",
+          "img": "../../../../frontend/public/stitch-v2/img_bbfb36df9d.png",
+          "path": "nursery-swaddle"
+        },
+        {
+          "title": "Crib Sheet",
+          "img": "../../../../frontend/public/stitch-v2/img_5153d7a59d.png",
+          "path": "nursery-sheet"
+        },
+        {
+          "title": "Rai Pillow",
+          "img": "../../../../frontend/public/stitch-v2/img_53fc5350a0.png",
+          "path": "nursery-pillow"
+        },
+        {
+          "title": "Rocking Cot",
+          "img": "../../../../frontend/public/stitch-v2/img_6dca6030ee.png",
+          "path": "nursery-cot"
+        }
+      ]
+    },
+    {
+      "title": "Baby Gear & Mobility",
+      "subtitle": "Safe certified travel & strolls",
+      "linkText": "Shop Travel Gear chevron_right",
+      "linkPath": "gear",
+      "items": [
+        {
+          "title": "Compact Buggy",
+          "img": "../../../../frontend/public/stitch-v2/img_c34dc0edfb.png",
+          "path": "gear-stroller"
+        },
+        {
+          "title": "Baby Carrier",
+          "img": "../../../../frontend/public/stitch-v2/img_8105201762.png",
+          "path": "gear-carrier"
+        },
+        {
+          "title": "High Chair",
+          "img": "../../../../frontend/public/stitch-v2/img_c432c58850.png",
+          "path": "gear-highchair"
+        },
+        {
+          "title": "Safety Mirror",
+          "img": "../../../../frontend/public/stitch-v2/img_67c00e6849.png",
+          "path": "gear-mirror"
+        }
+      ]
+    },
+    {
+      "title": "Health & Child Safety",
+      "subtitle": "Babyproofing & wellness tools",
+      "linkText": "Shop Health & Safety chevron_right",
+      "linkPath": "health-safety",
+      "items": [
+        {
+          "title": "Corner Guards",
+          "img": "../../../../frontend/public/stitch-v2/img_82524b7307.png",
+          "path": "safety-guards"
+        },
+        {
+          "title": "Digital Thermo",
+          "img": "../../../../frontend/public/stitch-v2/img_5fdf8dbf3a.png",
+          "path": "safety-thermo"
+        },
+        {
+          "title": "Nasal Aspirator",
+          "img": "../../../../frontend/public/stitch-v2/img_e9a6f9156b.png",
+          "path": "safety-aspirator"
+        },
+        {
+          "title": "Safety Gate",
+          "img": "../../../../frontend/public/stitch-v2/img_0fa27204fd.png",
+          "path": "safety-gate"
+        }
+      ]
+    }
+  ],
+  "bestsellers": [
+    {
+      "img": "../../../../frontend/public/stitch-v2/img_4162031b0c.png",
+      "badge": "100% Cotton",
+      "rating": "4.8",
+      "spec": "• Organic Combed Fabric",
+      "title": "Organic Combed Cotton Kimono Romper (Pack of 2)",
+      "price": "₹549",
+      "mrp": "₹849",
+      "discount": "Save 35%"
+    },
+    {
+      "img": "../../../../frontend/public/stitch-v2/img_ace0b81f66.png",
+      "badge": "BPA-Free",
+      "rating": "4.9",
+      "spec": "• Food-Grade Silicone",
+      "title": "Divided Suction Silicone Feeding Plate with Spoon",
+      "price": "₹399",
+      "mrp": "₹599",
+      "discount": "Save 33%"
+    },
+    {
+      "img": "../../../../frontend/public/stitch-v2/img_0cfe1a0abb.png",
+      "badge": "Zero Plastics",
+      "rating": "4.7",
+      "spec": "• Hypoallergenic Wipes",
+      "title": "Pure Water Biodegradable Baby Wipes (Pack of 3 x 80s)",
+      "price": "₹489",
+      "mrp": "₹750",
+      "discount": "Save 35%"
+    },
+    {
+      "img": "../../../../frontend/public/stitch-v2/img_91532c4f44.png",
+      "badge": "EN71 Tested",
+      "rating": "4.9",
+      "spec": "• Montessori Sensory",
+      "title": "Beechwood Rainbow Arch Stacking Sensory Puzzle",
+      "price": "₹649",
+      "mrp": "₹999",
+      "discount": "Save 35%"
+    },
+    {
+      "img": "../../../../frontend/public/stitch-v2/img_fc1c5166c3.png",
+      "badge": "BPA-Free",
+      "rating": "4.8",
+      "spec": "• Borosilicate Glass",
+      "title": "Borosilicate Glass Baby Feeding Bottle (240ml)",
+      "price": "₹429",
+      "mrp": "₹650",
+      "discount": "Save 34%"
+    }
+  ],
+  "dealsOfDay": [
+    {
+      "img": "../../../../frontend/public/stitch-v2/img_0dda737493.png",
+      "badge": "Deal of Day",
+      "rating": "4.6",
+      "spec": "• Universal Fitting",
+      "title": "Universal Stroller Weather & Insect Shield Cover",
+      "price": "₹349",
+      "mrp": "₹699",
+      "discount": "50% Off"
+    },
+    {
+      "img": "../../../../frontend/public/stitch-v2/img_d748ce0ff1.png",
+      "badge": "100% Muslin",
+      "rating": "4.9",
+      "spec": "• Ultra Soft",
+      "title": "Double Layer Bamboo Muslin Washcloths (Pack of 4)",
+      "price": "₹299",
+      "mrp": "₹549",
+      "discount": "45% Off"
+    },
+    {
+      "img": "../../../../frontend/public/stitch-v2/img_1a17373b24.png",
+      "badge": "Sleep Aid",
+      "rating": "4.7",
+      "spec": "• Calming Rhythms",
+      "title": "Portable White Noise & Lullaby Soother with Night Lamp",
+      "price": "₹899",
+      "mrp": "₹1,499",
+      "discount": "40% Off"
+    },
+    {
+      "img": "../../../../frontend/public/stitch-v2/img_70dc0dfed9.png",
+      "badge": "Safety Grip",
+      "rating": "4.8",
+      "spec": "• Elastic Comfort",
+      "title": "Cushioned Crawling Knee Pads (Set of 3 Pairs)",
+      "price": "₹249",
+      "mrp": "₹450",
+      "discount": "44% Off"
+    }
+  ],
+  "under499": [
+    {
+      "img": "../../../../frontend/public/stitch-v2/img_9eec1e058d.png",
+      "badge": "Under ₹200",
+      "rating": "4.7",
+      "spec": "• Teething Relief",
+      "title": "Silicone Fresh Fruit Food Nibbler & Teether",
+      "price": "₹189",
+      "mrp": "₹299",
+      "discount": "Save 36%"
+    },
+    {
+      "img": "../../../../frontend/public/stitch-v2/img_5ce934b5a0.png",
+      "badge": "100% Cotton",
+      "rating": "4.8",
+      "spec": "• Thermal Warmth",
+      "title": "Soft Organic Cotton Newborn Knot Caps (Pack of 3)",
+      "price": "₹299",
+      "mrp": "₹499",
+      "discount": "Save 40%"
+    },
+    {
+      "img": "../../../../frontend/public/stitch-v2/img_f374185a17.png",
+      "badge": "Child Safety",
+      "rating": "4.6",
+      "spec": "• Easy Stick-On",
+      "title": "Multi-Purpose Baby Safety Cabinet Latches (Pack of 6)",
+      "price": "₹249",
+      "mrp": "₹399",
+      "discount": "Save 37%"
+    },
+    {
+      "img": "../../../../frontend/public/stitch-v2/img_f03fbedf20.png",
+      "badge": "Baby Grooming",
+      "rating": "4.8",
+      "spec": "• Precision Guard",
+      "title": "Precision Safety Baby Nail Clipper with Magnifier",
+      "price": "₹169",
+      "mrp": "₹249",
+      "discount": "Save 32%"
+    }
+  ],
+  "safetyCards": [
+    {
+      "img": "../../../../frontend/public/stitch-v2/img_f6b2223234.png",
+      "badge": "BPA-Free Food Grade Silicone",
+      "rating": "4.9",
+      "spec": "• Microwave & Dishwasher Safe",
+      "title": "LFGB Platinum Silicone First Feeding Set",
+      "desc": "Zero phthalates, lead, PVC, or hormone disruptors.",
+      "price": "₹749",
+      "mrp": "₹1,199",
+      "discount": "37% Off"
+    },
+    {
+      "img": "../../../../frontend/public/stitch-v2/img_c5175ee9a7.png",
+      "badge": "100% Non-Toxic Beechwood",
+      "rating": "4.8",
+      "spec": "• Organic Olive Oil Finish",
+      "title": "Smooth Handcrafted Beechwood Teether Rings",
+      "desc": "Naturally antibacterial, splinter-proof rounded finish.",
+      "price": "₹379",
+      "mrp": "₹549",
+      "discount": "31% Off"
+    },
+    {
+      "img": "../../../../frontend/public/stitch-v2/img_e73950ae93.png",
+      "badge": "Age-Appropriate Tested",
+      "rating": "4.9",
+      "spec": "• Choke-Hazard Proof",
+      "title": "Chunky Magnetic Jungle Animal Train",
+      "desc": "Certified for toddlers under 3, sealed internal magnets.",
+      "price": "₹699",
+      "mrp": "₹999",
+      "discount": "30% Off"
+    },
+    {
+      "img": "../../../../frontend/public/stitch-v2/img_df1bbca5a7.png",
+      "badge": "Safe for Sensitive Gums",
+      "rating": "4.8",
+      "spec": "• Paediatric Tested",
+      "title": "Organic Chamomile Gum Soothing Massage Gel",
+      "desc": "100% natural herbs, safe if swallowed, no numbing benzocaine.",
+      "price": "₹279",
+      "mrp": "₹399",
+      "discount": "30% Off"
+    }
+  ]
+}
